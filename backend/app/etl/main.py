@@ -1,6 +1,6 @@
-from extract import extract
-from transform import transform
-from load import load
+from app.etl.extract import extract
+from app.etl.transform import transform
+from app.etl.load import load
 
 def run_etl():
     data = extract()

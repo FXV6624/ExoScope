@@ -1,10 +1,10 @@
-import psycopg2
+import psycopg
 
 def get_connection():
-    return psycopg2.connect(
-        host="localhost",
+    return psycopg.connect(
+        host="db",
         port=5432,
-        database="app",
+        dbname="app",
         user="postgres",
         password="changethis"
     )

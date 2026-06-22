@@ -1,18 +1,18 @@
-from model import Exoplanet
+from app.models import ExoplanetBase, ExoplanetRaw
 
-def transform(data):
+def transform(data: list[ExoplanetRaw]) -> list[ExoplanetBase]:
     exoplanets = []
     for row in data:
         try:
-            planet = Exoplanet(
-                planet_name=row["pl_name"],
-                host_star=row["hostname"],
-                discovery_method=row["discoverymethod"],
-                discovery_year=row["disc_year"],
-                orbital_period=row["pl_orbper"],
-                planet_radius=row["pl_rade"],
-                planet_mass=row["pl_masse"],
-                distance_parsecs=row["sy_dist"],
+            planet = ExoplanetBase(
+                planet_name=row.pl_name,
+                host_star=row.hostname,
+                discovery_method=row.discoverymethod,
+                discovery_year=row.disc_year,
+                orbital_period=row.pl_orbper,
+                planet_radius=row.pl_rade,
+                planet_mass=row.pl_masse,
+                distance_parsecs=row.sy_dist,
             )
             exoplanets.append(planet)
 

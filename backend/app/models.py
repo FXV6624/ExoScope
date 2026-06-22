@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone
 
-from pydantic import EmailStr
+from pydantic import BaseModel, EmailStr
 from sqlalchemy import DateTime
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -129,3 +129,33 @@ class NewPassword(SQLModel):
     new_password: str = Field(min_length=8, max_length=128)
 
 
+class ExoplanetRaw(BaseModel):
+    pl_name: str
+    hostname: str | None = None
+    discoverymethod: str | None = None
+    disc_year: int | None = None
+    pl_orbper: float | None = None
+    pl_rade: float | None = None
+    pl_masse: float | None = None
+    sy_dist: float | None = None
+
+
+class ExoplanetBase(SQLModel):
+    planet_name: str
+    host_star: str | None = None
+    discovery_method: str | None = None
+    discovery_year: int | None = None
+    orbital_period: float | None = None
+    planet_radius: float | None = None
+    planet_mass: float | None = None
+    distance_parsecs: float | None = None
+
+class Exoplanet(ExoplanetBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+
+class ExoplanetPublic(ExoplanetBase):
+    id: uuid.UUID
+
+class ExoplanetsPublic(SQLModel):
+    data: list[ExoplanetPublic]
+    count: int
