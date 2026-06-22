@@ -7,7 +7,7 @@ from typing import Any
 router = APIRouter(prefix="/exoplanets", tags=["exoplanets"])
 
 @router.get("/", response_model=ExoplanetsPublic)
-def read_exoplanets(session: SessionDep, skip: int = 0, limit: int = 50) -> Any:
+def read_exoplanets(session: SessionDep, skip: int = 0, limit: int = 50) -> dict[str, Any]:
     """
     Retrieve exoplanets.
     """
@@ -20,5 +20,4 @@ def read_exoplanets(session: SessionDep, skip: int = 0, limit: int = 50) -> Any:
     )
     exoplanets = session.exec(statement).all()
 
-    exoplanets_public = [ExoplanetPublic.model_validate(exoplanet) for exoplanet in exoplanets]
-    return ExoplanetsPublic(data=exoplanets_public, count=count)
+    return {"data": exoplanets, "count": count}

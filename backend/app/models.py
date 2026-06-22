@@ -3,7 +3,8 @@ from datetime import datetime, timezone
 
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import DateTime
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
+
 
 
 def get_datetime_utc() -> datetime:
@@ -152,6 +153,9 @@ class ExoplanetBase(SQLModel):
 
 class Exoplanet(ExoplanetBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    __table_args__ = (
+        UniqueConstraint("planet_name", "host_star", name="uq_planet_star"),
+    )
 
 class ExoplanetPublic(ExoplanetBase):
     id: uuid.UUID
