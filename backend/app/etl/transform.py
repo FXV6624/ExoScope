@@ -1,4 +1,5 @@
-from app.models import ExoplanetBase, ExoplanetRaw
+from app.models import ExoplanetBase
+from app.schemas.exoplanet import ExoplanetRaw
 
 def transform(data: list[ExoplanetRaw]) -> list[ExoplanetBase]:
     exoplanets = []

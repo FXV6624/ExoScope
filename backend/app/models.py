@@ -130,16 +130,6 @@ class NewPassword(SQLModel):
     new_password: str = Field(min_length=8, max_length=128)
 
 
-class ExoplanetRaw(BaseModel):
-    pl_name: str
-    hostname: str | None = None
-    discoverymethod: str | None = None
-    disc_year: int | None = None
-    pl_orbper: float | None = None
-    pl_rade: float | None = None
-    pl_masse: float | None = None
-    sy_dist: float | None = None
-
 
 class ExoplanetBase(SQLModel):
     planet_name: str
@@ -157,9 +147,3 @@ class Exoplanet(ExoplanetBase, table=True):
         UniqueConstraint("planet_name", "host_star", name="uq_planet_star"),
     )
 
-class ExoplanetPublic(ExoplanetBase):
-    id: uuid.UUID
-
-class ExoplanetsPublic(SQLModel):
-    data: list[ExoplanetPublic]
-    count: int
