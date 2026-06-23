@@ -1,5 +1,5 @@
 import requests
-from app.models import ExoplanetRaw
+from app.schemas.exoplanet import ExoplanetRaw
 
 URL = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync"
 
