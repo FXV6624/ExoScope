@@ -25,3 +25,18 @@ class ExoplanetsPublic(SQLModel):
 class ExoplanetFilters(BaseModel):
     planet_name: Optional[str] = None
     host_star: Optional[str] = None
+    discovery_method: Optional[str] = None
+    discovery_year: Optional[int] = None
+    min_discovery_year: Optional[int] = None
+    max_discovery_year: Optional[int] = None
+    min_orbital_period: Optional[float] = None
+    max_orbital_period: Optional[float] = None
+    min_planet_radius: Optional[float] = None
+    max_planet_radius: Optional[float] = None
+    min_planet_mass: Optional[float] = None
+    max_planet_mass: Optional[float] = None
+
+class ExoplanetStats(BaseModel):
+    total: int
+    by_method: dict[str, int]
+    by_decade: dict[str, int]

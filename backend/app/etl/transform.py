@@ -2,6 +2,9 @@ from app.models import ExoplanetBase
 from app.schemas.exoplanet import ExoplanetRaw
 
 def transform(data: list[ExoplanetRaw]) -> list[ExoplanetBase]:
+    """
+    Transform raw API data into validated internal model.
+    """
     exoplanets = []
     for row in data:
         try:
@@ -18,6 +21,6 @@ def transform(data: list[ExoplanetRaw]) -> list[ExoplanetBase]:
             exoplanets.append(planet)
 
         except Exception as e:
-            print("Validation error:", e)
+             print(f"Validation error for {row.pl_name}: {e}")
 
     return exoplanets
