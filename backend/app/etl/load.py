@@ -1,10 +1,16 @@
+from typing import List
+
 from sqlmodel import Session
-from app.core.db import engine
-from app.models import Exoplanet
 from sqlalchemy.dialects.postgresql import insert
 
+from app.core.db import engine
+from app.models import Exoplanet
 
-def load(planets):
+
+def load(planets: List[Exoplanet]) -> None:
+    """
+    Load transformed exoplanets into PostgreSQL using upsert.
+    """
     with Session(engine) as session:
 
         stmt = insert(Exoplanet).values([
