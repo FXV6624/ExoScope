@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.routes import items, login, private, users, utils, exoplanets
+from app.api.routes import items, login, private, users, utils, exoplanets, etl
 from app.core.config import settings
 
 api_router = APIRouter()
@@ -10,6 +10,7 @@ api_router.include_router(users.router)
 api_router.include_router(utils.router)
 api_router.include_router(items.router)
 api_router.include_router(exoplanets.router)
+api_router.include_router(etl.router)
 
 if settings.ENVIRONMENT == "local":
     api_router.include_router(private.router)
