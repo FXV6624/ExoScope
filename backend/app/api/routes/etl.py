@@ -5,11 +5,10 @@ from app.etl.main import run_etl
 router = APIRouter(prefix="/etl", tags=["etl"])
 
 
-@router.post("/run", dependencies=[Depends(get_current_active_superuser)]) 
+@router.post("/run", dependencies=[Depends(get_current_active_superuser)])
 def run_exoplanet_etl(session: SessionDep):
     """
-    Run the ETL process for exoplanets. This endpoint is restricted to superusers.
+    Run ETL process for exoplanets (superuser only)
     """
-    
-    inserted = run_etl(session)
-    return {"status": "ok","inserted": inserted}
+    report = run_etl(session)
+    return {"status": "ok","report": report.model_dump()}

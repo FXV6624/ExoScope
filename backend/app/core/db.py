@@ -4,6 +4,7 @@ from sqlmodel import Session, create_engine, select
 from app.repositories import users
 from app.core.config import settings
 from app.models import User
+from app.core.security import get_password_hash
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
@@ -31,4 +32,5 @@ def init_db(session: Session) -> None:
             password=settings.FIRST_SUPERUSER_PASSWORD,
             is_superuser=True,
         )
-        user = users.create_user(session=session, user_create=user_in)
+        hashed_password = get_password_hash(user_in.password)
+        user = users.create_user(session=session, user_create=user_in, hashed_password=hashed_password)

@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone
-
-from pydantic import BaseModel, EmailStr
+from typing import Optional
+from pydantic import EmailStr
 from sqlalchemy import DateTime
 from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
 
@@ -60,4 +60,19 @@ class Exoplanet(ExoplanetBase, table=True):
     __table_args__ = (
         UniqueConstraint("planet_name", "host_star", name="uq_planet_star"),
     )
+
+
+class ETLRun(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    started_at: datetime = Field(default_factory=get_datetime_utc)
+    finished_at: datetime
+    extracted: int
+    transformed: int
+    loaded: int
+    extract_time: float
+    transform_time: float
+    load_time: float
+    total_time: float
+    success: bool
+    errors: str = ""
 
