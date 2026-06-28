@@ -1,10 +1,10 @@
 import logging
-
+from app.core.logging import setup_logging
 from sqlmodel import Session
 
 from app.core.db import engine, init_db
 
-logging.basicConfig(level=logging.INFO)
+setup_logging()
 logger = logging.getLogger(__name__)
 
 
