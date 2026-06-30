@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 class ETLReport(BaseModel):
     extracted: int = 0
     transformed: int = 0
-    loaded: int = 0
+    loaded_attempted: int = 0
 
     duration_seconds: float = 0.0
 

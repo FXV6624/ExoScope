@@ -1,41 +1,21 @@
 from typing import List
 from sqlmodel import Session
-from sqlalchemy.dialects.postgresql import insert
+from app.etl.enums import LoadMode
+from app.etl.load_strategies.factory import get_load_strategy
 
 from app.models import Exoplanet
 
 
-def load(session: Session, planets: List[Exoplanet]) -> int:
+def load(session: Session,planets: List[Exoplanet],mode: LoadMode = LoadMode.UPSERT,) -> int:
     """
-    Load transformed exoplanets into PostgreSQL using upsert.
+    Delegates loading logic to the selected strategy:
+    - upsert: Inserts or updates if the planet already exists. 
+    - insert: Inserts only new planets (ignores existing ones). 
+    - reload: Truncates/deletes all existing data before inserting
     """
 
-    stmt = insert(Exoplanet).values([
-        {
-            "planet_name": p.planet_name,
-            "host_star": p.host_star,
-            "discovery_method": p.discovery_method,
-            "discovery_year": p.discovery_year,
-            "orbital_period": p.orbital_period,
-            "planet_radius": p.planet_radius,
-            "planet_mass": p.planet_mass,
-            "distance_parsecs": p.distance_parsecs,
-        }
-        for p in planets
-    ])
+    if not planets and mode != LoadMode.RELOAD:
+        return 0
 
-    stmt = stmt.on_conflict_do_update(
-        index_elements=["planet_name", "host_star"],
-        set_={
-            "discovery_method": stmt.excluded.discovery_method,
-            "discovery_year": stmt.excluded.discovery_year,
-            "orbital_period": stmt.excluded.orbital_period,
-            "planet_radius": stmt.excluded.planet_radius,
-            "planet_mass": stmt.excluded.planet_mass,
-            "distance_parsecs": stmt.excluded.distance_parsecs,
-        },
-    )
-
-    session.exec(stmt)
-    session.commit()
-    return len(planets)
+    strategy = get_load_strategy(mode)
+    return strategy.load(session, planets)
