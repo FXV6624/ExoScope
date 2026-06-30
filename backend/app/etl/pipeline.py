@@ -8,11 +8,13 @@ from app.etl.load import load
 from app.etl.metrics import ETLMetrics
 from app.etl.report import ETLReport
 from app.etl.run_repository import save_etl_run
+from app.etl.config import ETLConfig
 
 class ExoplanetETL:
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session , config: ETLConfig):
         self.session = session
+        self.config = config
         self.logger = logging.getLogger("exoplanet_etl")
 
     def run(self) -> ETLReport:
@@ -23,8 +25,8 @@ class ExoplanetETL:
         #EXTRACT
         metrics.extract_start = datetime.now(timezone.utc)
         try:
-            self.logger.info("Extracting data")
-            data = extract()
+            self.logger.info(f"Extracting data (limit={self.config.limit})")
+            data = extract(self.config.limit)
             metrics.extracted = len(data)
         except Exception as e:
             self.logger.error(f"Extract failed: {e}")
@@ -49,31 +51,36 @@ class ExoplanetETL:
         metrics.transform_end = datetime.now(timezone.utc)
 
         #LOAD
-        metrics.load_start = datetime.now(timezone.utc)
-        try:
-            self.logger.info("Loading data")
-            load(self.session, planets)
-            metrics.loaded = len(planets)
-        except Exception as e:
-            self.logger.error(f"Load failed: {e}")
-            metrics.errors.append(str(e))
+        if not self.config.dry_run:
+            metrics.load_start = datetime.now(timezone.utc)
+            try:
+                self.logger.info("Loading data")
+                metrics.loaded_attempted = load(self.session, planets, self.config.load_mode)
+            except Exception as e:
+                self.logger.error(f"Load failed: {e}")
+                metrics.errors.append(str(e))
+                metrics.load_end = datetime.now(timezone.utc)
+                metrics.end_time = datetime.now(timezone.utc)
+                return self._build_report(metrics)
             metrics.load_end = datetime.now(timezone.utc)
-            metrics.end_time = datetime.now(timezone.utc)
-            return self._build_report(metrics)
-        metrics.load_end = datetime.now(timezone.utc)
+        else:
+            self.logger.info("Dry run enabled, skipping load step")
+            metrics.loaded_attempted = 0
 
         #END
         metrics.end_time = datetime.now(timezone.utc)
         self.logger.info("ETL finished")
         report = self._build_report(metrics)
-        save_etl_run(self.session, report, metrics)
+        if self.config.persist_run:
+            save_etl_run(self.session, report, metrics)
+            self.logger.info("ETL run persisted to database")
         return report
 
     def _build_report(self, metrics: ETLMetrics) -> ETLReport:
         return ETLReport(
             extracted=metrics.extracted,
             transformed=metrics.transformed,
-            loaded=metrics.loaded,
+            loaded_attempted=metrics.loaded_attempted,
 
             duration_seconds=metrics.total_duration(),
 

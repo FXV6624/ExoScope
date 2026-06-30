@@ -5,7 +5,7 @@ from datetime import datetime
 class ETLMetrics(BaseModel):
     extracted: int = 0
     transformed: int = 0
-    loaded: int = 0
+    loaded_attempted: int = 0
 
     extract_start: datetime | None = None
     extract_end: datetime | None = None

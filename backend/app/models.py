@@ -68,7 +68,7 @@ class ETLRun(SQLModel, table=True):
     finished_at: datetime
     extracted: int
     transformed: int
-    loaded: int
+    loaded_attempted: int
     extract_time: float
     transform_time: float
     load_time: float

@@ -9,7 +9,7 @@ def save_etl_run(session: Session, report, metrics):
 
         extracted=report.extracted,
         transformed=report.transformed,
-        loaded=report.loaded,
+        loaded_attempted=report.loaded_attempted,
 
         extract_time=report.extract_time,
         transform_time=report.transform_time,
