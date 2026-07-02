@@ -1,27 +1,35 @@
-from sqlmodel import Session
+from sqlalchemy import tuple_, select
 from sqlalchemy.dialects.postgresql import insert
+from sqlmodel import Session
 
 from app.models import Exoplanet
+from app.etl.load_result import LoadResult
 from .base import LoadStrategy
+from .statement import build_insert_stmt
 
 
 class UpsertLoadStrategy(LoadStrategy):
 
-    def load(self, session: Session, planets: list[Exoplanet]) -> int:
+    def load(self, session: Session, planets: list[Exoplanet]) -> LoadResult:
 
-        stmt = insert(Exoplanet).values([
-            {
-                "planet_name": p.planet_name,
-                "host_star": p.host_star,
-                "discovery_method": p.discovery_method,
-                "discovery_year": p.discovery_year,
-                "orbital_period": p.orbital_period,
-                "planet_radius": p.planet_radius,
-                "planet_mass": p.planet_mass,
-                "distance_parsecs": p.distance_parsecs,
-            }
-            for p in planets
-        ])
+        keys = {(p.planet_name, p.host_star) for p in planets}
+
+        existing_query = select(Exoplanet.planet_name, Exoplanet.host_star).where(
+            tuple_(Exoplanet.planet_name, Exoplanet.host_star).in_(keys))
+        
+        existing = set(session.exec(existing_query).all())
+
+        inserted = 0
+        updated = 0
+
+        for p in planets:
+            key = (p.planet_name, p.host_star)
+            if key in existing:
+                updated += 1
+            else:
+                inserted += 1
+
+        stmt = build_insert_stmt(planets)
 
         stmt = stmt.on_conflict_do_update(
             index_elements=["planet_name", "host_star"],
@@ -37,4 +45,5 @@ class UpsertLoadStrategy(LoadStrategy):
 
         session.exec(stmt)
         session.commit()
-        return len(planets)
+
+        return LoadResult(attempted=len(planets),inserted=inserted,updated=updated,skipped=0,)

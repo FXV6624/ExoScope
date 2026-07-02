@@ -1,12 +1,11 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 from datetime import datetime
 
 
-class ETLMetrics(BaseModel):
-    extracted: int = 0
-    transformed: int = 0
-    loaded_attempted: int = 0
+from app.etl.base_report import ETLBaseReport
 
+
+class ETLMetrics(ETLBaseReport):
     extract_start: datetime | None = None
     extract_end: datetime | None = None
 
@@ -16,14 +15,9 @@ class ETLMetrics(BaseModel):
     load_start: datetime | None = None
     load_end: datetime | None = None
 
-    start_time: datetime | None = None
-    end_time: datetime | None = None
-
-    errors: list[str] = Field(default_factory=list)
-
     def total_duration(self) -> float:
-        if self.start_time and self.end_time:
-            return (self.end_time - self.start_time).total_seconds()
+        if self.started_at and self.finished_at:
+            return (self.finished_at - self.started_at).total_seconds()
         return 0.0
 
     def extract_duration(self) -> float:

@@ -4,9 +4,10 @@ from app.etl.enums import LoadMode
 from app.etl.load_strategies.factory import get_load_strategy
 
 from app.models import Exoplanet
+from app.etl.load_result import LoadResult
 
 
-def load(session: Session,planets: List[Exoplanet],mode: LoadMode = LoadMode.UPSERT,) -> int:
+def load(session: Session,planets: List[Exoplanet],mode: LoadMode = LoadMode.UPSERT,) -> LoadResult:
     """
     Delegates loading logic to the selected strategy:
     - upsert: Inserts or updates if the planet already exists. 
@@ -15,7 +16,7 @@ def load(session: Session,planets: List[Exoplanet],mode: LoadMode = LoadMode.UPS
     """
 
     if not planets and mode != LoadMode.RELOAD:
-        return 0
+        return LoadResult()
 
     strategy = get_load_strategy(mode)
     return strategy.load(session, planets)
