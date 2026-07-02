@@ -1,9 +1,12 @@
 import uuid
 from datetime import datetime, timezone
-from typing import Optional
+
 from pydantic import EmailStr
-from sqlalchemy import DateTime
+from sqlalchemy import DateTime, Column
 from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
+from sqlalchemy.dialects.postgresql import JSONB
+from app.etl.report import ETLReport
+
 
 def get_datetime_utc() -> datetime:
     return datetime.now(timezone.utc)
@@ -68,7 +71,7 @@ class ETLRun(SQLModel, table=True):
     finished_at: datetime
     extracted: int
     transformed: int
-    loaded_attempted: int
+    load_result: dict = Field(sa_column=Column(JSONB))
     extract_time: float
     transform_time: float
     load_time: float
@@ -76,3 +79,22 @@ class ETLRun(SQLModel, table=True):
     success: bool
     errors: str = ""
 
+    @classmethod
+    def create(cls, report: ETLReport):
+        return cls(
+        started_at=report.started_at,
+        finished_at=report.finished_at,
+
+        extracted=report.extracted,
+        transformed=report.transformed,
+
+        load_result=report.load_result.model_dump(),
+
+        extract_time=report.extract_time,
+        transform_time=report.transform_time,
+        load_time=report.load_time,
+        total_time=report.duration_seconds,
+
+        success=not report.errors,
+        errors=" | ".join(report.errors),
+    )
