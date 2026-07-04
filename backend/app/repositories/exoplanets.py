@@ -35,9 +35,9 @@ def count_exoplanets(session: Session,query: Optional[Select] = None) -> int:
     Count total exoplanets, with or without filters.
     """
     if query is None:
-        statement = select(func.count(Exoplanet.id))
+        statement = select(func.count()).select_from(Exoplanet)
     else:
-        statement = query.with_only_columns(func.count())
+        statement = select(func.count()).select_from(query.subquery())
 
     return session.exec(statement).one()
 

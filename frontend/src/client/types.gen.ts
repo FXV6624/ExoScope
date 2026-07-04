@@ -9,6 +9,43 @@ export type Body_login_login_access_token = {
     client_secret?: (string | null);
 };
 
+export type ETLConfig = {
+    /**
+     * Max number of records to extract. None = no limit
+     */
+    limit?: (number | null);
+    dry_run?: boolean;
+    persist_run?: boolean;
+    load_mode?: LoadMode;
+};
+
+export type ExoplanetPublic = {
+    planet_name: string;
+    host_star?: (string | null);
+    discovery_method?: (string | null);
+    discovery_year?: (number | null);
+    orbital_period?: (number | null);
+    planet_radius?: (number | null);
+    planet_mass?: (number | null);
+    distance_parsecs?: (number | null);
+    id: string;
+};
+
+export type ExoplanetsPublic = {
+    data: Array<ExoplanetPublic>;
+    count: number;
+};
+
+export type ExoplanetStats = {
+    total: number;
+    by_method: {
+        [key: string]: (number);
+    };
+    by_decade: {
+        [key: string]: (number);
+    };
+};
+
 export type HTTPValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -35,6 +72,8 @@ export type ItemUpdate = {
     title?: (string | null);
     description?: (string | null);
 };
+
+export type LoadMode = 'upsert' | 'insert' | 'reload';
 
 export type Message = {
     message: string;
@@ -113,6 +152,39 @@ export type ValidationError = {
     };
 };
 
+export type EtlRunExoplanetEtlData = {
+    requestBody: ETLConfig;
+};
+
+export type EtlRunExoplanetEtlResponse = (unknown);
+
+export type ExoplanetsReadExoplanetsData = {
+    discoveryMethod?: (string | null);
+    discoveryYear?: (number | null);
+    hostStar?: (string | null);
+    limit?: number;
+    maxDiscoveryYear?: (number | null);
+    maxOrbitalPeriod?: (number | null);
+    maxPlanetMass?: (number | null);
+    maxPlanetRadius?: (number | null);
+    minDiscoveryYear?: (number | null);
+    minOrbitalPeriod?: (number | null);
+    minPlanetMass?: (number | null);
+    minPlanetRadius?: (number | null);
+    planetName?: (string | null);
+    skip?: number;
+};
+
+export type ExoplanetsReadExoplanetsResponse = (ExoplanetsPublic);
+
+export type ExoplanetsGetExoplanetStatsResponse = (ExoplanetStats);
+
+export type ExoplanetsReadExoplanetByIdData = {
+    exoplanetId: string;
+};
+
+export type ExoplanetsReadExoplanetByIdResponse = (ExoplanetPublic);
+
 export type ItemsReadItemsData = {
     limit?: number;
     skip?: number;
@@ -127,20 +199,20 @@ export type ItemsCreateItemData = {
 export type ItemsCreateItemResponse = (ItemPublic);
 
 export type ItemsReadItemData = {
-    id: string;
+    itemId: string;
 };
 
 export type ItemsReadItemResponse = (ItemPublic);
 
 export type ItemsUpdateItemData = {
-    id: string;
+    itemId: string;
     requestBody: ItemUpdate;
 };
 
 export type ItemsUpdateItemResponse = (ItemPublic);
 
 export type ItemsDeleteItemData = {
-    id: string;
+    itemId: string;
 };
 
 export type ItemsDeleteItemResponse = (Message);
@@ -165,11 +237,11 @@ export type LoginResetPasswordData = {
 
 export type LoginResetPasswordResponse = (Message);
 
-export type LoginRecoverPasswordHtmlContentData = {
+export type LoginRecoverPasswordHtmlData = {
     email: string;
 };
 
-export type LoginRecoverPasswordHtmlContentResponse = (string);
+export type LoginRecoverPasswordHtmlResponse = (string);
 
 export type PrivateCreateUserData = {
     requestBody: PrivateUserCreate;
@@ -212,11 +284,11 @@ export type UsersRegisterUserData = {
 
 export type UsersRegisterUserResponse = (UserPublic);
 
-export type UsersReadUserByIdData = {
+export type UsersReadUserData = {
     userId: string;
 };
 
-export type UsersReadUserByIdResponse = (UserPublic);
+export type UsersReadUserResponse = (UserPublic);
 
 export type UsersUpdateUserData = {
     requestBody: UserUpdate;
@@ -229,7 +301,7 @@ export type UsersDeleteUserData = {
     userId: string;
 };
 
-export type UsersDeleteUserResponse = (Message);
+export type UsersDeleteUserResponse = (unknown);
 
 export type UtilsTestEmailData = {
     emailTo: string;

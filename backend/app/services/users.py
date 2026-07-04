@@ -1,5 +1,5 @@
 from app.core.security import verify_password
-from app.repositories.users import get_user_by_email, update_user
+from app.repositories.users import get_user_by_email, update_user, create_user
 from app.core.security import get_password_hash
 from app.models import User
 
@@ -24,7 +24,7 @@ def authenticate_user(session, email: str, password: str) -> User | None:
         return None
 
     if updated_hash:
-        update_user(session=session,db_user=user,user_data={},extra_data={"hashed_password": updated_hash})
+        update_user(session=session,db_user=user,hashed_password=updated_hash)
 
     return user
 
@@ -49,7 +49,7 @@ def create_new_user(session, user_in, hashed_password: str):
 def update_password(session, user, new_password: str):
     hashed = get_password_hash(new_password)
 
-    return update_user(session=session,db_user=user,user_data={},extra_data={"hashed_password": hashed})
+    return update_user(session=session,db_user=user,hashed_password=hashed)
 
 
 # -----------------------
