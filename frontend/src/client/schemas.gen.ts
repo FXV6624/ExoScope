@@ -57,6 +57,179 @@ export const Body_login_login_access_tokenSchema = {
     title: 'Body_login-login_access_token'
 } as const;
 
+export const ETLConfigSchema = {
+    properties: {
+        limit: {
+            anyOf: [
+                {
+                    type: 'integer',
+                    exclusiveMinimum: 0
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Limit',
+            description: 'Max number of records to extract. None = no limit'
+        },
+        dry_run: {
+            type: 'boolean',
+            title: 'Dry Run',
+            default: false
+        },
+        persist_run: {
+            type: 'boolean',
+            title: 'Persist Run',
+            default: true
+        },
+        load_mode: {
+            '$ref': '#/components/schemas/LoadMode',
+            default: 'upsert'
+        }
+    },
+    type: 'object',
+    title: 'ETLConfig'
+} as const;
+
+export const ExoplanetPublicSchema = {
+    properties: {
+        planet_name: {
+            type: 'string',
+            title: 'Planet Name'
+        },
+        host_star: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Host Star'
+        },
+        discovery_method: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Discovery Method'
+        },
+        discovery_year: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Discovery Year'
+        },
+        orbital_period: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Orbital Period'
+        },
+        planet_radius: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Planet Radius'
+        },
+        planet_mass: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Planet Mass'
+        },
+        distance_parsecs: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Distance Parsecs'
+        },
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        }
+    },
+    type: 'object',
+    required: ['planet_name', 'id'],
+    title: 'ExoplanetPublic'
+} as const;
+
+export const ExoplanetStatsSchema = {
+    properties: {
+        total: {
+            type: 'integer',
+            title: 'Total'
+        },
+        by_method: {
+            additionalProperties: {
+                type: 'integer'
+            },
+            type: 'object',
+            title: 'By Method'
+        },
+        by_decade: {
+            additionalProperties: {
+                type: 'integer'
+            },
+            type: 'object',
+            title: 'By Decade'
+        }
+    },
+    type: 'object',
+    required: ['total', 'by_method', 'by_decade'],
+    title: 'ExoplanetStats'
+} as const;
+
+export const ExoplanetsPublicSchema = {
+    properties: {
+        data: {
+            items: {
+                '$ref': '#/components/schemas/ExoplanetPublic'
+            },
+            type: 'array',
+            title: 'Data'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        }
+    },
+    type: 'object',
+    required: ['data', 'count'],
+    title: 'ExoplanetsPublic'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {
@@ -194,6 +367,12 @@ export const ItemsPublicSchema = {
     type: 'object',
     required: ['data', 'count'],
     title: 'ItemsPublic'
+} as const;
+
+export const LoadModeSchema = {
+    type: 'string',
+    enum: ['upsert', 'insert', 'reload'],
+    title: 'LoadMode'
 } as const;
 
 export const MessageSchema = {

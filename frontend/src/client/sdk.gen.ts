@@ -3,12 +3,116 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { EtlRunExoplanetEtlData, EtlRunExoplanetEtlResponse, ExoplanetsReadExoplanetsData, ExoplanetsReadExoplanetsResponse, ExoplanetsGetExoplanetStatsResponse, ExoplanetsReadExoplanetByIdData, ExoplanetsReadExoplanetByIdResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlData, LoginRecoverPasswordHtmlResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserData, UsersReadUserResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+
+export class EtlService {
+    /**
+     * Run Exoplanet Etl
+     * Run ETL process for exoplanets (superuser only)
+     * @param data The data for the request.
+     * @param data.requestBody
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static runExoplanetEtl(data: EtlRunExoplanetEtlData): CancelablePromise<EtlRunExoplanetEtlResponse> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/v1/etl/run',
+            body: data.requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class ExoplanetsService {
+    /**
+     * Read Exoplanets
+     * Retrieve a list of exoplanets with optional filters.
+     * @param data The data for the request.
+     * @param data.skip
+     * @param data.limit
+     * @param data.planetName
+     * @param data.hostStar
+     * @param data.discoveryMethod
+     * @param data.discoveryYear
+     * @param data.minDiscoveryYear
+     * @param data.maxDiscoveryYear
+     * @param data.minOrbitalPeriod
+     * @param data.maxOrbitalPeriod
+     * @param data.minPlanetRadius
+     * @param data.maxPlanetRadius
+     * @param data.minPlanetMass
+     * @param data.maxPlanetMass
+     * @returns ExoplanetsPublic Successful Response
+     * @throws ApiError
+     */
+    public static readExoplanets(data: ExoplanetsReadExoplanetsData = {}): CancelablePromise<ExoplanetsReadExoplanetsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/exoplanets/',
+            query: {
+                skip: data.skip,
+                limit: data.limit,
+                planet_name: data.planetName,
+                host_star: data.hostStar,
+                discovery_method: data.discoveryMethod,
+                discovery_year: data.discoveryYear,
+                min_discovery_year: data.minDiscoveryYear,
+                max_discovery_year: data.maxDiscoveryYear,
+                min_orbital_period: data.minOrbitalPeriod,
+                max_orbital_period: data.maxOrbitalPeriod,
+                min_planet_radius: data.minPlanetRadius,
+                max_planet_radius: data.maxPlanetRadius,
+                min_planet_mass: data.minPlanetMass,
+                max_planet_mass: data.maxPlanetMass
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+    
+    /**
+     * Get Exoplanet Stats
+     * Retrieve statistics about the exoplanets dataset.
+     * @returns ExoplanetStats Successful Response
+     * @throws ApiError
+     */
+    public static getExoplanetStats(): CancelablePromise<ExoplanetsGetExoplanetStatsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/exoplanets/stats'
+        });
+    }
+    
+    /**
+     * Read Exoplanet By Id
+     * Get a specific exoplanet by ID.
+     * @param data The data for the request.
+     * @param data.exoplanetId
+     * @returns ExoplanetPublic Successful Response
+     * @throws ApiError
+     */
+    public static readExoplanetById(data: ExoplanetsReadExoplanetByIdData): CancelablePromise<ExoplanetsReadExoplanetByIdResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/exoplanets/{exoplanet_id}',
+            path: {
+                exoplanet_id: data.exoplanetId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
 
 export class ItemsService {
     /**
      * Read Items
-     * Retrieve items.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
@@ -31,7 +135,6 @@ export class ItemsService {
     
     /**
      * Create Item
-     * Create new item.
      * @param data The data for the request.
      * @param data.requestBody
      * @returns ItemPublic Successful Response
@@ -51,18 +154,17 @@ export class ItemsService {
     
     /**
      * Read Item
-     * Get item by ID.
      * @param data The data for the request.
-     * @param data.id
+     * @param data.itemId
      * @returns ItemPublic Successful Response
      * @throws ApiError
      */
     public static readItem(data: ItemsReadItemData): CancelablePromise<ItemsReadItemResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/items/{id}',
+            url: '/api/v1/items/{item_id}',
             path: {
-                id: data.id
+                item_id: data.itemId
             },
             errors: {
                 422: 'Validation Error'
@@ -72,9 +174,8 @@ export class ItemsService {
     
     /**
      * Update Item
-     * Update an item.
      * @param data The data for the request.
-     * @param data.id
+     * @param data.itemId
      * @param data.requestBody
      * @returns ItemPublic Successful Response
      * @throws ApiError
@@ -82,9 +183,9 @@ export class ItemsService {
     public static updateItem(data: ItemsUpdateItemData): CancelablePromise<ItemsUpdateItemResponse> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/v1/items/{id}',
+            url: '/api/v1/items/{item_id}',
             path: {
-                id: data.id
+                item_id: data.itemId
             },
             body: data.requestBody,
             mediaType: 'application/json',
@@ -96,18 +197,17 @@ export class ItemsService {
     
     /**
      * Delete Item
-     * Delete an item.
      * @param data The data for the request.
-     * @param data.id
+     * @param data.itemId
      * @returns Message Successful Response
      * @throws ApiError
      */
     public static deleteItem(data: ItemsDeleteItemData): CancelablePromise<ItemsDeleteItemResponse> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/v1/items/{id}',
+            url: '/api/v1/items/{item_id}',
             path: {
-                id: data.id
+                item_id: data.itemId
             },
             errors: {
                 422: 'Validation Error'
@@ -119,7 +219,6 @@ export class ItemsService {
 export class LoginService {
     /**
      * Login Access Token
-     * OAuth2 compatible token login, get an access token for future requests
      * @param data The data for the request.
      * @param data.formData
      * @returns Token Successful Response
@@ -139,7 +238,6 @@ export class LoginService {
     
     /**
      * Test Token
-     * Test access token
      * @returns UserPublic Successful Response
      * @throws ApiError
      */
@@ -152,7 +250,6 @@ export class LoginService {
     
     /**
      * Recover Password
-     * Password Recovery
      * @param data The data for the request.
      * @param data.email
      * @returns Message Successful Response
@@ -173,7 +270,6 @@ export class LoginService {
     
     /**
      * Reset Password
-     * Reset password
      * @param data The data for the request.
      * @param data.requestBody
      * @returns Message Successful Response
@@ -192,14 +288,13 @@ export class LoginService {
     }
     
     /**
-     * Recover Password Html Content
-     * HTML Content for Password Recovery
+     * Recover Password Html
      * @param data The data for the request.
      * @param data.email
      * @returns string Successful Response
      * @throws ApiError
      */
-    public static recoverPasswordHtmlContent(data: LoginRecoverPasswordHtmlContentData): CancelablePromise<LoginRecoverPasswordHtmlContentResponse> {
+    public static recoverPasswordHtml(data: LoginRecoverPasswordHtmlData): CancelablePromise<LoginRecoverPasswordHtmlResponse> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/v1/password-recovery-html-content/{email}',
@@ -238,7 +333,6 @@ export class PrivateService {
 export class UsersService {
     /**
      * Read Users
-     * Retrieve users.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
@@ -261,7 +355,6 @@ export class UsersService {
     
     /**
      * Create User
-     * Create new user.
      * @param data The data for the request.
      * @param data.requestBody
      * @returns UserPublic Successful Response
@@ -281,7 +374,6 @@ export class UsersService {
     
     /**
      * Read User Me
-     * Get current user.
      * @returns UserPublic Successful Response
      * @throws ApiError
      */
@@ -294,7 +386,6 @@ export class UsersService {
     
     /**
      * Delete User Me
-     * Delete own user.
      * @returns Message Successful Response
      * @throws ApiError
      */
@@ -307,7 +398,6 @@ export class UsersService {
     
     /**
      * Update User Me
-     * Update own user.
      * @param data The data for the request.
      * @param data.requestBody
      * @returns UserPublic Successful Response
@@ -327,7 +417,6 @@ export class UsersService {
     
     /**
      * Update Password Me
-     * Update own password.
      * @param data The data for the request.
      * @param data.requestBody
      * @returns Message Successful Response
@@ -347,7 +436,6 @@ export class UsersService {
     
     /**
      * Register User
-     * Create new user without the need to be logged in.
      * @param data The data for the request.
      * @param data.requestBody
      * @returns UserPublic Successful Response
@@ -366,14 +454,13 @@ export class UsersService {
     }
     
     /**
-     * Read User By Id
-     * Get a specific user by id.
+     * Read User
      * @param data The data for the request.
      * @param data.userId
      * @returns UserPublic Successful Response
      * @throws ApiError
      */
-    public static readUserById(data: UsersReadUserByIdData): CancelablePromise<UsersReadUserByIdResponse> {
+    public static readUser(data: UsersReadUserData): CancelablePromise<UsersReadUserResponse> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/users/{user_id}',
@@ -388,7 +475,6 @@ export class UsersService {
     
     /**
      * Update User
-     * Update a user.
      * @param data The data for the request.
      * @param data.userId
      * @param data.requestBody
@@ -412,10 +498,9 @@ export class UsersService {
     
     /**
      * Delete User
-     * Delete a user.
      * @param data The data for the request.
      * @param data.userId
-     * @returns Message Successful Response
+     * @returns unknown Successful Response
      * @throws ApiError
      */
     public static deleteUser(data: UsersDeleteUserData): CancelablePromise<UsersDeleteUserResponse> {

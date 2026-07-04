@@ -8,29 +8,42 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-const PendingItems = () => (
+const PendingExoplanets = () => (
   <Table>
     <TableHeader>
       <TableRow>
-        <TableHead>ID</TableHead>
-        <TableHead>Title</TableHead>
-        <TableHead>Description</TableHead>
+        <TableHead>Planet</TableHead>
+        <TableHead>Host Star</TableHead>
+        <TableHead>Discovery Method</TableHead>
+        <TableHead>Discovery Year</TableHead>
+        <TableHead>Mass (M⊕)</TableHead>
+        <TableHead>Radius (R⊕)</TableHead>
         <TableHead>
           <span className="sr-only">Actions</span>
         </TableHead>
       </TableRow>
     </TableHeader>
+
     <TableBody>
       {Array.from({ length: 5 }).map((_, index) => (
         <TableRow key={index}>
           <TableCell>
-            <Skeleton className="h-4 w-64 font-mono" />
+            <Skeleton className="h-4 w-40" />
           </TableCell>
           <TableCell>
             <Skeleton className="h-4 w-32" />
           </TableCell>
           <TableCell>
-            <Skeleton className="h-4 w-48" />
+            <Skeleton className="h-4 w-32" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-4 w-16" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-4 w-16" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-4 w-16" />
           </TableCell>
           <TableCell>
             <div className="flex justify-end">
@@ -43,4 +56,4 @@ const PendingItems = () => (
   </Table>
 )
 
-export default PendingItems
+export default PendingExoplanets
