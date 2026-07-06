@@ -1,12 +1,12 @@
-import { useState } from "react"
+import { useNavigate } from "@tanstack/react-router"
 import {
   type ColumnDef,
-  type SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  type SortingState,
   useReactTable,
 } from "@tanstack/react-table"
 import {
@@ -15,6 +15,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from "lucide-react"
+import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -49,6 +50,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = useState("")
+  const _navigate = useNavigate()
 
   const table = useReactTable({
     data,
@@ -74,9 +76,7 @@ export function DataTable<TData, TValue>({
 
       if (value == null) return false
 
-      return String(value)
-        .toLowerCase()
-        .includes(globalFilter.toLowerCase())
+      return String(value).toLowerCase().includes(globalFilter.toLowerCase())
     },
   })
 
@@ -126,13 +126,10 @@ export function DataTable<TData, TValue>({
         <TableBody>
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow key={row.id} className="cursor-pointer">
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext(),
-                    )}
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
               </TableRow>
@@ -172,15 +169,11 @@ export function DataTable<TData, TValue>({
             </div>
 
             <div className="flex items-center gap-2">
-              <p className="text-sm text-muted-foreground">
-                Rows per page
-              </p>
+              <p className="text-sm text-muted-foreground">Rows per page</p>
 
               <Select
                 value={`${table.getState().pagination.pageSize}`}
-                onValueChange={(value) =>
-                  table.setPageSize(Number(value))
-                }
+                onValueChange={(value) => table.setPageSize(Number(value))}
               >
                 <SelectTrigger className="h-8 w-[70px]">
                   <SelectValue />
@@ -188,10 +181,7 @@ export function DataTable<TData, TValue>({
 
                 <SelectContent side="top">
                   {[5, 10, 25, 50].map((pageSize) => (
-                    <SelectItem
-                      key={pageSize}
-                      value={`${pageSize}`}
-                    >
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
                       {pageSize}
                     </SelectItem>
                   ))}
@@ -247,9 +237,7 @@ export function DataTable<TData, TValue>({
                 variant="outline"
                 size="sm"
                 className="h-8 w-8 p-0"
-                onClick={() =>
-                  table.setPageIndex(table.getPageCount() - 1)
-                }
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
               >
                 <ChevronsRight className="h-4 w-4" />

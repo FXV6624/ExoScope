@@ -108,17 +108,6 @@ export const ExoplanetPublicSchema = {
             ],
             title: 'Host Star'
         },
-        discovery_method: {
-            anyOf: [
-                {
-                    type: 'string'
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Discovery Method'
-        },
         discovery_year: {
             anyOf: [
                 {
@@ -130,16 +119,16 @@ export const ExoplanetPublicSchema = {
             ],
             title: 'Discovery Year'
         },
-        orbital_period: {
+        discovery_method: {
             anyOf: [
                 {
-                    type: 'number'
+                    type: 'string'
                 },
                 {
                     type: 'null'
                 }
             ],
-            title: 'Orbital Period'
+            title: 'Discovery Method'
         },
         planet_radius: {
             anyOf: [
@@ -163,7 +152,7 @@ export const ExoplanetPublicSchema = {
             ],
             title: 'Planet Mass'
         },
-        distance_parsecs: {
+        planet_density: {
             anyOf: [
                 {
                     type: 'number'
@@ -172,7 +161,150 @@ export const ExoplanetPublicSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Distance Parsecs'
+            title: 'Planet Density'
+        },
+        equilibrium_temperature: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Equilibrium Temperature'
+        },
+        incident_flux: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Incident Flux'
+        },
+        orbital_period: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Orbital Period'
+        },
+        semi_major_axis: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Semi Major Axis'
+        },
+        orbital_eccentricity: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Orbital Eccentricity'
+        },
+        stellar_effective_temperature: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Stellar Effective Temperature'
+        },
+        stellar_radius: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Stellar Radius'
+        },
+        stellar_mass: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Stellar Mass'
+        },
+        stellar_luminosity: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Stellar Luminosity'
+        },
+        stellar_age: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Stellar Age'
+        },
+        distance_from_earth: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Distance From Earth'
+        },
+        system_planet_count: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'System Planet Count'
+        },
+        system_star_count: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'System Star Count'
         },
         id: {
             type: 'string',

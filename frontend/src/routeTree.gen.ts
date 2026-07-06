@@ -16,8 +16,9 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
-import { Route as LayoutExoplanetsRouteImport } from './routes/_layout/exoplanets'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
+import { Route as LayoutExoplanetsIndexRouteImport } from './routes/_layout/exoplanets.index'
+import { Route as LayoutExoplanetsIdRouteImport } from './routes/_layout/exoplanets.$id'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -53,14 +54,19 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutExoplanetsRoute = LayoutExoplanetsRouteImport.update({
-  id: '/exoplanets',
-  path: '/exoplanets',
-  getParentRoute: () => LayoutRoute,
-} as any)
 const LayoutAdminRoute = LayoutAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutExoplanetsIndexRoute = LayoutExoplanetsIndexRouteImport.update({
+  id: '/exoplanets/',
+  path: '/exoplanets/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutExoplanetsIdRoute = LayoutExoplanetsIdRouteImport.update({
+  id: '/exoplanets/$id',
+  path: '/exoplanets/$id',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -71,8 +77,9 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/exoplanets': typeof LayoutExoplanetsRoute
   '/settings': typeof LayoutSettingsRoute
+  '/exoplanets/$id': typeof LayoutExoplanetsIdRoute
+  '/exoplanets/': typeof LayoutExoplanetsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -80,9 +87,10 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
-  '/exoplanets': typeof LayoutExoplanetsRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
+  '/exoplanets/$id': typeof LayoutExoplanetsIdRoute
+  '/exoplanets': typeof LayoutExoplanetsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -92,9 +100,10 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
-  '/_layout/exoplanets': typeof LayoutExoplanetsRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
+  '/_layout/exoplanets/$id': typeof LayoutExoplanetsIdRoute
+  '/_layout/exoplanets/': typeof LayoutExoplanetsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -105,8 +114,9 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/exoplanets'
     | '/settings'
+    | '/exoplanets/$id'
+    | '/exoplanets/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -114,9 +124,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
-    | '/exoplanets'
     | '/settings'
     | '/'
+    | '/exoplanets/$id'
+    | '/exoplanets'
   id:
     | '__root__'
     | '/_layout'
@@ -125,9 +136,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
-    | '/_layout/exoplanets'
     | '/_layout/settings'
     | '/_layout/'
+    | '/_layout/exoplanets/$id'
+    | '/_layout/exoplanets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -189,13 +201,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/exoplanets': {
-      id: '/_layout/exoplanets'
-      path: '/exoplanets'
-      fullPath: '/exoplanets'
-      preLoaderRoute: typeof LayoutExoplanetsRouteImport
-      parentRoute: typeof LayoutRoute
-    }
     '/_layout/admin': {
       id: '/_layout/admin'
       path: '/admin'
@@ -203,21 +208,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/exoplanets/': {
+      id: '/_layout/exoplanets/'
+      path: '/exoplanets'
+      fullPath: '/exoplanets/'
+      preLoaderRoute: typeof LayoutExoplanetsIndexRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/exoplanets/$id': {
+      id: '/_layout/exoplanets/$id'
+      path: '/exoplanets/$id'
+      fullPath: '/exoplanets/$id'
+      preLoaderRoute: typeof LayoutExoplanetsIdRouteImport
+      parentRoute: typeof LayoutRoute
+    }
   }
 }
 
 interface LayoutRouteChildren {
   LayoutAdminRoute: typeof LayoutAdminRoute
-  LayoutExoplanetsRoute: typeof LayoutExoplanetsRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
+  LayoutExoplanetsIdRoute: typeof LayoutExoplanetsIdRoute
+  LayoutExoplanetsIndexRoute: typeof LayoutExoplanetsIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAdminRoute: LayoutAdminRoute,
-  LayoutExoplanetsRoute: LayoutExoplanetsRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
+  LayoutExoplanetsIdRoute: LayoutExoplanetsIdRoute,
+  LayoutExoplanetsIndexRoute: LayoutExoplanetsIndexRoute,
 }
 
 const LayoutRouteWithChildren =

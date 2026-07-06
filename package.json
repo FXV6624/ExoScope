@@ -10,5 +10,10 @@
     "test": "bun run --filter frontend test",
     "test:ui": "bun run --filter frontend test:ui",
     "generate-client:win": "powershell.exe -ExecutionPolicy Bypass -File scripts\\generate-client.ps1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3"
   }
 }

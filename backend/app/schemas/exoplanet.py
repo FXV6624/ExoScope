@@ -8,12 +8,25 @@ from app.models import ExoplanetBase
 class ExoplanetRaw(BaseModel):
     pl_name: str
     hostname: str | None = None
-    discoverymethod: str | None = None
     disc_year: int | None = None
-    pl_orbper: float | None = None
+    discoverymethod: str | None = None
     pl_rade: float | None = None
     pl_masse: float | None = None
+    pl_dens: float | None = None
+    pl_eqt: float | None = None
+    pl_insol: float | None = None
+    pl_orbper: float | None = None
+    pl_orbsmax: float | None = None
+    pl_orbeccen: float | None = None
+    st_teff: float | None = None
+    st_rad: float | None = None
+    st_mass: float | None = None
+    st_lum: float | None = None
+    st_age: float | None = None
     sy_dist: float | None = None
+    sy_pnum: int | None = None
+    sy_snum: int | None = None
+
 
 class ExoplanetPublic(ExoplanetBase):
     id: uuid.UUID

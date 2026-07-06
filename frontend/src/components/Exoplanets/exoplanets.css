@@ -1,0 +1,101 @@
+/* ===========================
+   Space / Exoplanets Theme
+   =========================== */
+
+@layer utilities {
+  .bg-space {
+    background: linear-gradient(135deg, #060d1f 0%, #0a1628 40%, #0d1f3c 100%);
+  }
+
+  .bg-space-stars {
+    background-image:
+      radial-gradient(
+        1px 1px at 8% 18%,
+        rgba(255, 255, 255, 0.5) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 38% 8%,
+        rgba(255, 255, 255, 0.3) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 67% 28%,
+        rgba(255, 255, 255, 0.4) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 85% 12%,
+        rgba(255, 255, 255, 0.3) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 20% 60%,
+        rgba(255, 255, 255, 0.35) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 50% 75%,
+        rgba(255, 255, 255, 0.25) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 78% 65%,
+        rgba(255, 255, 255, 0.4) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 3% 88%,
+        rgba(255, 255, 255, 0.3) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 93% 50%,
+        rgba(255, 255, 255, 0.35) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 30% 40%,
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 60% 95%,
+        rgba(255, 255, 255, 0.3) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1px 1px at 45% 52%,
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 100%
+      );
+  }
+
+  /* Space-themed card */
+  .space-card {
+    background: rgba(15, 25, 50, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+  }
+
+  .space-card-accent {
+    border-color: rgba(34, 211, 238, 0.3);
+  }
+
+  /* Cyan accent color */
+  .text-space-accent {
+    color: #22d3ee;
+  }
+
+  .text-space-muted {
+    color: #64748b;
+  }
+
+  .text-space-subtle {
+    color: #94a3b8;
+  }
+
+  .text-space-primary {
+    color: #f1f5f9;
+  }
+}
