@@ -22,12 +22,24 @@ export type ETLConfig = {
 export type ExoplanetPublic = {
     planet_name: string;
     host_star?: (string | null);
-    discovery_method?: (string | null);
     discovery_year?: (number | null);
-    orbital_period?: (number | null);
+    discovery_method?: (string | null);
     planet_radius?: (number | null);
     planet_mass?: (number | null);
-    distance_parsecs?: (number | null);
+    planet_density?: (number | null);
+    equilibrium_temperature?: (number | null);
+    incident_flux?: (number | null);
+    orbital_period?: (number | null);
+    semi_major_axis?: (number | null);
+    orbital_eccentricity?: (number | null);
+    stellar_effective_temperature?: (number | null);
+    stellar_radius?: (number | null);
+    stellar_mass?: (number | null);
+    stellar_luminosity?: (number | null);
+    stellar_age?: (number | null);
+    distance_from_earth?: (number | null);
+    system_planet_count?: (number | null);
+    system_star_count?: (number | null);
     id: string;
 };
 

@@ -11,12 +11,24 @@ def transform(data: list[ExoplanetRaw]) -> list[ExoplanetBase]:
             planet = ExoplanetBase(
                 planet_name=row.pl_name,
                 host_star=row.hostname,
-                discovery_method=row.discoverymethod,
                 discovery_year=row.disc_year,
-                orbital_period=row.pl_orbper,
+                discovery_method=row.discoverymethod,
                 planet_radius=row.pl_rade,
                 planet_mass=row.pl_masse,
-                distance_parsecs=row.sy_dist,
+                planet_density=row.pl_dens,
+                equilibrium_temperature=row.pl_eqt,
+                incident_flux=row.pl_insol,
+                orbital_period=row.pl_orbper,
+                semi_major_axis=row.pl_orbsmax,
+                orbital_eccentricity=row.pl_orbeccen,
+                stellar_effective_temperature=row.st_teff,
+                stellar_radius=row.st_rad,
+                stellar_mass=row.st_mass,
+                stellar_luminosity=row.st_lum,
+                stellar_age=row.st_age,
+                distance_from_earth=row.sy_dist,
+                system_planet_count=row.sy_pnum,
+                system_star_count=row.sy_snum,
             )
             exoplanets.append(planet)
 

@@ -51,12 +51,25 @@ class Item(ItemBase, table=True):
 class ExoplanetBase(SQLModel):
     planet_name: str
     host_star: str | None = None
-    discovery_method: str | None = None
     discovery_year: int | None = None
-    orbital_period: float | None = None
+    discovery_method: str | None = None
     planet_radius: float | None = None
     planet_mass: float | None = None
-    distance_parsecs: float | None = None
+    planet_density: float | None = None
+    equilibrium_temperature: float | None = None
+    incident_flux: float | None = None
+    orbital_period: float | None = None
+    semi_major_axis: float | None = None
+    orbital_eccentricity: float | None = None
+    stellar_effective_temperature: float | None = None
+    stellar_radius: float | None = None
+    stellar_mass: float | None = None
+    stellar_luminosity: float | None = None
+    stellar_age: float | None = None
+    distance_from_earth: float | None = None
+    system_planet_count: int | None = None
+    system_star_count: int | None = None
+
 
 class Exoplanet(ExoplanetBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)

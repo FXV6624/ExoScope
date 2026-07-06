@@ -10,7 +10,28 @@ def extract(limit: int | None = None) -> List[ExoplanetRaw]:
     Aplica el límite directamente en la consulta ADQL (Extract) de forma determinista.
     """
 
-    columns = ("pl_name, hostname, discoverymethod, disc_year, pl_orbper, pl_rade, pl_masse, sy_dist")
+    columns = ", ".join([
+    "pl_name",
+    "hostname",
+    "disc_year",
+    "discoverymethod",
+    "pl_rade",
+    "pl_masse",
+    "pl_dens",
+    "pl_eqt",
+    "pl_insol",
+    "pl_orbper",
+    "pl_orbsmax",
+    "pl_orbeccen",
+    "st_teff",
+    "st_rad",
+    "st_mass",
+    "st_lum",
+    "st_age",
+    "sy_dist",
+    "sy_pnum",
+    "sy_snum",
+])
     select_clause = f"SELECT TOP {limit} {columns}" if limit is not None else f"SELECT {columns}"
     query = f"{select_clause} FROM pscomppars ORDER BY disc_year DESC, pl_name"
 
@@ -18,5 +39,6 @@ def extract(limit: int | None = None) -> List[ExoplanetRaw]:
     response = requests.get(URL, params=params)
     response.raise_for_status()
     data = response.json()
+    print(data[0])
     
     return [ExoplanetRaw(**row) for row in data]
