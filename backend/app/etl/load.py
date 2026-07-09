@@ -4,7 +4,7 @@ from app.etl.enums import LoadMode
 from app.etl.load_strategies.factory import get_load_strategy
 
 from app.models import Exoplanet
-from app.etl.load_result import LoadResult
+from app.etl.schemas import LoadResult
 
 
 def load(session: Session,planets: List[Exoplanet],mode: LoadMode = LoadMode.UPSERT,) -> LoadResult:

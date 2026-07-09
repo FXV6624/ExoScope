@@ -38,6 +38,8 @@ class Settings(BaseSettings):
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
     ETL_SCHEDULER_ENABLED: bool = True
     ETL_SCHEDULER_INTERVAL_HOURS: int = 24
+    REDIS_HOST: str = "redis"
+    REDIS_PORT: int = 6379
 
     BACKEND_CORS_ORIGINS: Annotated[
         list[AnyUrl] | str, BeforeValidator(parse_cors)
@@ -69,6 +71,10 @@ class Settings(BaseSettings):
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB,
         )
+    
+    @property
+    def REDIS_URL(self) -> str:
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
 
     SMTP_TLS: bool = True
     SMTP_SSL: bool = False

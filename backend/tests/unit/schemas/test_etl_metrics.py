@@ -4,7 +4,7 @@ import pytest
 from datetime import datetime, timezone, timedelta
 
 from app.etl.metrics import ETLMetrics
-from app.etl.load_result import LoadResult
+from app.etl.schemas import LoadResult
 
 
 def _make_metrics_with_times(total_s=10, extract_s=3, transform_s=4, load_s=3):

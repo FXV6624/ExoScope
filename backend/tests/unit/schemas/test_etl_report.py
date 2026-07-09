@@ -5,7 +5,7 @@ from datetime import datetime, timezone, timedelta
 
 from app.etl.report import ETLReport
 from app.etl.metrics import ETLMetrics
-from app.etl.load_result import LoadResult
+from app.etl.schemas import LoadResult
 from tests.factories import make_etl_metrics, make_load_result
 
 

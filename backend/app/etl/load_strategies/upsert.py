@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlmodel import Session
 
 from app.models import Exoplanet
-from app.etl.load_result import LoadResult
+from app.etl.schemas import LoadResult
 from .base import LoadStrategy
 from .statement import build_insert_stmt, BATCH_SIZE
 
@@ -55,6 +55,10 @@ class UpsertLoadStrategy(LoadStrategy):
                     "distance_from_earth": stmt.excluded.distance_from_earth,
                     "system_planet_count": stmt.excluded.system_planet_count,
                     "system_star_count": stmt.excluded.system_star_count,
+                    "composition": stmt.excluded.composition,
+                    "composition_confidence": stmt.excluded.composition_confidence,
+                    "habitability_score": stmt.excluded.habitability_score,
+                    "habitability_confidence": stmt.excluded.habitability_confidence,
                 },
             )
 

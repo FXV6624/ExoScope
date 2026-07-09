@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from sqlmodel import Session
 from app.models import Exoplanet
-from app.etl.load_result import LoadResult
+from app.etl.schemas import LoadResult
 
 class LoadStrategy(ABC):
 

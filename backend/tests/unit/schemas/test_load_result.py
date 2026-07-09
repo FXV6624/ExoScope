@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from app.etl.load_result import LoadResult
+from app.etl.schemas import LoadResult
 
 
 class TestLoadResult:

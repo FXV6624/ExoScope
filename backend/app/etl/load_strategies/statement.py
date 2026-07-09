@@ -26,6 +26,10 @@ def build_insert_stmt(planets: list[Exoplanet]):
             "distance_from_earth": p.distance_from_earth,
             "system_planet_count": p.system_planet_count,
             "system_star_count": p.system_star_count,
+            "composition": p.composition,
+            "composition_confidence": p.composition_confidence,
+            "habitability_score": p.habitability_score,
+            "habitability_confidence": p.habitability_confidence,
         }
         for p in planets
     ])

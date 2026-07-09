@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import StrEnum
 
-class LoadMode(str, Enum):
+class LoadMode(StrEnum):
     UPSERT = "upsert"
     INSERT = "insert"
     RELOAD = "reload"

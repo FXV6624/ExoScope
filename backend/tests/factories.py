@@ -12,7 +12,7 @@ from app.models import Exoplanet, Item, User, ETLRun, ExoplanetBase
 from app.schemas.exoplanet import ExoplanetRaw, ExoplanetFilters
 from app.schemas.item import ItemCreate
 from app.schemas.user import UserCreate
-from app.etl.load_result import LoadResult
+from app.etl.schemas import LoadResult
 from app.etl.report import ETLReport
 from app.etl.metrics import ETLMetrics
 from app.etl.config import ETLConfig

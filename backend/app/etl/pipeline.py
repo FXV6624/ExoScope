@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 import logging
+from app.etl.enrich.enrich import enrich
 from sqlmodel import Session
 
 from app.etl.extract import extract
@@ -9,7 +10,8 @@ from app.etl.metrics import ETLMetrics
 from app.etl.report import ETLReport
 from app.etl.run_repository import save_etl_run
 from app.etl.config import ETLConfig
-from app.etl.load_result import LoadResult
+from app.etl.schemas import LoadResult
+from app.core.cache import clear_cache_sync
 
 class ExoplanetETL:
 
@@ -51,6 +53,16 @@ class ExoplanetETL:
             return ETLReport.from_metrics(metrics)
         metrics.transform_end = datetime.now(timezone.utc)
 
+        #ENRICH
+        try:
+            self.logger.info("Enriching data")
+            planets = enrich(planets)
+        except Exception as e:
+            self.logger.error(f"Enrichment failed: {e}")
+            metrics.errors.append(str(e))
+            metrics.finished_at = datetime.now(timezone.utc)
+            return ETLReport.from_metrics(metrics)
+
         #LOAD
         if not self.config.dry_run:
             metrics.load_start = datetime.now(timezone.utc)
@@ -75,4 +87,7 @@ class ExoplanetETL:
         if self.config.persist_run:
             save_etl_run(self.session, report)
             self.logger.info("ETL run persisted to database")
+        if (not self.config.dry_run and metrics.load_result and (
+                metrics.load_result.inserted > 0 or metrics.load_result.updated > 0)):
+            clear_cache_sync()
         return report
