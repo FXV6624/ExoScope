@@ -19,6 +19,18 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_DB=${POSTGRES_DB?Variable not set}
 
+  redis:
+    image: redis:8-alpine
+    restart: always
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis-data:/data
+
   adminer:
     image: adminer
     restart: always
@@ -54,6 +66,8 @@ services:
       db:
         condition: service_healthy
         restart: true
+      redis:
+        condition: service_healthy
     command: bash scripts/prestart.sh
     env_file:
       - .env
@@ -75,6 +89,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
       - ./backend/app:/app/backend/app
 
@@ -90,6 +106,8 @@ services:
         restart: true
       prestart:
         condition: service_completed_successfully
+      redis:
+        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -110,6 +128,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER?Variable not set}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD?Variable not set}
       - SENTRY_DSN=${SENTRY_DSN}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
     - ./backend/app:/app/backend/app
@@ -172,6 +192,7 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
 volumes:
   app-db-data:
+  redis-data:
 
 networks:
   traefik-public:

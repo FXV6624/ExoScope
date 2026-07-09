@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import MagicMock, patch, call
 
 from app.etl.load_strategies.reload import ReloadLoadStrategy
-from app.etl.load_result import LoadResult
+from app.etl.schemas import LoadResult
 from tests.factories import make_exoplanet_model
 
 

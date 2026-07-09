@@ -20,6 +20,9 @@ dependencies = [
     "pyjwt<3.0.0,>=2.8.0",
     "pwdlib[argon2,bcrypt]>=0.3.0",
     "apscheduler>=3.11.3",
+    "fastapi-cache2>=0.2.2",
+    "redis>=6.0.0",
+    "slowapi>=0.1.10",
 ]
 
 [dependency-groups]

@@ -5,7 +5,7 @@ from sqlalchemy import delete
 
 from app.models import Exoplanet
 from .base import LoadStrategy
-from app.etl.load_result import LoadResult
+from app.etl.schemas import LoadResult
 from .statement import build_insert_stmt, BATCH_SIZE
 
 class ReloadLoadStrategy(LoadStrategy):

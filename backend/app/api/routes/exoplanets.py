@@ -1,15 +1,20 @@
+from typing import Annotated
+from fastapi import Query
 import uuid
-from fastapi import APIRouter, HTTPException, Depends
-
+from fastapi import APIRouter, HTTPException, Depends, Request
+from fastapi_cache.decorator import cache
 from app.api.deps import CurrentUser, SessionDep
 from app.schemas.exoplanet import ExoplanetFilters, ExoplanetPublic, ExoplanetStats, ExoplanetsPublic
 from app.services.exoplanets import read_exoplanets_service, get_exoplanet_stats_service, read_exoplanet_by_id_service
+from app.core.limiter import limiter
 
 router = APIRouter(prefix="/exoplanets", tags=["exoplanets"])
 
 
 @router.get("/", response_model=ExoplanetsPublic)
-def read_exoplanets(session: SessionDep, current_user: CurrentUser, skip: int = 0, 
+@limiter.limit("60/minute")
+@cache(expire=300)
+def read_exoplanets(request: Request, session: SessionDep, current_user: CurrentUser, skip: int = 0, 
     limit: int = 50, filters: ExoplanetFilters = Depends()):
     """
     Retrieve a list of exoplanets with optional filters.
@@ -18,16 +23,22 @@ def read_exoplanets(session: SessionDep, current_user: CurrentUser, skip: int = 
 
 
 @router.get("/stats", response_model=ExoplanetStats)
-def get_exoplanet_stats(session: SessionDep, current_user: CurrentUser):
+@limiter.limit("30/minute")
+@cache(expire=600)
+def get_exoplanet_stats(request: Request, session: SessionDep, current_user: CurrentUser,
+     habitability_score_threshold: Annotated[float,Query(ge=0, le=100)] = 80.0,
+     habitability_confidence_threshold: Annotated[float,Query(ge=0, le=1)] = 0.8,):
     """
     Retrieve statistics about the exoplanets dataset.
     """
-    stats = get_exoplanet_stats_service(session)
+    stats = get_exoplanet_stats_service(session, habitability_score_threshold, habitability_confidence_threshold)
 
     return stats
 
 @router.get("/{exoplanet_id:uuid}", response_model=ExoplanetPublic)
-def read_exoplanet_by_id(exoplanet_id: uuid.UUID, session: SessionDep,current_user: CurrentUser):
+@limiter.limit("120/minute")
+@cache(expire=300)
+def read_exoplanet_by_id(request: Request, exoplanet_id: uuid.UUID, session: SessionDep, current_user: CurrentUser):
     """
     Get a specific exoplanet by ID.
     """

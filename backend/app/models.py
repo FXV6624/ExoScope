@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime, timezone
-
+from app.core.enums.exoplanet import PlanetComposition
+from sqlalchemy import DateTime, Column, String
 from pydantic import EmailStr
 from sqlalchemy import DateTime, Column
 from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
@@ -69,6 +70,10 @@ class ExoplanetBase(SQLModel):
     distance_from_earth: float | None = None
     system_planet_count: int | None = None
     system_star_count: int | None = None
+    composition: PlanetComposition | None = Field(default=None,sa_column=Column(String, nullable=True),)
+    composition_confidence: float | None = None
+    habitability_score: float | None = None
+    habitability_confidence: float | None = None
 
 
 class Exoplanet(ExoplanetBase, table=True):
