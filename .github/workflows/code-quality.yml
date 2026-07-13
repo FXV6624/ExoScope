@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - develop
+      - main
   pull_request:
     branches:
       - develop
+      - main
 
 jobs:
   quality:
@@ -31,7 +33,7 @@ jobs:
         run: uv sync --all-packages
 
       - name: Install frontend dependencies
-        run: bun ci 
+        run: bun install 
 
       - name: Run Ruff (Linter & Formatter)
         run: uv run ruff check backend/app
