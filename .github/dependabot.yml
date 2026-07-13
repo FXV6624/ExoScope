@@ -1,94 +1,32 @@
 version: 2
+
 updates:
-  # GitHub Actions
+  # 1. GitHub Actions
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: ⬆
-    labels:
-      - "internal"
-      - "dependencies"
-      - "github_actions"
-    groups:
-      github-actions:
-        patterns:
-          - "*"
-  # Python uv
+
+  # 2. Python (uv)
   - package-ecosystem: uv
     directory: /
     schedule:
       interval: weekly
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: ⬆
-    labels: [dependencies, internal]
-    groups:
-      python-packages:
-        patterns:
-          - "*"
-  # bun
+
+  # 3. Frontend (bun)
   - package-ecosystem: bun
     directory: /
     schedule:
       interval: weekly
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: ⬆
-    labels: [dependencies, internal]
-    ignore:
-      - dependency-name: "@hey-api/openapi-ts"
-    groups:
-      npm-packages:
-        patterns:
-          - "*"
-  # Docker
+
+  # 4. Docker Backend
   - package-ecosystem: docker
-    directories:
-      - /backend
-      - /frontend
+    directory: /backend
     schedule:
       interval: weekly
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: ⬆
-    groups:
-      docker:
-        patterns:
-          - "*"
-  # Docker Compose
-  - package-ecosystem: docker-compose
-    directory: /
+
+  # 5. Docker Frontend
+  - package-ecosystem: docker
+    directory: /frontend
     schedule:
       interval: weekly
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: ⬆
-    groups:
-      docker-compose:
-        patterns:
-          - "*"
-  # pre-commit
-  - package-ecosystem: "pre-commit"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: ⬆
-    labels:
-      - "internal"
-      - "dependencies"
-      - "pre-commit"
-    groups:
-      pre-commit:
-        patterns:
-          - "*"
