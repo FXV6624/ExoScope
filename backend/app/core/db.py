@@ -33,4 +33,6 @@ def init_db(session: Session) -> None:
             is_superuser=True,
         )
         hashed_password = get_password_hash(user_in.password)
-        user = users.create_user(session=session, user_create=user_in, hashed_password=hashed_password)
+        user = users.create_user(
+            session=session, user_create=user_in, hashed_password=hashed_password
+        )

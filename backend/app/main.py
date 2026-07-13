@@ -28,7 +28,6 @@ if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-
     await init_cache()
     start_scheduler()
     try:

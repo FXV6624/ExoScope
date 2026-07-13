@@ -5,7 +5,6 @@ from app.models import Item
 # GET ITEMS
 # -----------------------
 def get_items(session, user, skip=0, limit=100):
-
     if user.is_superuser:
         query = session.query(Item)
     else:
@@ -13,7 +12,7 @@ def get_items(session, user, skip=0, limit=100):
 
     count = query.count()
 
-    items = (query.order_by(Item.created_at.desc()).offset(skip).limit(limit).all())
+    items = query.order_by(Item.created_at.desc()).offset(skip).limit(limit).all()
 
     return items, count
 
@@ -22,7 +21,6 @@ def get_items(session, user, skip=0, limit=100):
 # GET ITEM BY ID
 # -----------------------
 def get_item(session, item_id, user):
-
     item = session.get(Item, item_id)
 
     if not item:
@@ -38,8 +36,7 @@ def get_item(session, item_id, user):
 # CREATE ITEM
 # -----------------------
 def create_item(session, item_in, user):
-
-    item = Item.model_validate(item_in,update={"owner_id": user.id})
+    item = Item.model_validate(item_in, update={"owner_id": user.id})
 
     session.add(item)
     session.commit()
@@ -52,7 +49,6 @@ def create_item(session, item_in, user):
 # UPDATE ITEM
 # -----------------------
 def update_item(session, item, item_in):
-
     data = item_in.model_dump(exclude_unset=True)
 
     item.sqlmodel_update(data)
@@ -68,6 +64,5 @@ def update_item(session, item, item_in):
 # DELETE ITEM
 # -----------------------
 def delete_item(session, item):
-
     session.delete(item)
     session.commit()

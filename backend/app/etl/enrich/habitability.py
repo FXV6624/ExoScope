@@ -5,7 +5,11 @@ from app.models import ExoplanetBase
 from app.schemas.exoplanet import HabitabilityResult
 
 
-def _gaussian(value: float,optimum: float,sigma: float,) -> float:
+def _gaussian(
+    value: float,
+    optimum: float,
+    sigma: float,
+) -> float:
     """
     Return a similarity score in the range (0, 1] using
     a Gaussian distribution centred on the optimum value.
@@ -13,7 +17,9 @@ def _gaussian(value: float,optimum: float,sigma: float,) -> float:
     return math.exp(-((value - optimum) ** 2) / (2 * sigma**2))
 
 
-def calculate_habitability(exoplanet: ExoplanetBase,) -> HabitabilityResult:
+def calculate_habitability(
+    exoplanet: ExoplanetBase,
+) -> HabitabilityResult:
     """
     Estimate the habitability of an exoplanet.
 
@@ -33,19 +39,25 @@ def calculate_habitability(exoplanet: ExoplanetBase,) -> HabitabilityResult:
     available_weight = 0.0
 
     for criterion in CRITERIA:
-
         value = criterion.getter(exoplanet)
 
         if value is None:
             continue
 
-        similarity = _gaussian(value=value,optimum=criterion.optimum,sigma=criterion.sigma,)
+        similarity = _gaussian(
+            value=value,
+            optimum=criterion.optimum,
+            sigma=criterion.sigma,
+        )
 
         weighted_score += similarity * criterion.weight
         available_weight += criterion.weight
 
     if available_weight == 0.0:
-        return HabitabilityResult(score=0.0,confidence=0.0,)
+        return HabitabilityResult(
+            score=0.0,
+            confidence=0.0,
+        )
 
     return HabitabilityResult(
         score=round(weighted_score / available_weight * 100, 1),

@@ -1,4 +1,3 @@
-
 from sqlmodel import Session
 
 from app.etl.enums import LoadMode
@@ -7,7 +6,11 @@ from app.etl.schemas import LoadResult
 from app.models import Exoplanet
 
 
-def load(session: Session,planets: list[Exoplanet],mode: LoadMode = LoadMode.UPSERT,) -> LoadResult:
+def load(
+    session: Session,
+    planets: list[Exoplanet],
+    mode: LoadMode = LoadMode.UPSERT,
+) -> LoadResult:
     """
     Delegates loading logic to the selected strategy:
     - upsert: Inserts or updates if the planet already exists.

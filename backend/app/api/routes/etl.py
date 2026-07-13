@@ -10,9 +10,9 @@ router = APIRouter(prefix="/etl", tags=["etl"])
 
 @router.post("/run", dependencies=[Depends(get_current_active_superuser)])
 @limiter.limit("1/minute")
-def run_exoplanet_etl(_request: Request,session: SessionDep, config: ETLConfig):
+def run_exoplanet_etl(_request: Request, session: SessionDep, config: ETLConfig):
     """
     Run ETL process for exoplanets (superuser only)
     """
-    report = run_etl(session,config)
-    return {"status": "ok","report": report.model_dump()}
+    report = run_etl(session, config)
+    return {"status": "ok", "report": report.model_dump()}

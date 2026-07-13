@@ -35,6 +35,6 @@ def transform(data: list[ExoplanetRaw]) -> list[ExoplanetBase]:
             exoplanets.append(planet)
 
         except Exception as e:
-             logger.error(f"Error transforming row {row.pl_name}: {e}")
+            logger.error(f"Error transforming row {row.pl_name}: {e}")
 
     return exoplanets

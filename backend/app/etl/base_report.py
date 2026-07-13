@@ -6,7 +6,6 @@ from app.etl.schemas import LoadResult
 
 
 class ETLBaseReport(BaseModel):
-
     extracted: int = 0
 
     transformed: int = 0

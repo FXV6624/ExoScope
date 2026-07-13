@@ -7,7 +7,6 @@ from app.models import Exoplanet
 
 
 class LoadStrategy(ABC):
-
     @abstractmethod
     def load(self, session: Session, planets: list[Exoplanet]) -> LoadResult:
         pass

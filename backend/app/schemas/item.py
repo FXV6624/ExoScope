@@ -10,9 +10,11 @@ from app.models import ItemBase
 class ItemCreate(ItemBase):
     pass
 
+
 # Properties to receive on item update
 class ItemUpdate(ItemBase):
     title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore[assignment]
+
 
 # Properties to return via API, id is always required
 class ItemPublic(ItemBase):
@@ -24,5 +26,3 @@ class ItemPublic(ItemBase):
 class ItemsPublic(SQLModel):
     data: list[ItemPublic]
     count: int
-
-

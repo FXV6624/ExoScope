@@ -4,7 +4,9 @@ from app.models import User
 
 
 def create_user(session, user_create, hashed_password: str):
-    db_obj = User.model_validate(user_create,update={"hashed_password": hashed_password})
+    db_obj = User.model_validate(
+        user_create, update={"hashed_password": hashed_password}
+    )
     session.add(db_obj)
     session.commit()
     session.refresh(db_obj)

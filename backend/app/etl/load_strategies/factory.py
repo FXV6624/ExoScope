@@ -7,7 +7,6 @@ from .upsert import UpsertLoadStrategy
 
 
 def get_load_strategy(mode: LoadMode) -> LoadStrategy:
-
     match mode:
         case LoadMode.UPSERT:
             return UpsertLoadStrategy()

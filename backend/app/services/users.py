@@ -23,7 +23,7 @@ def authenticate_user(session, email: str, password: str) -> User | None:
         return None
 
     if updated_hash:
-        update_user(session=session,db_user=user,hashed_password=updated_hash)
+        update_user(session=session, db_user=user, hashed_password=updated_hash)
 
     return user
 
@@ -39,7 +39,9 @@ def get_user(session, email: str):
 # CREATE USER
 # -----------------------
 def create_new_user(session, user_in, hashed_password: str):
-    return create_user(session=session,user_create=user_in,hashed_password=hashed_password)
+    return create_user(
+        session=session, user_create=user_in, hashed_password=hashed_password
+    )
 
 
 # -----------------------
@@ -48,7 +50,7 @@ def create_new_user(session, user_in, hashed_password: str):
 def update_password(session, user, new_password: str):
     hashed = get_password_hash(new_password)
 
-    return update_user(session=session,db_user=user,hashed_password=hashed)
+    return update_user(session=session, db_user=user, hashed_password=hashed)
 
 
 # -----------------------

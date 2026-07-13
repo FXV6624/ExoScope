@@ -26,11 +26,13 @@ def build_exoplanet_query(filters: ExoplanetFilters):
         prefix = next((p for p in operators if filter_name.startswith(p)), None)
 
         if prefix:
-            field_name = filter_name[len(prefix):]
+            field_name = filter_name[len(prefix) :]
             op_func = operators[prefix]
         else:
             field_name = filter_name
-            def op_func(field, val): return field == val
+
+            def op_func(field, val):
+                return field == val
 
         field = getattr(Exoplanet, field_name, None)
 

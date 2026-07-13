@@ -14,8 +14,9 @@ router = APIRouter(prefix="/items", tags=["items"])
 # GET ITEMS
 # -----------------------
 @router.get("/", response_model=ItemsPublic)
-def read_items(session: SessionDep, current_user: CurrentUser, skip: int = 0, limit: int = 100):
-
+def read_items(
+    session: SessionDep, current_user: CurrentUser, skip: int = 0, limit: int = 100
+):
     items, count = item_service.get_items(session, current_user, skip, limit)
     return ItemsPublic(data=[ItemPublic.model_validate(i) for i in items], count=count)
 
@@ -25,7 +26,6 @@ def read_items(session: SessionDep, current_user: CurrentUser, skip: int = 0, li
 # -----------------------
 @router.get("/{item_id}", response_model=ItemPublic)
 def read_item(session: SessionDep, current_user: CurrentUser, item_id: uuid.UUID):
-
     item, error = item_service.get_item(session, item_id, current_user)
 
     if error == "not_found":
@@ -42,7 +42,6 @@ def read_item(session: SessionDep, current_user: CurrentUser, item_id: uuid.UUID
 # -----------------------
 @router.post("/", response_model=ItemPublic)
 def create_item(session: SessionDep, current_user: CurrentUser, item_in: ItemCreate):
-
     return item_service.create_item(session, item_in, current_user)
 
 
@@ -50,8 +49,12 @@ def create_item(session: SessionDep, current_user: CurrentUser, item_in: ItemCre
 # UPDATE ITEM
 # -----------------------
 @router.put("/{item_id}", response_model=ItemPublic)
-def update_item(session: SessionDep,current_user: CurrentUser,item_id: uuid.UUID, item_in: ItemUpdate):
-
+def update_item(
+    session: SessionDep,
+    current_user: CurrentUser,
+    item_id: uuid.UUID,
+    item_in: ItemUpdate,
+):
     item, error = item_service.get_item(session, item_id, current_user)
 
     if error == "not_found":
@@ -68,7 +71,6 @@ def update_item(session: SessionDep,current_user: CurrentUser,item_id: uuid.UUID
 # -----------------------
 @router.delete("/{item_id}", response_model=Message)
 def delete_item(session: SessionDep, current_user: CurrentUser, item_id: uuid.UUID):
-
     item, error = item_service.get_item(session, item_id, current_user)
 
     if error:

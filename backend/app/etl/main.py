@@ -12,6 +12,7 @@ def run_etl(session: Session, config: ETLConfig = ETLConfig()) -> dict:
     logger.info(f"ETL process completed. Report: {report.model_dump()}")
     return report
 
+
 if __name__ == "__main__":
     with Session(engine) as session:
         run_etl(session)

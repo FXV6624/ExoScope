@@ -8,8 +8,9 @@ from app.repositories.exoplanet_query_builder import build_exoplanet_query
 from app.schemas.exoplanet import ExoplanetFilters
 
 
-def get_exoplanets_with_filters(session: Session,filters: ExoplanetFilters,
-        skip: int,limit: int) -> tuple[list[Exoplanet], int]:
+def get_exoplanets_with_filters(
+    session: Session, filters: ExoplanetFilters, skip: int, limit: int
+) -> tuple[list[Exoplanet], int]:
     """
     Build query with filters and return paginated results + total count.
     """
@@ -20,16 +21,18 @@ def get_exoplanets_with_filters(session: Session,filters: ExoplanetFilters,
     return data, count
 
 
-def get_exoplanets(session: Session,query,skip: int,limit: int) -> list[Exoplanet]:
+def get_exoplanets(session: Session, query, skip: int, limit: int) -> list[Exoplanet]:
     """
     Return paginated exoplanets ordered by planet name.
     """
-    statement = (query.order_by(col(Exoplanet.planet_name).asc()).offset(skip).limit(limit))
+    statement = (
+        query.order_by(col(Exoplanet.planet_name).asc()).offset(skip).limit(limit)
+    )
 
     return session.exec(statement).all()
 
 
-def count_exoplanets(session: Session,query: Select | None = None) -> int:
+def count_exoplanets(session: Session, query: Select | None = None) -> int:
     """
     Count total exoplanets, with or without filters.
     """
@@ -41,7 +44,7 @@ def count_exoplanets(session: Session,query: Select | None = None) -> int:
     return session.exec(statement).one()
 
 
-def get_exoplanet_by_id(session: Session,exoplanet_id: uuid.UUID) -> Exoplanet | None:
+def get_exoplanet_by_id(session: Session, exoplanet_id: uuid.UUID) -> Exoplanet | None:
     """
     Retrieve a single exoplanet by its UUID.
     """

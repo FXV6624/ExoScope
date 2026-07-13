@@ -1,4 +1,3 @@
-
 from sqlmodel import Session
 
 from app.models import Exoplanet
@@ -25,15 +24,19 @@ from app.schemas.exoplanet import (
 )
 
 
-def read_exoplanets_service(session: Session,filters: ExoplanetFilters,skip: int,limit: int) -> dict:
+def read_exoplanets_service(
+    session: Session, filters: ExoplanetFilters, skip: int, limit: int
+) -> dict:
     """
     Orchestrates repository calls for filtered + paginated exoplanets.
     """
     data, count = get_exoplanets_with_filters(session, filters, skip, limit)
-    return { "data": data,"count": count}
+    return {"data": data, "count": count}
 
 
-def read_exoplanet_by_id_service(session: Session, exoplanet_id: str) -> Exoplanet | None:
+def read_exoplanet_by_id_service(
+    session: Session, exoplanet_id: str
+) -> Exoplanet | None:
     """
     Retrieve a single exoplanet by its UUID.
     """
@@ -50,26 +53,25 @@ def _summary(session, column) -> SummaryStats:
     )
 
 
-def get_exoplanet_stats_service(session, habitability_score_threshold: float = 80.0,
-        habitability_confidence_threshold: float = 0.8) -> ExoplanetStats:
-
-    avg_score, min_score, max_score, avg_confidence, habitable = get_habitability_stats(session,
-        habitability_score_threshold, habitability_confidence_threshold)
+def get_exoplanet_stats_service(
+    session,
+    habitability_score_threshold: float = 80.0,
+    habitability_confidence_threshold: float = 0.8,
+) -> ExoplanetStats:
+    avg_score, min_score, max_score, avg_confidence, habitable = get_habitability_stats(
+        session, habitability_score_threshold, habitability_confidence_threshold
+    )
 
     return ExoplanetStats(
         total=count_exoplanets(session),
-
         by_method=_to_dict(get_by_discovery_method(session)),
-
         by_decade=_format_by_decade(get_by_discovery_decade(session)),
-
-
         composition=CompositionStats(
             by_composition=_to_dict(get_by_composition(session)),
-            average_confidence=_summary(session, Exoplanet.composition_confidence).average,
+            average_confidence=_summary(
+                session, Exoplanet.composition_confidence
+            ).average,
         ),
-
-
         habitability=HabitabilityStats(
             average=avg_score,
             minimum=min_score,
@@ -77,19 +79,21 @@ def get_exoplanet_stats_service(session, habitability_score_threshold: float = 8
             average_confidence=avg_confidence,
             potentially_habitable=habitable,
         ),
-
         radius=_summary(session, Exoplanet.planet_radius),
-
         mass=_summary(session, Exoplanet.planet_mass),
-
         density=_summary(session, Exoplanet.planet_density),
-
-        equilibrium_temperature=_summary(session,Exoplanet.equilibrium_temperature,),
-
-        orbital_period=_summary(session,Exoplanet.orbital_period,),
-
-        distance=_summary(session,Exoplanet.distance_from_earth,),
-
+        equilibrium_temperature=_summary(
+            session,
+            Exoplanet.equilibrium_temperature,
+        ),
+        orbital_period=_summary(
+            session,
+            Exoplanet.orbital_period,
+        ),
+        distance=_summary(
+            session,
+            Exoplanet.distance_from_earth,
+        ),
         completeness=_build_completeness(session),
     )
 
@@ -109,7 +113,6 @@ def _format_by_decade(rows: list[tuple[int, int]]) -> dict[str, int]:
 
 
 def _build_completeness(session) -> CompletenessStats:
-
     row = get_completeness(session)._mapping
 
     total = row["total"]
@@ -117,4 +120,9 @@ def _build_completeness(session) -> CompletenessStats:
     if total == 0:
         return CompletenessStats(**dict.fromkeys(CompletenessStats.model_fields, 0.0))
 
-    return CompletenessStats(**{field: round(row[field] * 100 / total, 1)for field in CompletenessStats.model_fields})
+    return CompletenessStats(
+        **{
+            field: round(row[field] * 100 / total, 1)
+            for field in CompletenessStats.model_fields
+        }
+    )

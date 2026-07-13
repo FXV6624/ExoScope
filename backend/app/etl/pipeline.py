@@ -16,8 +16,7 @@ from app.etl.transform import transform
 
 
 class ExoplanetETL:
-
-    def __init__(self, session: Session , config: ETLConfig):
+    def __init__(self, session: Session, config: ETLConfig):
         self.session = session
         self.config = config
         self.logger = logging.getLogger("exoplanet_etl")
@@ -27,7 +26,7 @@ class ExoplanetETL:
         metrics.started_at = datetime.now(timezone.utc)
         self.logger.info("ETL started")
 
-        #EXTRACT
+        # EXTRACT
         metrics.extract_start = datetime.now(timezone.utc)
         try:
             self.logger.info(f"Extracting data (limit={self.config.limit})")
@@ -41,7 +40,7 @@ class ExoplanetETL:
             return ETLReport.from_metrics(metrics)
         metrics.extract_end = datetime.now(timezone.utc)
 
-        #TRANSFORM
+        # TRANSFORM
         metrics.transform_start = datetime.now(timezone.utc)
         try:
             self.logger.info("Transforming data")
@@ -55,7 +54,7 @@ class ExoplanetETL:
             return ETLReport.from_metrics(metrics)
         metrics.transform_end = datetime.now(timezone.utc)
 
-        #ENRICH
+        # ENRICH
         try:
             self.logger.info("Enriching data")
             planets = enrich(planets)
@@ -65,7 +64,7 @@ class ExoplanetETL:
             metrics.finished_at = datetime.now(timezone.utc)
             return ETLReport.from_metrics(metrics)
 
-        #LOAD
+        # LOAD
         if not self.config.dry_run:
             metrics.load_start = datetime.now(timezone.utc)
             try:
@@ -82,14 +81,17 @@ class ExoplanetETL:
             self.logger.info("Dry run enabled, skipping load step")
             metrics.load_result = LoadResult()
 
-        #END
+        # END
         metrics.finished_at = datetime.now(timezone.utc)
         self.logger.info("ETL finished")
         report = ETLReport.from_metrics(metrics)
         if self.config.persist_run:
             save_etl_run(self.session, report)
             self.logger.info("ETL run persisted to database")
-        if (not self.config.dry_run and metrics.load_result and (
-                metrics.load_result.inserted > 0 or metrics.load_result.updated > 0)):
+        if (
+            not self.config.dry_run
+            and metrics.load_result
+            and (metrics.load_result.inserted > 0 or metrics.load_result.updated > 0)
+        ):
             clear_cache_sync()
         return report

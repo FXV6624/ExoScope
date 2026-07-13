@@ -33,9 +33,11 @@ class ExoplanetRaw(BaseModel):
 class ExoplanetPublic(ExoplanetBase):
     id: uuid.UUID
 
+
 class ExoplanetsPublic(SQLModel):
     data: list[ExoplanetPublic]
     count: int
+
 
 class ExoplanetFilters(BaseModel):
     planet_name: str | None = None
@@ -69,9 +71,11 @@ class CompositionResult(BaseModel):
     composition: PlanetComposition
     confidence: float
 
+
 class HabitabilityResult(BaseModel):
     score: float
     confidence: float
+
 
 class SummaryStats(BaseModel):
     average: float | None = None
@@ -82,6 +86,7 @@ class SummaryStats(BaseModel):
 class HabitabilityStats(SummaryStats):
     average_confidence: float | None = None
     potentially_habitable: int = 0
+
 
 class CompositionStats(BaseModel):
     by_composition: dict[PlanetComposition, int]

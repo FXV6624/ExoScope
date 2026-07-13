@@ -13,6 +13,7 @@ from app.etl.report import ETLReport
 def get_datetime_utc() -> datetime:
     return datetime.now(timezone.utc)
 
+
 # Shared properties
 class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
@@ -50,6 +51,7 @@ class Item(ItemBase, table=True):
     )
     owner: User | None = Relationship(back_populates="items")
 
+
 class ExoplanetBase(SQLModel):
     planet_name: str
     host_star: str | None = None
@@ -71,7 +73,10 @@ class ExoplanetBase(SQLModel):
     distance_from_earth: float | None = None
     system_planet_count: int | None = None
     system_star_count: int | None = None
-    composition: PlanetComposition | None = Field(default=None,sa_column=Column(String, nullable=True),)
+    composition: PlanetComposition | None = Field(
+        default=None,
+        sa_column=Column(String, nullable=True),
+    )
     composition_confidence: float | None = None
     habitability_score: float | None = None
     habitability_confidence: float | None = None
@@ -101,19 +106,15 @@ class ETLRun(SQLModel, table=True):
     @classmethod
     def create(cls, report: ETLReport):
         return cls(
-        started_at=report.started_at,
-        finished_at=report.finished_at,
-
-        extracted=report.extracted,
-        transformed=report.transformed,
-
-        load_result=report.load_result.model_dump(),
-
-        extract_time=report.extract_time,
-        transform_time=report.transform_time,
-        load_time=report.load_time,
-        total_time=report.duration_seconds,
-
-        success=not report.errors,
-        errors=" | ".join(report.errors),
-    )
+            started_at=report.started_at,
+            finished_at=report.finished_at,
+            extracted=report.extracted,
+            transformed=report.transformed,
+            load_result=report.load_result.model_dump(),
+            extract_time=report.extract_time,
+            transform_time=report.transform_time,
+            load_time=report.load_time,
+            total_time=report.duration_seconds,
+            success=not report.errors,
+            errors=" | ".join(report.errors),
+        )

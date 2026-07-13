@@ -14,6 +14,7 @@ class ClassificationThreshold:
     radius_confidence: float
     density_confidence: float
 
+
 PLANET_CLASSIFICATIONS = (
     ClassificationThreshold(
         composition=PlanetComposition.ROCKY,
@@ -52,6 +53,7 @@ PLANET_CLASSIFICATIONS = (
     ),
 )
 
+
 @dataclass(frozen=True, slots=True)
 class HabitabilityWeights:
     equilibrium_temperature: float
@@ -61,6 +63,7 @@ class HabitabilityWeights:
     stellar_age: float
     stellar_mass: float
     orbital_eccentricity: float
+
 
 WEIGHTS = HabitabilityWeights(
     equilibrium_temperature=0.30,
@@ -79,6 +82,7 @@ class HabitabilityCriterion:
     optimum: float
     sigma: float
     weight: float
+
 
 CRITERIA = (
     HabitabilityCriterion(

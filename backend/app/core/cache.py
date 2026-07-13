@@ -36,5 +36,6 @@ async def clear_cache() -> None:
     async for key in redis.scan_iter("exoplanets-cache*"):
         await redis.delete(key)
 
+
 def clear_cache_sync() -> None:
     asyncio.run(clear_cache())

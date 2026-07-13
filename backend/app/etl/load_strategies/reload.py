@@ -9,17 +9,17 @@ from .statement import BATCH_SIZE, build_insert_stmt
 
 
 class ReloadLoadStrategy(LoadStrategy):
-
     def load(self, session: Session, planets: list[Exoplanet]) -> LoadResult:
-
         session.exec(delete(Exoplanet))
         session.flush()
 
         for i in range(0, len(planets), BATCH_SIZE):
-            batch = planets[i:i + BATCH_SIZE]
+            batch = planets[i : i + BATCH_SIZE]
             stmt = build_insert_stmt(batch)
             session.exec(stmt)
 
         session.commit()
 
-        return LoadResult(attempted=len(planets), inserted=len(planets), updated=0, skipped=0)
+        return LoadResult(
+            attempted=len(planets), inserted=len(planets), updated=0, skipped=0
+        )
