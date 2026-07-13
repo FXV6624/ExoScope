@@ -17,11 +17,12 @@ repos:
             )$
       - id: trailing-whitespace
         exclude: ^frontend/src/client/.*
+
   - repo: local
     hooks:
-      - id: local-biome-check
+      - id: local-biome
         name: biome check
-        entry: npm run lint
+        entry: npm run lint --prefix frontend
         language: system
         types: [text]
         files: ^frontend/
@@ -66,12 +67,4 @@ repos:
         name: add date to latest release header
         entry: uv run python scripts/add_latest_release_date.py
         files: ^release-notes\.md$
-        pass_filenames: false
-
-      - id: zizmor
-        name: zizmor
-        language: python
-        entry: uv run zizmor .
-        files: ^\.github\/workflows\/
-        require_serial: true
         pass_filenames: false

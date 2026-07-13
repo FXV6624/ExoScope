@@ -9,7 +9,6 @@ from tests.factories import make_exoplanet_model
 
 
 class TestInsertLoadStrategy:
-
     def _make_session(self, inserted_ids=None):
         session = MagicMock()
         result_mock = MagicMock()
@@ -42,7 +41,11 @@ class TestInsertLoadStrategy:
         assert isinstance(result, LoadResult)
 
     def test_attempted_equals_input_length(self):
-        planets = [make_exoplanet_model("A"), make_exoplanet_model("B"), make_exoplanet_model("C")]
+        planets = [
+            make_exoplanet_model("A"),
+            make_exoplanet_model("B"),
+            make_exoplanet_model("C"),
+        ]
         ids = [uuid.uuid4(), uuid.uuid4()]  # 2 inserted, 1 skipped
         session = self._make_session(inserted_ids=ids)
 

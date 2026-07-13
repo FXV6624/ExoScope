@@ -7,7 +7,6 @@ from tests.factories import make_exoplanet_raw
 
 
 class TestTransform:
-
     def test_valid_row_produces_exoplanet_base(self):
         raw = make_exoplanet_raw()
         result = transform([raw])

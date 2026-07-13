@@ -1,12 +1,10 @@
 """Unit tests for ETL build_insert_stmt helper."""
 
-
 from app.etl.load_strategies.statement import build_insert_stmt
 from tests.factories import make_exoplanet_model
 
 
 class TestBuildInsertStmt:
-
     def test_returns_insert_construct(self):
         planets = [make_exoplanet_model()]
         stmt = build_insert_stmt(planets)

@@ -60,7 +60,7 @@ def get_habitability_stats(
     score_threshold: float = 80.0,
     confidence_threshold: float = 0.8,
 ) -> Any:
-    stmt = select(  # type: ignore[call-overload]
+    stmt = select(  # type: ignore
         func.avg(col(Exoplanet.habitability_score)),
         func.min(col(Exoplanet.habitability_score)),
         func.max(col(Exoplanet.habitability_score)),

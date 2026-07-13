@@ -1,6 +1,6 @@
 import uuid
 
-from sqlmodel import Session
+from sqlmodel import Session, col
 
 from app.models import Item, User
 from app.schemas.item import ItemCreate, ItemUpdate
@@ -15,8 +15,6 @@ def get_items(
     if user.is_superuser:
         query = session.query(Item)
     else:
-        from sqlmodel import col
-
         query = session.query(Item).filter(col(Item.owner_id) == user.id)
 
     count: int = query.count()

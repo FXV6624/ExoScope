@@ -57,6 +57,135 @@ export const Body_login_login_access_tokenSchema = {
     title: 'Body_login-login_access_token'
 } as const;
 
+export const CompletenessStatsSchema = {
+    properties: {
+        host_star: {
+            type: 'number',
+            title: 'Host Star'
+        },
+        discovery_year: {
+            type: 'number',
+            title: 'Discovery Year'
+        },
+        discovery_method: {
+            type: 'number',
+            title: 'Discovery Method'
+        },
+        planet_radius: {
+            type: 'number',
+            title: 'Planet Radius'
+        },
+        planet_mass: {
+            type: 'number',
+            title: 'Planet Mass'
+        },
+        planet_density: {
+            type: 'number',
+            title: 'Planet Density'
+        },
+        equilibrium_temperature: {
+            type: 'number',
+            title: 'Equilibrium Temperature'
+        },
+        incident_flux: {
+            type: 'number',
+            title: 'Incident Flux'
+        },
+        orbital_period: {
+            type: 'number',
+            title: 'Orbital Period'
+        },
+        semi_major_axis: {
+            type: 'number',
+            title: 'Semi Major Axis'
+        },
+        orbital_eccentricity: {
+            type: 'number',
+            title: 'Orbital Eccentricity'
+        },
+        stellar_effective_temperature: {
+            type: 'number',
+            title: 'Stellar Effective Temperature'
+        },
+        stellar_radius: {
+            type: 'number',
+            title: 'Stellar Radius'
+        },
+        stellar_mass: {
+            type: 'number',
+            title: 'Stellar Mass'
+        },
+        stellar_luminosity: {
+            type: 'number',
+            title: 'Stellar Luminosity'
+        },
+        stellar_age: {
+            type: 'number',
+            title: 'Stellar Age'
+        },
+        distance_from_earth: {
+            type: 'number',
+            title: 'Distance From Earth'
+        },
+        system_planet_count: {
+            type: 'number',
+            title: 'System Planet Count'
+        },
+        system_star_count: {
+            type: 'number',
+            title: 'System Star Count'
+        },
+        composition: {
+            type: 'number',
+            title: 'Composition'
+        },
+        composition_confidence: {
+            type: 'number',
+            title: 'Composition Confidence'
+        },
+        habitability_score: {
+            type: 'number',
+            title: 'Habitability Score'
+        },
+        habitability_confidence: {
+            type: 'number',
+            title: 'Habitability Confidence'
+        }
+    },
+    type: 'object',
+    required: ['host_star', 'discovery_year', 'discovery_method', 'planet_radius', 'planet_mass', 'planet_density', 'equilibrium_temperature', 'incident_flux', 'orbital_period', 'semi_major_axis', 'orbital_eccentricity', 'stellar_effective_temperature', 'stellar_radius', 'stellar_mass', 'stellar_luminosity', 'stellar_age', 'distance_from_earth', 'system_planet_count', 'system_star_count', 'composition', 'composition_confidence', 'habitability_score', 'habitability_confidence'],
+    title: 'CompletenessStats'
+} as const;
+
+export const CompositionStatsSchema = {
+    properties: {
+        by_composition: {
+            additionalProperties: {
+                type: 'integer'
+            },
+            propertyNames: {
+                '$ref': '#/components/schemas/PlanetComposition'
+            },
+            type: 'object',
+            title: 'By Composition'
+        },
+        average_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Average Confidence'
+        }
+    },
+    type: 'object',
+    required: ['by_composition'],
+    title: 'CompositionStats'
+} as const;
+
 export const ETLConfigSchema = {
     properties: {
         limit: {
@@ -306,6 +435,49 @@ export const ExoplanetPublicSchema = {
             ],
             title: 'System Star Count'
         },
+        composition: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/PlanetComposition'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        composition_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Composition Confidence'
+        },
+        habitability_score: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Habitability Score'
+        },
+        habitability_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Habitability Confidence'
+        },
         id: {
             type: 'string',
             format: 'uuid',
@@ -336,10 +508,37 @@ export const ExoplanetStatsSchema = {
             },
             type: 'object',
             title: 'By Decade'
+        },
+        composition: {
+            '$ref': '#/components/schemas/CompositionStats'
+        },
+        habitability: {
+            '$ref': '#/components/schemas/HabitabilityStats'
+        },
+        radius: {
+            '$ref': '#/components/schemas/SummaryStats'
+        },
+        mass: {
+            '$ref': '#/components/schemas/SummaryStats'
+        },
+        density: {
+            '$ref': '#/components/schemas/SummaryStats'
+        },
+        equilibrium_temperature: {
+            '$ref': '#/components/schemas/SummaryStats'
+        },
+        orbital_period: {
+            '$ref': '#/components/schemas/SummaryStats'
+        },
+        distance: {
+            '$ref': '#/components/schemas/SummaryStats'
+        },
+        completeness: {
+            '$ref': '#/components/schemas/CompletenessStats'
         }
     },
     type: 'object',
-    required: ['total', 'by_method', 'by_decade'],
+    required: ['total', 'by_method', 'by_decade', 'composition', 'habitability', 'radius', 'mass', 'density', 'equilibrium_temperature', 'orbital_period', 'distance', 'completeness'],
     title: 'ExoplanetStats'
 } as const;
 
@@ -374,6 +573,62 @@ export const HTTPValidationErrorSchema = {
     },
     type: 'object',
     title: 'HTTPValidationError'
+} as const;
+
+export const HabitabilityStatsSchema = {
+    properties: {
+        average: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Average'
+        },
+        minimum: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Minimum'
+        },
+        maximum: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Maximum'
+        },
+        average_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Average Confidence'
+        },
+        potentially_habitable: {
+            type: 'integer',
+            title: 'Potentially Habitable',
+            default: 0
+        }
+    },
+    type: 'object',
+    title: 'HabitabilityStats'
 } as const;
 
 export const ItemCreateSchema = {
@@ -537,6 +792,12 @@ export const NewPasswordSchema = {
     title: 'NewPassword'
 } as const;
 
+export const PlanetCompositionSchema = {
+    type: 'string',
+    enum: ['Rocky', 'Super Earth', 'Mini Neptune', 'Ice Giant', 'Gas Giant', 'Unknown'],
+    title: 'PlanetComposition'
+} as const;
+
 export const PrivateUserCreateSchema = {
     properties: {
         email: {
@@ -560,6 +821,46 @@ export const PrivateUserCreateSchema = {
     type: 'object',
     required: ['email', 'password', 'full_name'],
     title: 'PrivateUserCreate'
+} as const;
+
+export const SummaryStatsSchema = {
+    properties: {
+        average: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Average'
+        },
+        minimum: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Minimum'
+        },
+        maximum: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Maximum'
+        }
+    },
+    type: 'object',
+    title: 'SummaryStats'
 } as const;
 
 export const TokenSchema = {

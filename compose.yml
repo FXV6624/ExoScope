@@ -11,7 +11,7 @@ services:
       timeout: 10s
     volumes:
       - app-db-data:/var/lib/postgresql/data/pgdata
-    env_file: 
+    env_file:
       - .env
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata

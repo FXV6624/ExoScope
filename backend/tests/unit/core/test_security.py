@@ -15,7 +15,6 @@ from app.core.security import (
 
 
 class TestCreateAccessToken:
-
     def test_returns_string(self):
         token = create_access_token("user-123", timedelta(minutes=30))
         assert isinstance(token, str)
@@ -42,6 +41,7 @@ class TestCreateAccessToken:
 
     def test_subject_coerced_to_string(self):
         import uuid
+
         uid = uuid.uuid4()
         token = create_access_token(uid, timedelta(minutes=30))
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
@@ -49,7 +49,6 @@ class TestCreateAccessToken:
 
 
 class TestPasswordHashing:
-
     def test_hash_is_not_plaintext(self):
         hashed = get_password_hash("mysecretpassword")
         assert hashed != "mysecretpassword"

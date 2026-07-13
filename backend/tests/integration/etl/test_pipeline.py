@@ -31,8 +31,9 @@ def clean_tables(db: Session):
 
 
 class TestExoplanetETLPipeline:
-
-    def _run_with_mock_extract(self, db: Session, config: ETLConfig, data=None) -> ETLReport:
+    def _run_with_mock_extract(
+        self, db: Session, config: ETLConfig, data=None
+    ) -> ETLReport:
         if data is None:
             data = NASA_ROWS
         with patch("app.etl.pipeline.extract", return_value=data):
@@ -40,14 +41,18 @@ class TestExoplanetETLPipeline:
             return etl.run()
 
     def test_full_pipeline_succeeds(self, db: Session):
-        config = ETLConfig(limit=3, dry_run=False, persist_run=False, load_mode=LoadMode.UPSERT)
+        config = ETLConfig(
+            limit=3, dry_run=False, persist_run=False, load_mode=LoadMode.UPSERT
+        )
         report = self._run_with_mock_extract(db, config)
         assert report.extracted == 3
         assert report.transformed == 3
         assert len(report.errors) == 0
 
     def test_planets_persisted_to_db(self, db: Session):
-        config = ETLConfig(limit=3, dry_run=False, persist_run=False, load_mode=LoadMode.UPSERT)
+        config = ETLConfig(
+            limit=3, dry_run=False, persist_run=False, load_mode=LoadMode.UPSERT
+        )
         self._run_with_mock_extract(db, config)
 
         planets = db.exec(select(Exoplanet)).all()

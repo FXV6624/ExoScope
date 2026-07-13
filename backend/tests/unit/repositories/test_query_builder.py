@@ -1,12 +1,10 @@
 """Unit tests for ExoplanetQueryBuilder (no DB required)."""
 
-
 from app.repositories.exoplanet_query_builder import build_exoplanet_query
 from app.schemas.exoplanet import ExoplanetFilters
 
 
 class TestBuildExoplanetQuery:
-
     def test_no_filters_returns_base_select(self):
         filters = ExoplanetFilters()
         query = build_exoplanet_query(filters)

@@ -32,7 +32,6 @@ NASA_SAMPLE = [
 
 
 class TestExtract:
-
     def test_returns_list_of_exoplanet_raw(self):
         mock_response = MagicMock()
         mock_response.json.return_value = NASA_SAMPLE
@@ -50,7 +49,9 @@ class TestExtract:
         mock_response.json.return_value = []
         mock_response.raise_for_status = MagicMock()
 
-        with patch("app.etl.extract.requests.get", return_value=mock_response) as mock_get:
+        with patch(
+            "app.etl.extract.requests.get", return_value=mock_response
+        ) as mock_get:
             extract(limit=100)
             call_params = mock_get.call_args[1]["params"]
             assert "TOP 100" in call_params["query"]
@@ -60,13 +61,16 @@ class TestExtract:
         mock_response.json.return_value = []
         mock_response.raise_for_status = MagicMock()
 
-        with patch("app.etl.extract.requests.get", return_value=mock_response) as mock_get:
+        with patch(
+            "app.etl.extract.requests.get", return_value=mock_response
+        ) as mock_get:
             extract(limit=None)
             call_params = mock_get.call_args[1]["params"]
             assert "TOP" not in call_params["query"]
 
     def test_http_error_propagates(self):
         import requests
+
         mock_response = MagicMock()
         mock_response.raise_for_status.side_effect = requests.HTTPError("503")
 
@@ -92,7 +96,9 @@ class TestExtract:
         mock_response.json.return_value = []
         mock_response.raise_for_status = MagicMock()
 
-        with patch("app.etl.extract.requests.get", return_value=mock_response) as mock_get:
+        with patch(
+            "app.etl.extract.requests.get", return_value=mock_response
+        ) as mock_get:
             extract()
             call_params = mock_get.call_args[1]["params"]
             assert call_params["format"] == "json"

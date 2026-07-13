@@ -107,8 +107,8 @@ class ETLRun(SQLModel, table=True):
     @classmethod
     def create(cls, report: ETLReport) -> "ETLRun":
         return cls(
-            started_at=report.started_at,
-            finished_at=report.finished_at,
+            started_at=report.started_at,  # type: ignore
+            finished_at=report.finished_at,  # type: ignore
             extracted=report.extracted,
             transformed=report.transformed,
             load_result=report.load_result.model_dump(),

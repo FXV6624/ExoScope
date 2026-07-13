@@ -23,7 +23,6 @@ def _make_item(owner_id=None):
 
 
 class TestGetItems:
-
     def test_superuser_queries_all_items(self):
         user = _make_user(is_superuser=True)
         session = MagicMock()
@@ -51,7 +50,6 @@ class TestGetItems:
 
 
 class TestGetItem:
-
     def test_item_not_found_returns_not_found(self):
         session = MagicMock()
         session.get.return_value = None
@@ -89,14 +87,15 @@ class TestGetItem:
 
 
 class TestCreateItem:
-
     def test_creates_and_returns_item(self):
         user = _make_user()
         session = MagicMock()
         item_in = MagicMock()
         item_in.model_validate = MagicMock()
 
-        with patch.object(Item, "model_validate", return_value=_make_item(owner_id=user.id)):
+        with patch.object(
+            Item, "model_validate", return_value=_make_item(owner_id=user.id)
+        ):
             item_service.create_item(session, item_in, user)
             session.add.assert_called_once()
             session.commit.assert_called_once()
@@ -104,7 +103,6 @@ class TestCreateItem:
 
 
 class TestUpdateItem:
-
     def test_updates_and_returns_item(self):
         session = MagicMock()
         item = _make_item()
@@ -119,7 +117,6 @@ class TestUpdateItem:
 
 
 class TestDeleteItem:
-
     def test_deletes_and_commits(self):
         session = MagicMock()
         item = _make_item()

@@ -25,7 +25,6 @@ def test_user(db: Session) -> User:
 
 
 class TestItemCRUD:
-
     def test_create_item(self, db: Session, test_user: User):
         item = Item(title="Test Item", description="Desc", owner_id=test_user.id)
         db.add(item)

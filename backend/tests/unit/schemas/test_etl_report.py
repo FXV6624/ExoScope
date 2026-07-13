@@ -11,7 +11,6 @@ from tests.factories import make_etl_metrics, make_load_result
 
 
 class TestETLReport:
-
     def test_from_metrics_basic(self):
         metrics = make_etl_metrics(extracted=10, transformed=9)
         report = ETLReport.from_metrics(metrics)
@@ -49,13 +48,17 @@ class TestETLReport:
 
     def test_load_result_propagated(self):
         metrics = make_etl_metrics()
-        metrics.load_result = make_load_result(attempted=9, inserted=7, updated=2, skipped=0)
+        metrics.load_result = make_load_result(
+            attempted=9, inserted=7, updated=2, skipped=0
+        )
         report = ETLReport.from_metrics(metrics)
         assert report.load_result.inserted == 7
         assert report.load_result.updated == 2
 
     def test_default_duration_zero_when_no_timestamps(self):
-        metrics = ETLMetrics(extracted=0, transformed=0, load_result=LoadResult(), errors=[])
+        metrics = ETLMetrics(
+            extracted=0, transformed=0, load_result=LoadResult(), errors=[]
+        )
         report = ETLReport.from_metrics(metrics)
         assert report.duration_seconds == 0.0
         assert report.extract_time == 0.0

@@ -13,7 +13,6 @@ def _make_public(name: str = "Kepler-22b") -> ExoplanetPublic:
 
 
 class TestExoplanetsPublic:
-
     def test_valid_creation_empty_list(self):
         ep = ExoplanetsPublic(data=[], count=0)
         assert ep.data == []

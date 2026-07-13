@@ -8,7 +8,6 @@ from app.etl.enums import LoadMode
 
 
 class TestETLConfig:
-
     def test_defaults(self):
         config = ETLConfig()
         assert config.limit is None

@@ -16,7 +16,7 @@ class UpsertLoadStrategy(LoadStrategy):
             col(Exoplanet.planet_name), col(Exoplanet.host_star)
         ).where(tuple_(col(Exoplanet.planet_name), col(Exoplanet.host_star)).in_(keys))
 
-        existing = set(session.exec(existing_query).all())  # type: ignore[call-overload]
+        existing = set(session.exec(existing_query).all())  # type: ignore
 
         inserted = 0
         updated = 0

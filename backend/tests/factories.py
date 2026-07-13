@@ -22,6 +22,7 @@ from app.schemas.user import UserCreate
 # ExoplanetRaw
 # ---------------------------------------------------------------------------
 
+
 def make_exoplanet_raw(
     pl_name: str = "Kepler-22b",
     hostname: str | None = "Kepler-22",
@@ -47,6 +48,7 @@ def make_exoplanet_raw(
 # ---------------------------------------------------------------------------
 # ExoplanetBase / Exoplanet (modelo DB)
 # ---------------------------------------------------------------------------
+
 
 def make_exoplanet_base(
     planet_name: str = "Kepler-22b",
@@ -97,6 +99,7 @@ def make_exoplanet_model(
 # ExoplanetFilters
 # ---------------------------------------------------------------------------
 
+
 def make_exoplanet_filters(**kwargs) -> ExoplanetFilters:
     return ExoplanetFilters(**kwargs)
 
@@ -104,6 +107,7 @@ def make_exoplanet_filters(**kwargs) -> ExoplanetFilters:
 # ---------------------------------------------------------------------------
 # User / UserCreate
 # ---------------------------------------------------------------------------
+
 
 def make_user_create(
     email: str = "test@example.com",
@@ -140,6 +144,7 @@ def make_user_model(
 # Item / ItemCreate
 # ---------------------------------------------------------------------------
 
+
 def make_item_create(
     title: str = "Test Item",
     description: str | None = "A test item",
@@ -164,6 +169,7 @@ def make_item_model(
 # LoadResult
 # ---------------------------------------------------------------------------
 
+
 def make_load_result(
     attempted: int = 5,
     inserted: int = 3,
@@ -181,6 +187,7 @@ def make_load_result(
 # ---------------------------------------------------------------------------
 # ETLMetrics / ETLReport
 # ---------------------------------------------------------------------------
+
 
 def make_etl_metrics(
     extracted: int = 10,
@@ -210,13 +217,16 @@ def make_etl_report(
     transformed: int = 9,
     errors: list[str] | None = None,
 ) -> ETLReport:
-    metrics = make_etl_metrics(extracted=extracted, transformed=transformed, errors=errors)
+    metrics = make_etl_metrics(
+        extracted=extracted, transformed=transformed, errors=errors
+    )
     return ETLReport.from_metrics(metrics)
 
 
 # ---------------------------------------------------------------------------
 # ETLConfig
 # ---------------------------------------------------------------------------
+
 
 def make_etl_config(
     limit: int | None = 100,

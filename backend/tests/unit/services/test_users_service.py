@@ -18,11 +18,14 @@ def _make_user(email="test@example.com", active=True, hashed="$argon2id$fake"):
 
 
 class TestAuthenticateUser:
-
     def test_returns_none_when_user_not_found(self):
         session = MagicMock()
-        with patch("app.services.users.get_user_by_email", return_value=None), \
-             patch("app.services.users.verify_password", return_value=(False, None)) as mock_verify:
+        with (
+            patch("app.services.users.get_user_by_email", return_value=None),
+            patch(
+                "app.services.users.verify_password", return_value=(False, None)
+            ) as mock_verify,
+        ):
             result = user_service.authenticate_user(session, "noone@x.com", "password")
             assert result is None
             # Timing attack prevention: verify_password MUST be called even when user not found
@@ -31,16 +34,20 @@ class TestAuthenticateUser:
     def test_returns_none_when_wrong_password(self):
         user = _make_user()
         session = MagicMock()
-        with patch("app.services.users.get_user_by_email", return_value=user), \
-             patch("app.services.users.verify_password", return_value=(False, None)):
+        with (
+            patch("app.services.users.get_user_by_email", return_value=user),
+            patch("app.services.users.verify_password", return_value=(False, None)),
+        ):
             result = user_service.authenticate_user(session, user.email, "wrongpass")
             assert result is None
 
     def test_returns_user_when_correct_password(self):
         user = _make_user()
         session = MagicMock()
-        with patch("app.services.users.get_user_by_email", return_value=user), \
-             patch("app.services.users.verify_password", return_value=(True, None)):
+        with (
+            patch("app.services.users.get_user_by_email", return_value=user),
+            patch("app.services.users.verify_password", return_value=(True, None)),
+        ):
             result = user_service.authenticate_user(session, user.email, "correctpass")
             assert result is user
 
@@ -48,39 +55,44 @@ class TestAuthenticateUser:
         user = _make_user()
         session = MagicMock()
         new_hash = "$argon2id$new_hash"
-        with patch("app.services.users.get_user_by_email", return_value=user), \
-             patch("app.services.users.verify_password", return_value=(True, new_hash)), \
-             patch("app.services.users.update_user") as mock_update:
+        with (
+            patch("app.services.users.get_user_by_email", return_value=user),
+            patch("app.services.users.verify_password", return_value=(True, new_hash)),
+            patch("app.services.users.update_user") as mock_update,
+        ):
             result = user_service.authenticate_user(session, user.email, "pass")
             mock_update.assert_called_once()
             assert result is user
 
 
 class TestGetUser:
-
     def test_delegates_to_repository(self):
         session = MagicMock()
-        with patch("app.services.users.get_user_by_email", return_value=None) as mock_get:
+        with patch(
+            "app.services.users.get_user_by_email", return_value=None
+        ) as mock_get:
             result = user_service.get_user(session, "x@x.com")
             mock_get.assert_called_once_with(session, "x@x.com")
             assert result is None
 
 
 class TestUpdatePassword:
-
     def test_hashes_and_updates(self):
         user = _make_user()
         session = MagicMock()
         new_hash = "$argon2id$newhash"
-        with patch("app.services.users.get_password_hash", return_value=new_hash) as mock_hash, \
-             patch("app.services.users.update_user", return_value=user) as mock_update:
+        with (
+            patch(
+                "app.services.users.get_password_hash", return_value=new_hash
+            ) as mock_hash,
+            patch("app.services.users.update_user", return_value=user) as mock_update,
+        ):
             user_service.update_password(session, user, "newpassword123")
             mock_hash.assert_called_once_with("newpassword123")
             mock_update.assert_called_once()
 
 
 class TestDeleteUser:
-
     def test_deletes_and_commits(self):
         user = _make_user()
         session = MagicMock()

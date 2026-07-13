@@ -10,7 +10,6 @@ from app.etl.load_strategies.upsert import UpsertLoadStrategy
 
 
 class TestGetLoadStrategy:
-
     def test_upsert_returns_upsert_strategy(self):
         strategy = get_load_strategy(LoadMode.UPSERT)
         assert isinstance(strategy, UpsertLoadStrategy)

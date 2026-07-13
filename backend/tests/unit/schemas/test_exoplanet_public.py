@@ -10,7 +10,6 @@ from app.schemas.exoplanet import ExoplanetPublic
 
 
 class TestExoplanetPublic:
-
     def test_valid_creation(self):
         planet_id = uuid.uuid4()
         ep = ExoplanetPublic(

@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { EtlRunExoplanetEtlData, EtlRunExoplanetEtlResponse, ExoplanetsReadExoplanetsData, ExoplanetsReadExoplanetsResponse, ExoplanetsGetExoplanetStatsResponse, ExoplanetsReadExoplanetByIdData, ExoplanetsReadExoplanetByIdResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlData, LoginRecoverPasswordHtmlResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserData, UsersReadUserResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { EtlRunExoplanetEtlData, EtlRunExoplanetEtlResponse, ExoplanetsReadExoplanetsData, ExoplanetsReadExoplanetsResponse, ExoplanetsGetExoplanetStatsData, ExoplanetsGetExoplanetStatsResponse, ExoplanetsReadExoplanetByIdData, ExoplanetsReadExoplanetByIdResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlData, LoginRecoverPasswordHtmlResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserData, UsersReadUserResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class EtlService {
     /**
@@ -46,6 +46,19 @@ export class ExoplanetsService {
      * @param data.maxPlanetRadius
      * @param data.minPlanetMass
      * @param data.maxPlanetMass
+     * @param data.composition
+     * @param data.minCompositionConfidence
+     * @param data.minHabitabilityScore
+     * @param data.maxHabitabilityScore
+     * @param data.minHabitabilityConfidence
+     * @param data.minDistanceFromEarth
+     * @param data.maxDistanceFromEarth
+     * @param data.minEquilibriumTemperature
+     * @param data.maxEquilibriumTemperature
+     * @param data.systemPlanetCount
+     * @param data.minSystemPlanetCount
+     * @param data.minOrbitalEccentricity
+     * @param data.maxOrbitalEccentricity
      * @returns ExoplanetsPublic Successful Response
      * @throws ApiError
      */
@@ -67,7 +80,20 @@ export class ExoplanetsService {
                 min_planet_radius: data.minPlanetRadius,
                 max_planet_radius: data.maxPlanetRadius,
                 min_planet_mass: data.minPlanetMass,
-                max_planet_mass: data.maxPlanetMass
+                max_planet_mass: data.maxPlanetMass,
+                composition: data.composition,
+                min_composition_confidence: data.minCompositionConfidence,
+                min_habitability_score: data.minHabitabilityScore,
+                max_habitability_score: data.maxHabitabilityScore,
+                min_habitability_confidence: data.minHabitabilityConfidence,
+                min_distance_from_earth: data.minDistanceFromEarth,
+                max_distance_from_earth: data.maxDistanceFromEarth,
+                min_equilibrium_temperature: data.minEquilibriumTemperature,
+                max_equilibrium_temperature: data.maxEquilibriumTemperature,
+                system_planet_count: data.systemPlanetCount,
+                min_system_planet_count: data.minSystemPlanetCount,
+                min_orbital_eccentricity: data.minOrbitalEccentricity,
+                max_orbital_eccentricity: data.maxOrbitalEccentricity
             },
             errors: {
                 422: 'Validation Error'
@@ -78,13 +104,23 @@ export class ExoplanetsService {
     /**
      * Get Exoplanet Stats
      * Retrieve statistics about the exoplanets dataset.
+     * @param data The data for the request.
+     * @param data.habitabilityScoreThreshold
+     * @param data.habitabilityConfidenceThreshold
      * @returns ExoplanetStats Successful Response
      * @throws ApiError
      */
-    public static getExoplanetStats(): CancelablePromise<ExoplanetsGetExoplanetStatsResponse> {
+    public static getExoplanetStats(data: ExoplanetsGetExoplanetStatsData = {}): CancelablePromise<ExoplanetsGetExoplanetStatsResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/exoplanets/stats'
+            url: '/api/v1/exoplanets/stats',
+            query: {
+                habitability_score_threshold: data.habitabilityScoreThreshold,
+                habitability_confidence_threshold: data.habitabilityConfidenceThreshold
+            },
+            errors: {
+                422: 'Validation Error'
+            }
         });
     }
     

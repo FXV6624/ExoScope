@@ -23,7 +23,6 @@ def _make_metrics_with_times(total_s=10, extract_s=3, transform_s=4, load_s=3):
 
 
 class TestETLMetrics:
-
     def test_total_duration(self):
         m = _make_metrics_with_times(total_s=10)
         assert m.total_duration() == pytest.approx(10.0, abs=0.01)

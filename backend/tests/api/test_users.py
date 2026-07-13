@@ -15,14 +15,18 @@ from app.schemas.user import UserCreate
 API = settings.API_V1_STR
 
 
-def _create_test_user(db: Session, email: str, password: str = "password12345", is_superuser: bool = False) -> User:
+def _create_test_user(
+    db: Session, email: str, password: str = "password12345", is_superuser: bool = False
+) -> User:
     uc = UserCreate(email=email, password=password, is_superuser=is_superuser)
     hashed = get_password_hash(password)
     return create_user(session=db, user_create=uc, hashed_password=hashed)
 
 
 def _get_token(client: TestClient, email: str, password: str) -> dict[str, str]:
-    response = client.post(f"{API}/login/access-token", data={"username": email, "password": password})
+    response = client.post(
+        f"{API}/login/access-token", data={"username": email, "password": password}
+    )
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 
@@ -39,15 +43,18 @@ def test_user(db: Session):
 
 
 class TestGetUsers:
-
-    def test_superuser_can_list_users(self, client: TestClient, superuser_token_headers: dict):
+    def test_superuser_can_list_users(
+        self, client: TestClient, superuser_token_headers: dict
+    ):
         response = client.get(f"{API}/users/", headers=superuser_token_headers)
         assert response.status_code == 200
         body = response.json()
         assert "data" in body
         assert "count" in body
 
-    def test_normal_user_cannot_list_users(self, client: TestClient, db: Session, test_user):
+    def test_normal_user_cannot_list_users(
+        self, client: TestClient, db: Session, test_user
+    ):
         user, password = test_user
         headers = _get_token(client, user.email, password)
         response = client.get(f"{API}/users/", headers=headers)
@@ -59,8 +66,9 @@ class TestGetUsers:
 
 
 class TestGetMe:
-
-    def test_get_me_returns_current_user(self, client: TestClient, superuser_token_headers: dict):
+    def test_get_me_returns_current_user(
+        self, client: TestClient, superuser_token_headers: dict
+    ):
         response = client.get(f"{API}/users/me", headers=superuser_token_headers)
         assert response.status_code == 200
         body = response.json()
@@ -72,17 +80,17 @@ class TestGetMe:
 
 
 class TestUpdateMe:
-
     def test_update_full_name(self, client: TestClient, db: Session, test_user):
         user, password = test_user
         headers = _get_token(client, user.email, password)
-        response = client.patch(f"{API}/users/me", json={"full_name": "Updated Name"}, headers=headers)
+        response = client.patch(
+            f"{API}/users/me", json={"full_name": "Updated Name"}, headers=headers
+        )
         assert response.status_code == 200
         assert response.json()["full_name"] == "Updated Name"
 
 
 class TestRegisterUser:
-
     def test_register_new_user(self, client: TestClient, db: Session):
         email = f"register-{uuid.uuid4().hex[:8]}@apitest.com"
         payload = {"email": email, "password": "strongpass123"}
@@ -107,7 +115,6 @@ class TestRegisterUser:
 
 
 class TestGetUserById:
-
     def test_user_can_get_own_profile(self, client: TestClient, db: Session, test_user):
         user, password = test_user
         headers = _get_token(client, user.email, password)
@@ -115,12 +122,16 @@ class TestGetUserById:
         assert response.status_code == 200
         assert response.json()["email"] == user.email
 
-    def test_superuser_can_get_any_user(self, client: TestClient, superuser_token_headers: dict, test_user):
+    def test_superuser_can_get_any_user(
+        self, client: TestClient, superuser_token_headers: dict, test_user
+    ):
         user, _ = test_user
         response = client.get(f"{API}/users/{user.id}", headers=superuser_token_headers)
         assert response.status_code == 200
 
-    def test_normal_user_cannot_get_other_user(self, client: TestClient, db: Session, test_user):
+    def test_normal_user_cannot_get_other_user(
+        self, client: TestClient, db: Session, test_user
+    ):
         user, password = test_user
         headers = _get_token(client, user.email, password)
         response = client.get(f"{API}/users/{uuid.uuid4()}", headers=headers)
@@ -128,15 +139,23 @@ class TestGetUserById:
 
 
 class TestDeleteUser:
-
-    def test_superuser_can_delete_user(self, client: TestClient, superuser_token_headers: dict, db: Session):
+    def test_superuser_can_delete_user(
+        self, client: TestClient, superuser_token_headers: dict, db: Session
+    ):
         email = f"todelete-{uuid.uuid4().hex[:8]}@apitest.com"
         user = _create_test_user(db, email)
-        response = client.delete(f"{API}/users/{user.id}", headers=superuser_token_headers)
+        response = client.delete(
+            f"{API}/users/{user.id}", headers=superuser_token_headers
+        )
         assert response.status_code == 200
 
-    def test_superuser_cannot_delete_themselves(self, client: TestClient, superuser_token_headers: dict, db: Session):
+    def test_superuser_cannot_delete_themselves(
+        self, client: TestClient, superuser_token_headers: dict, db: Session
+    ):
         from app.repositories.users import get_user_by_email
+
         superuser = get_user_by_email(db, settings.FIRST_SUPERUSER)
-        response = client.delete(f"{API}/users/{superuser.id}", headers=superuser_token_headers)
+        response = client.delete(
+            f"{API}/users/{superuser.id}", headers=superuser_token_headers
+        )
         assert response.status_code == 403

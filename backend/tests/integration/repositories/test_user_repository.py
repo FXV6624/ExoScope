@@ -24,7 +24,6 @@ def _make_user_create(email: str, password: str = "password123secure") -> UserCr
 
 
 class TestCreateUser:
-
     def test_creates_user_in_db(self, db: Session):
         user_create = _make_user_create("create@testdomain.com")
         hashed = get_password_hash(user_create.password)
@@ -54,7 +53,6 @@ class TestCreateUser:
 
 
 class TestGetUserByEmail:
-
     def test_returns_user_when_found(self, db: Session):
         user_create = _make_user_create("find@testdomain.com")
         hashed = get_password_hash(user_create.password)
@@ -79,7 +77,6 @@ class TestGetUserByEmail:
 
 
 class TestUpdateUser:
-
     def test_update_full_name(self, db: Session):
         user_create = _make_user_create("update@testdomain.com")
         hashed = get_password_hash(user_create.password)
