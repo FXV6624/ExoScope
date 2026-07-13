@@ -26,7 +26,9 @@ def read_items(
 # GET ITEM
 # -----------------------
 @router.get("/{item_id}", response_model=ItemPublic)
-def read_item(session: SessionDep, current_user: CurrentUser, item_id: uuid.UUID) -> Any:
+def read_item(
+    session: SessionDep, current_user: CurrentUser, item_id: uuid.UUID
+) -> Any:
     item, error = item_service.get_item(session, item_id, current_user)
 
     if error == "not_found":
@@ -42,7 +44,9 @@ def read_item(session: SessionDep, current_user: CurrentUser, item_id: uuid.UUID
 # CREATE ITEM
 # -----------------------
 @router.post("/", response_model=ItemPublic)
-def create_item(session: SessionDep, current_user: CurrentUser, item_in: ItemCreate) -> Any:
+def create_item(
+    session: SessionDep, current_user: CurrentUser, item_in: ItemCreate
+) -> Any:
     return item_service.create_item(session, item_in, current_user)
 
 
@@ -72,7 +76,9 @@ def update_item(
 # DELETE ITEM
 # -----------------------
 @router.delete("/{item_id}", response_model=Message)
-def delete_item(session: SessionDep, current_user: CurrentUser, item_id: uuid.UUID) -> Any:
+def delete_item(
+    session: SessionDep, current_user: CurrentUser, item_id: uuid.UUID
+) -> Any:
     item, error = item_service.get_item(session, item_id, current_user)
 
     if error:

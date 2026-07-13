@@ -10,11 +10,14 @@ from app.schemas.item import ItemCreate, ItemUpdate
 # -----------------------
 # GET ITEMS
 # -----------------------
-def get_items(session: Session, user: User, skip: int = 0, limit: int = 100) -> tuple[list[Item], int]:
+def get_items(
+    session: Session, user: User, skip: int = 0, limit: int = 100
+) -> tuple[list[Item], int]:
     if user.is_superuser:
         query = session.query(Item)
     else:
         from sqlmodel import col
+
         query = session.query(Item).filter(col(Item.owner_id) == user.id)
 
     count: int = query.count()
@@ -27,7 +30,9 @@ def get_items(session: Session, user: User, skip: int = 0, limit: int = 100) -> 
 # -----------------------
 # GET ITEM BY ID
 # -----------------------
-def get_item(session: Session, item_id: uuid.UUID, user: User) -> tuple[Item | None, str | None]:
+def get_item(
+    session: Session, item_id: uuid.UUID, user: User
+) -> tuple[Item | None, str | None]:
     item = session.get(Item, item_id)
 
     if not item:

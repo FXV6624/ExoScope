@@ -22,7 +22,9 @@ def get_exoplanets_with_filters(
     return data, count
 
 
-def get_exoplanets(session: Session, query: Any, skip: int, limit: int) -> list[Exoplanet]:
+def get_exoplanets(
+    session: Session, query: Any, skip: int, limit: int
+) -> list[Exoplanet]:
     """
     Return paginated exoplanets ordered by planet name.
     """

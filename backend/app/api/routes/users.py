@@ -108,9 +108,7 @@ def update_user_me(
 def update_password_me(
     session: SessionDep, body: UpdatePassword, current_user: CurrentUser
 ) -> Any:
-    verified, _ = verify_password(
-        body.current_password, current_user.hashed_password
-    )
+    verified, _ = verify_password(body.current_password, current_user.hashed_password)
 
     if not verified:
         raise HTTPException(status_code=400, detail="Incorrect password")
@@ -157,7 +155,9 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
 # GET BY ID
 # -----------------------
 @router.get("/{user_id}", response_model=UserPublic)
-def read_user(user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser) -> Any:
+def read_user(
+    user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser
+) -> Any:
     user = session.get(User, user_id)
 
     if not user:
@@ -204,7 +204,9 @@ def update_user(user_id: uuid.UUID, session: SessionDep, user_in: UserUpdate) ->
 # DELETE USER (admin)
 # -----------------------
 @router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
-def delete_user(session: SessionDep, current_user: CurrentUser, user_id: uuid.UUID) -> Any:
+def delete_user(
+    session: SessionDep, current_user: CurrentUser, user_id: uuid.UUID
+) -> Any:
     user = session.get(User, user_id)
 
     if not user:

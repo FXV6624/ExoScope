@@ -4,6 +4,7 @@ from app.schemas.exoplanet import ExoplanetRaw
 
 logger = logging.getLogger(__name__)
 
+
 def transform(data: list[ExoplanetRaw]) -> list[ExoplanetBase]:
     """
     Transform raw API data into validated internal model.

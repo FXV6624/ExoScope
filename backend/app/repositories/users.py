@@ -4,7 +4,9 @@ from app.models import User
 from app.schemas.user import UserCreate
 
 
-def create_user(session: Session, user_create: UserCreate, hashed_password: str) -> User:
+def create_user(
+    session: Session, user_create: UserCreate, hashed_password: str
+) -> User:
     db_obj = User.model_validate(
         user_create, update={"hashed_password": hashed_password}
     )

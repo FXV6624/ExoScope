@@ -12,9 +12,9 @@ class UpsertLoadStrategy(LoadStrategy):
     def load(self, session: Session, planets: list[Exoplanet]) -> LoadResult:
         keys = {(p.planet_name, p.host_star) for p in planets}
 
-        existing_query = select(col(Exoplanet.planet_name), col(Exoplanet.host_star)).where(
-            tuple_(col(Exoplanet.planet_name), col(Exoplanet.host_star)).in_(keys)
-        )
+        existing_query = select(
+            col(Exoplanet.planet_name), col(Exoplanet.host_star)
+        ).where(tuple_(col(Exoplanet.planet_name), col(Exoplanet.host_star)).in_(keys))
 
         existing = set(session.exec(existing_query).all())  # type: ignore[call-overload]
 

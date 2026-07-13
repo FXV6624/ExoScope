@@ -8,6 +8,7 @@ from app.etl.report import ETLReport
 
 logger = logging.getLogger(__name__)
 
+
 def run_etl(session: Session, config: ETLConfig = ETLConfig()) -> ETLReport:
     etl = ExoplanetETL(session=session, config=config)
     report = etl.run()

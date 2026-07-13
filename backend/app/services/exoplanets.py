@@ -118,7 +118,9 @@ def _format_by_decade(rows: Sequence[Any]) -> dict[str, int]:
     """
     Convert raw SQL tuples into JSON-friendly dict format.
     """
-    return {str(int(float(decade))): count for decade, count in rows if decade is not None}
+    return {
+        str(int(float(decade))): count for decade, count in rows if decade is not None
+    }
 
 
 def _build_completeness(session: Session) -> CompletenessStats:

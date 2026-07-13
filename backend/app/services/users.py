@@ -44,7 +44,9 @@ def get_user(session: Session, email: str) -> User | None:
 # -----------------------
 # CREATE USER
 # -----------------------
-def create_new_user(session: Session, user_in: UserCreate, hashed_password: str) -> User:
+def create_new_user(
+    session: Session, user_in: UserCreate, hashed_password: str
+) -> User:
     return create_user(
         session=session, user_create=user_in, hashed_password=hashed_password
     )
