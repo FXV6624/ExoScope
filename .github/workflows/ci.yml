@@ -20,7 +20,7 @@ jobs:
         run: docker compose build
 
       - name: Start services and wait for healthcheck
-        run: docker compose up -d --wait
+        run: docker compose up -d backend db redis proxy --wait
 
       - name: Run Backend tests
         run: docker compose exec -T backend pytest
