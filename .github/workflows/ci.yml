@@ -25,6 +25,7 @@ jobs:
       - name: Inspect backend logs on failure
         if: failure()
         run: |
+          docker compose logs db
           docker compose logs backend
           docker compose logs prestart
 
