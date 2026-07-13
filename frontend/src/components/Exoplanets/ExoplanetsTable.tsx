@@ -95,6 +95,7 @@ function NavButton({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={disabled}
       className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors disabled:cursor-not-allowed"
@@ -251,6 +252,7 @@ export function ExoplanetsTable({ data, onSelect }: ExoplanetsTableProps) {
         >
           {COLUMNS.map(({ key, label }) => (
             <button
+              type="button"
               key={key}
               onClick={() => handleSort(key)}
               className="flex items-center gap-1 px-4 py-2.5 text-left text-space-muted transition-colors hover:text-cyan-400"
@@ -280,8 +282,16 @@ export function ExoplanetsTable({ data, onSelect }: ExoplanetsTableProps) {
             pageData.map((planet, i) => (
               <div
                 key={planet.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => onSelect(planet.id)}
-                className="grid cursor-pointer items-center"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault(); // Evita el scroll automático al pulsar la barra espaciadora
+                    onSelect(planet.id);
+                  }
+                }}
+                className="grid cursor-pointer items-center outline-none focus-visible:ring-1 focus-visible:ring-cyan-500"
                 style={{
                   gridTemplateColumns: gridCols,
                   borderBottom:

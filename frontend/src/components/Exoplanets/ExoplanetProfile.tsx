@@ -27,7 +27,7 @@ export function ExoplanetProfile({ exoplanet, onBack }: ExoplanetProfileProps) {
     <div className="relative mx-auto max-w-6xl px-6 py-8 text-space-primary">
       {/* Breadcrumb */}
       <div className="mb-8 flex items-center gap-2 text-sm text-space-muted">
-        <button
+        <button type="button"
           onClick={onBack}
           className="flex items-center gap-1 transition-colors hover:text-cyan-400"
         >
@@ -118,7 +118,7 @@ export function ExoplanetProfile({ exoplanet, onBack }: ExoplanetProfileProps) {
             <StatCard
               icon={<MapPin size={16} />}
               label="Distance"
-              value={exoplanet.distance_parsecs || "N/A"}
+              value={exoplanet.distance_from_earth || "N/A"}
               unit="pc"
               accent
             />
