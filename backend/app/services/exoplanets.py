@@ -1,3 +1,6 @@
+import uuid
+from typing import Any
+
 from sqlmodel import Session
 
 from app.models import Exoplanet
@@ -26,7 +29,7 @@ from app.schemas.exoplanet import (
 
 def read_exoplanets_service(
     session: Session, filters: ExoplanetFilters, skip: int, limit: int
-) -> dict:
+) -> dict[str, Any]:
     """
     Orchestrates repository calls for filtered + paginated exoplanets.
     """
@@ -35,7 +38,7 @@ def read_exoplanets_service(
 
 
 def read_exoplanet_by_id_service(
-    session: Session, exoplanet_id: str
+    session: Session, exoplanet_id: uuid.UUID
 ) -> Exoplanet | None:
     """
     Retrieve a single exoplanet by its UUID.
@@ -43,7 +46,7 @@ def read_exoplanet_by_id_service(
     return get_exoplanet_by_id(session, exoplanet_id)
 
 
-def _summary(session, column) -> SummaryStats:
+def _summary(session: Session, column: Any) -> SummaryStats:
     avg_, min_, max_ = get_summary_stats(session, column)
 
     return SummaryStats(
@@ -54,7 +57,7 @@ def _summary(session, column) -> SummaryStats:
 
 
 def get_exoplanet_stats_service(
-    session,
+    session: Session,
     habitability_score_threshold: float = 80.0,
     habitability_confidence_threshold: float = 0.8,
 ) -> ExoplanetStats:
@@ -98,21 +101,27 @@ def get_exoplanet_stats_service(
     )
 
 
-def _to_dict(rows: list[tuple[str, int]]) -> dict[str, int]:
+from collections.abc import Sequence
+from typing import TypeVar
+
+T = TypeVar("T")
+
+
+def _to_dict(rows: Sequence[tuple[T, int]]) -> dict[T, int]:
     """
     Convert raw SQL tuples into JSON-friendly dict format.
     """
     return {key: value for key, value in rows if key is not None}
 
 
-def _format_by_decade(rows: list[tuple[int, int]]) -> dict[str, int]:
+def _format_by_decade(rows: Sequence[Any]) -> dict[str, int]:
     """
     Convert raw SQL tuples into JSON-friendly dict format.
     """
-    return {str(decade): count for decade, count in rows}
+    return {str(int(float(decade))): count for decade, count in rows if decade is not None}
 
 
-def _build_completeness(session) -> CompletenessStats:
+def _build_completeness(session: Session) -> CompletenessStats:
     row = get_completeness(session)._mapping
 
     total = row["total"]

@@ -1,10 +1,12 @@
+from typing import Any
+
 from sqlmodel import select
 
 from app.models import Exoplanet
 from app.schemas.exoplanet import ExoplanetFilters
 
 
-def build_exoplanet_query(filters: ExoplanetFilters):
+def build_exoplanet_query(filters: ExoplanetFilters) -> Any:
     """
     Build SQLModel query dynamically from filter schema.
     Supports:
@@ -13,9 +15,9 @@ def build_exoplanet_query(filters: ExoplanetFilters):
     - range filters (min_*, max_*)
     """
     query = select(Exoplanet)
-    conditions = []
+    conditions: list[Any] = []
 
-    operators = {
+    operators: dict[str, Any] = {
         "min_": lambda field, val: field >= val,
         "max_": lambda field, val: field <= val,
     }
@@ -31,7 +33,7 @@ def build_exoplanet_query(filters: ExoplanetFilters):
         else:
             field_name = filter_name
 
-            def op_func(field, val):
+            def op_func(field: Any, val: Any) -> Any:
                 return field == val
 
         field = getattr(Exoplanet, field_name, None)

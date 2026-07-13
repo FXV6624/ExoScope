@@ -1,12 +1,14 @@
 from sqlmodel import Session
 
 from app.core.db import engine
-from app.core.logging import logger
+import logging
 from app.etl.config import ETLConfig
 from app.etl.pipeline import ExoplanetETL
+from app.etl.report import ETLReport
 
+logger = logging.getLogger(__name__)
 
-def run_etl(session: Session, config: ETLConfig = ETLConfig()) -> dict:
+def run_etl(session: Session, config: ETLConfig = ETLConfig()) -> ETLReport:
     etl = ExoplanetETL(session=session, config=config)
     report = etl.run()
     logger.info(f"ETL process completed. Report: {report.model_dump()}")

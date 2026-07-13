@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from sqlalchemy import Select
 from sqlmodel import Session, col, func, select
@@ -21,7 +22,7 @@ def get_exoplanets_with_filters(
     return data, count
 
 
-def get_exoplanets(session: Session, query, skip: int, limit: int) -> list[Exoplanet]:
+def get_exoplanets(session: Session, query: Any, skip: int, limit: int) -> list[Exoplanet]:
     """
     Return paginated exoplanets ordered by planet name.
     """
@@ -29,10 +30,10 @@ def get_exoplanets(session: Session, query, skip: int, limit: int) -> list[Exopl
         query.order_by(col(Exoplanet.planet_name).asc()).offset(skip).limit(limit)
     )
 
-    return session.exec(statement).all()
+    return list(session.exec(statement).all())
 
 
-def count_exoplanets(session: Session, query: Select | None = None) -> int:
+def count_exoplanets(session: Session, query: Select[Any] | None = None) -> int:
     """
     Count total exoplanets, with or without filters.
     """

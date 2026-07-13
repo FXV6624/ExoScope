@@ -1,5 +1,9 @@
+from collections.abc import Sequence
+from typing import Any
+
 from sqlalchemy import func
-from sqlmodel import Session, select
+from sqlalchemy.orm import class_mapper
+from sqlmodel import Session, col, select
 
 from app.models import Exoplanet
 
@@ -8,7 +12,7 @@ def count_exoplanets(session: Session) -> int:
     return session.exec(select(func.count()).select_from(Exoplanet)).one()
 
 
-def get_by_discovery_method(session: Session):
+def get_by_discovery_method(session: Session) -> Sequence[Any]:
     return session.exec(
         select(
             Exoplanet.discovery_method,
@@ -17,20 +21,21 @@ def get_by_discovery_method(session: Session):
     ).all()
 
 
-def get_by_discovery_decade(session: Session):
-    decade = (Exoplanet.discovery_year // 10) * 10
+def get_by_discovery_decade(session: Session) -> Sequence[Any]:
+    discovery_year_col = col(Exoplanet.discovery_year)
+    decade = (discovery_year_col // 10) * 10
     return session.exec(
         select(
             decade.label("decade"),
             func.count(),
         )
-        .where(Exoplanet.discovery_year.is_not(None))
+        .where(discovery_year_col.is_not(None))
         .group_by(decade)
         .order_by(decade)
     ).all()
 
 
-def get_by_composition(session: Session):
+def get_by_composition(session: Session) -> Sequence[Any]:
     return session.exec(
         select(
             Exoplanet.composition,
@@ -39,7 +44,7 @@ def get_by_composition(session: Session):
     ).all()
 
 
-def get_summary_stats(session: Session, column):
+def get_summary_stats(session: Session, column: Any) -> tuple[Any, Any, Any]:
     avg_, min_, max_ = session.exec(
         select(
             func.avg(column),
@@ -54,15 +59,15 @@ def get_habitability_stats(
     session: Session,
     score_threshold: float = 80.0,
     confidence_threshold: float = 0.8,
-):
-    stmt = select(
-        func.avg(Exoplanet.habitability_score),
-        func.min(Exoplanet.habitability_score),
-        func.max(Exoplanet.habitability_score),
-        func.avg(Exoplanet.habitability_confidence),
+) -> Any:
+    stmt = select(  # type: ignore[call-overload]
+        func.avg(col(Exoplanet.habitability_score)),
+        func.min(col(Exoplanet.habitability_score)),
+        func.max(col(Exoplanet.habitability_score)),
+        func.avg(col(Exoplanet.habitability_confidence)),
         func.count().filter(
-            Exoplanet.habitability_score >= score_threshold,
-            Exoplanet.habitability_confidence >= confidence_threshold,
+            col(Exoplanet.habitability_score) >= score_threshold,
+            col(Exoplanet.habitability_confidence) >= confidence_threshold,
         ),
     )
 
@@ -71,8 +76,8 @@ def get_habitability_stats(
 
 COMPLETENESS_COLUMNS = tuple(
     column
-    for column in Exoplanet.__table__.columns
-    if column.name
+    for column in class_mapper(Exoplanet).columns
+    if column.key
     not in {
         "id",
         "planet_name",
@@ -82,7 +87,7 @@ COMPLETENESS_COLUMNS = tuple(
 )
 
 
-def get_completeness(session: Session):
+def get_completeness(session: Session) -> Any:
     """
     Returns the total number of rows together with the number of
     non-null values for each tracked field.

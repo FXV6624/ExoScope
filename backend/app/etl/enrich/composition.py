@@ -45,7 +45,7 @@ def _classify_from_density(
     ice_giant = PLANET_CLASSIFICATIONS[-2]
     gas_giant = PLANET_CLASSIFICATIONS[-1]
 
-    if radius >= ice_giant.max_radius:
+    if ice_giant.max_radius is not None and radius >= ice_giant.max_radius:
         return CompositionResult(
             composition=gas_giant.composition,
             confidence=gas_giant.density_confidence,

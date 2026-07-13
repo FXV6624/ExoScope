@@ -69,7 +69,9 @@ class ExoplanetETL:
             metrics.load_start = datetime.now(timezone.utc)
             try:
                 self.logger.info("Loading data")
-                metrics.load_result = load(self.session, planets, self.config.load_mode)
+                from app.models import Exoplanet
+                planets_to_load = [Exoplanet(**p.model_dump()) for p in planets]
+                metrics.load_result = load(self.session, planets_to_load, self.config.load_mode)
             except Exception as e:
                 self.logger.error(f"Load failed: {e}")
                 metrics.errors.append(str(e))

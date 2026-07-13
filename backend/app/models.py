@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timezone
+from typing import Any
 
 from pydantic import EmailStr
 from sqlalchemy import Column, DateTime, String
@@ -95,7 +96,7 @@ class ETLRun(SQLModel, table=True):
     finished_at: datetime
     extracted: int
     transformed: int
-    load_result: dict = Field(sa_column=Column(JSONB))
+    load_result: dict[str, Any] = Field(sa_column=Column(JSONB))
     extract_time: float
     transform_time: float
     load_time: float
@@ -104,7 +105,7 @@ class ETLRun(SQLModel, table=True):
     errors: str = ""
 
     @classmethod
-    def create(cls, report: ETLReport):
+    def create(cls, report: ETLReport) -> "ETLRun":
         return cls(
             started_at=report.started_at,
             finished_at=report.finished_at,

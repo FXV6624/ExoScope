@@ -60,7 +60,7 @@ def test_token(current_user: CurrentUser) -> Any:
 # -------------------------
 @router.post("/password-recovery/{email}", response_model=Message)
 def recover_password(email: str, session: SessionDep) -> Message:
-    user = user_service.get_user_by_email(session, email)
+    user = user_service.get_user(session, email)
 
     if user:
         token = generate_password_reset_token(email=email)
@@ -88,12 +88,14 @@ def reset_password(session: SessionDep, body: NewPassword) -> Message:
     if not email:
         raise HTTPException(status_code=400, detail="Invalid token")
 
-    ok = user_service.reset_password(
-        session=session, email=email, new_password=body.new_password
-    )
+    user = user_service.get_user(session, email)
 
-    if not ok:
+    if not user:
         raise HTTPException(status_code=400, detail="Invalid token")
+
+    user_service.update_password(
+        session=session, user=user, new_password=body.new_password
+    )
 
     return Message(message="Password updated successfully")
 
@@ -107,7 +109,7 @@ def reset_password(session: SessionDep, body: NewPassword) -> Message:
     response_class=HTMLResponse,
 )
 def recover_password_html(email: str, session: SessionDep) -> Any:
-    user = user_service.get_user_by_email(session, email)
+    user = user_service.get_user(session, email)
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import col, delete, func, select
@@ -9,7 +10,7 @@ from app.api.deps import (
     get_current_active_superuser,
 )
 from app.core.config import settings
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, verify_password
 from app.models import Item, User
 from app.schemas.auth import Message
 from app.schemas.user import (
@@ -35,7 +36,7 @@ router = APIRouter(prefix="/users", tags=["users"])
     dependencies=[Depends(get_current_active_superuser)],
     response_model=UsersPublic,
 )
-def read_users(session: SessionDep, skip: int = 0, limit: int = 100):
+def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     count = session.exec(select(func.count()).select_from(User)).one()
 
     users = session.exec(
@@ -51,7 +52,7 @@ def read_users(session: SessionDep, skip: int = 0, limit: int = 100):
 @router.post(
     "/", dependencies=[Depends(get_current_active_superuser)], response_model=UserPublic
 )
-def create_user(session: SessionDep, user_in: UserCreate):
+def create_user(session: SessionDep, user_in: UserCreate) -> Any:
     if user_service.get_user(session, user_in.email):
         raise HTTPException(status_code=400, detail="User already exists")
 
@@ -79,14 +80,14 @@ def create_user(session: SessionDep, user_in: UserCreate):
 # ME
 # -----------------------
 @router.get("/me", response_model=UserPublic)
-def read_user_me(current_user: CurrentUser):
+def read_user_me(current_user: CurrentUser) -> Any:
     return current_user
 
 
 @router.patch("/me", response_model=UserPublic)
 def update_user_me(
     session: SessionDep, user_in: UserUpdateMe, current_user: CurrentUser
-):
+) -> Any:
     if user_in.email:
         existing = user_service.get_user(session, user_in.email)
 
@@ -106,8 +107,8 @@ def update_user_me(
 @router.patch("/me/password", response_model=Message)
 def update_password_me(
     session: SessionDep, body: UpdatePassword, current_user: CurrentUser
-):
-    verified, _ = user_service.verify_password(
+) -> Any:
+    verified, _ = verify_password(
         body.current_password, current_user.hashed_password
     )
 
@@ -126,7 +127,7 @@ def update_password_me(
 # DELETE ME
 # -----------------------
 @router.delete("/me", response_model=Message)
-def delete_user_me(session: SessionDep, current_user: CurrentUser):
+def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
     if current_user.is_superuser:
         raise HTTPException(status_code=403)
 
@@ -139,7 +140,7 @@ def delete_user_me(session: SessionDep, current_user: CurrentUser):
 # REGISTER
 # -----------------------
 @router.post("/signup", response_model=UserPublic)
-def register_user(session: SessionDep, user_in: UserRegister):
+def register_user(session: SessionDep, user_in: UserRegister) -> Any:
     if user_service.get_user(session, user_in.email):
         raise HTTPException(status_code=400, detail="User exists")
 
@@ -156,7 +157,7 @@ def register_user(session: SessionDep, user_in: UserRegister):
 # GET BY ID
 # -----------------------
 @router.get("/{user_id}", response_model=UserPublic)
-def read_user(user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser):
+def read_user(user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser) -> Any:
     user = session.get(User, user_id)
 
     if not user:
@@ -179,7 +180,7 @@ def read_user(user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser
     dependencies=[Depends(get_current_active_superuser)],
     response_model=UserPublic,
 )
-def update_user(user_id: uuid.UUID, session: SessionDep, user_in: UserUpdate):
+def update_user(user_id: uuid.UUID, session: SessionDep, user_in: UserUpdate) -> Any:
     db_user = session.get(User, user_id)
 
     if not db_user:
@@ -203,7 +204,7 @@ def update_user(user_id: uuid.UUID, session: SessionDep, user_in: UserUpdate):
 # DELETE USER (admin)
 # -----------------------
 @router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
-def delete_user(session: SessionDep, current_user: CurrentUser, user_id: uuid.UUID):
+def delete_user(session: SessionDep, current_user: CurrentUser, user_id: uuid.UUID) -> Any:
     user = session.get(User, user_id)
 
     if not user:

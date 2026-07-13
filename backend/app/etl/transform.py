@@ -1,7 +1,8 @@
-from app.core.logging import logger
+import logging
 from app.models import ExoplanetBase
 from app.schemas.exoplanet import ExoplanetRaw
 
+logger = logging.getLogger(__name__)
 
 def transform(data: list[ExoplanetRaw]) -> list[ExoplanetBase]:
     """

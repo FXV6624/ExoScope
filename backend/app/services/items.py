@@ -1,18 +1,25 @@
-from app.models import Item
+import uuid
+from typing import Any
+
+from sqlmodel import Session, col
+
+from app.models import Item, User
+from app.schemas.item import ItemCreate, ItemUpdate
 
 
 # -----------------------
 # GET ITEMS
 # -----------------------
-def get_items(session, user, skip=0, limit=100):
+def get_items(session: Session, user: User, skip: int = 0, limit: int = 100) -> tuple[list[Item], int]:
     if user.is_superuser:
         query = session.query(Item)
     else:
-        query = session.query(Item).filter(Item.owner_id == user.id)
+        from sqlmodel import col
+        query = session.query(Item).filter(col(Item.owner_id) == user.id)
 
-    count = query.count()
+    count: int = query.count()
 
-    items = query.order_by(Item.created_at.desc()).offset(skip).limit(limit).all()
+    items = query.order_by(col(Item.created_at).desc()).offset(skip).limit(limit).all()
 
     return items, count
 
@@ -20,7 +27,7 @@ def get_items(session, user, skip=0, limit=100):
 # -----------------------
 # GET ITEM BY ID
 # -----------------------
-def get_item(session, item_id, user):
+def get_item(session: Session, item_id: uuid.UUID, user: User) -> tuple[Item | None, str | None]:
     item = session.get(Item, item_id)
 
     if not item:
@@ -35,7 +42,7 @@ def get_item(session, item_id, user):
 # -----------------------
 # CREATE ITEM
 # -----------------------
-def create_item(session, item_in, user):
+def create_item(session: Session, item_in: ItemCreate, user: User) -> Item:
     item = Item.model_validate(item_in, update={"owner_id": user.id})
 
     session.add(item)
@@ -48,7 +55,7 @@ def create_item(session, item_in, user):
 # -----------------------
 # UPDATE ITEM
 # -----------------------
-def update_item(session, item, item_in):
+def update_item(session: Session, item: Item, item_in: ItemUpdate) -> Item:
     data = item_in.model_dump(exclude_unset=True)
 
     item.sqlmodel_update(data)
@@ -63,6 +70,6 @@ def update_item(session, item, item_in):
 # -----------------------
 # DELETE ITEM
 # -----------------------
-def delete_item(session, item):
+def delete_item(session: Session, item: Item) -> None:
     session.delete(item)
     session.commit()

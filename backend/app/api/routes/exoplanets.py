@@ -1,5 +1,5 @@
 import uuid
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi_cache.decorator import cache
@@ -25,13 +25,13 @@ router = APIRouter(prefix="/exoplanets", tags=["exoplanets"])
 @limiter.limit("60/minute")
 @cache(expire=300)
 def read_exoplanets(
-    _request: Request,
+    request: Request,
     session: SessionDep,
     _current_user: CurrentUser,
     skip: int = 0,
     limit: int = 50,
     filters: ExoplanetFilters = Depends(),
-):
+) -> Any:
     """
     Retrieve a list of exoplanets with optional filters.
     """
@@ -42,12 +42,12 @@ def read_exoplanets(
 @limiter.limit("30/minute")
 @cache(expire=600)
 def get_exoplanet_stats(
-    _request: Request,
+    request: Request,
     session: SessionDep,
     _current_user: CurrentUser,
     habitability_score_threshold: Annotated[float, Query(ge=0, le=100)] = 80.0,
     habitability_confidence_threshold: Annotated[float, Query(ge=0, le=1)] = 0.8,
-):
+) -> Any:
     """
     Retrieve statistics about the exoplanets dataset.
     """
@@ -62,11 +62,11 @@ def get_exoplanet_stats(
 @limiter.limit("120/minute")
 @cache(expire=300)
 def read_exoplanet_by_id(
-    _request: Request,
+    request: Request,
     exoplanet_id: uuid.UUID,
     session: SessionDep,
     _current_user: CurrentUser,
-):
+) -> Any:
     """
     Get a specific exoplanet by ID.
     """

@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
 import sentry_sdk
 from fastapi import FastAPI
@@ -27,7 +28,7 @@ if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI):
+async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     await init_cache()
     start_scheduler()
     try:
@@ -48,7 +49,7 @@ app.state.limiter = limiter
 
 app.add_exception_handler(
     RateLimitExceeded,
-    _rate_limit_exceeded_handler,
+    _rate_limit_exceeded_handler,  # type: ignore[arg-type]
 )
 
 app.add_middleware(SlowAPIMiddleware)
