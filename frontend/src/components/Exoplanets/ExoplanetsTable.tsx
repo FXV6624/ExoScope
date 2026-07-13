@@ -280,34 +280,33 @@ export function ExoplanetsTable({ data, onSelect }: ExoplanetsTableProps) {
             </div>
           ) : (
             pageData.map((planet, i) => (
-              <div
-                key={planet.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => onSelect(planet.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault(); // Evita el scroll automático al pulsar la barra espaciadora
-                    onSelect(planet.id);
-                  }
-                }}
-                className="grid cursor-pointer items-center outline-none focus-visible:ring-1 focus-visible:ring-cyan-500"
-                style={{
-                  gridTemplateColumns: gridCols,
-                  borderBottom:
-                    i < pageData.length - 1
-                      ? "1px solid rgba(255,255,255,0.05)"
-                      : "none",
-                }}
-                onMouseEnter={(e) => {
-                  ;(e.currentTarget as HTMLElement).style.background =
-                    "rgba(34,211,238,0.04)"
-                }}
-                onMouseLeave={(e) => {
-                  ;(e.currentTarget as HTMLElement).style.background =
-                    "transparent"
-                }}
-              >
+              <button
+                  type="button" // Exigido por Biome para evitar recargas accidentales de formularios
+                  key={planet.id}
+                  onClick={() => onSelect(planet.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault(); 
+                      onSelect(planet.id);
+                    }
+                  }}
+                  className="grid w-full cursor-pointer items-center text-left bg-transparent border-none p-0 outline-none focus-visible:ring-1 focus-visible:ring-cyan-500"
+                  style={{
+                    gridTemplateColumns: gridCols,
+                    borderBottom:
+                      i < pageData.length - 1
+                        ? "1px solid rgba(255,255,255,0.05)"
+                        : "none",
+                  }}
+                  onMouseEnter={(e) => {
+                    ;(e.currentTarget as HTMLElement).style.background =
+                      "rgba(34,211,238,0.04)"
+                  }}
+                  onMouseLeave={(e) => {
+                    ;(e.currentTarget as HTMLElement).style.background =
+                      "transparent"
+                  }}
+                >
                 <div className="px-4 py-2 font-medium text-[#e2e8f0]">
                   {planet.planet_name}
                 </div>
@@ -338,7 +337,7 @@ export function ExoplanetsTable({ data, onSelect }: ExoplanetsTableProps) {
                     <span style={{ color: "#334155" }}>—</span>
                   )}
                 </div>
-              </div>
+              </button>
             ))
           )}
         </div>
