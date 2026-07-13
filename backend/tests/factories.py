@@ -8,20 +8,20 @@ consistente a lo largo de todos los tests.
 import uuid
 from datetime import datetime, timezone
 
-from app.models import Exoplanet, Item, User, ETLRun, ExoplanetBase
-from app.schemas.exoplanet import ExoplanetRaw, ExoplanetFilters
-from app.schemas.item import ItemCreate
-from app.schemas.user import UserCreate
-from app.etl.schemas import LoadResult
-from app.etl.report import ETLReport
-from app.etl.metrics import ETLMetrics
 from app.etl.config import ETLConfig
 from app.etl.enums import LoadMode
-
+from app.etl.metrics import ETLMetrics
+from app.etl.report import ETLReport
+from app.etl.schemas import LoadResult
+from app.models import Exoplanet, ExoplanetBase, Item, User
+from app.schemas.exoplanet import ExoplanetFilters, ExoplanetRaw
+from app.schemas.item import ItemCreate
+from app.schemas.user import UserCreate
 
 # ---------------------------------------------------------------------------
 # ExoplanetRaw
 # ---------------------------------------------------------------------------
+
 
 def make_exoplanet_raw(
     pl_name: str = "Kepler-22b",
@@ -49,6 +49,7 @@ def make_exoplanet_raw(
 # ExoplanetBase / Exoplanet (modelo DB)
 # ---------------------------------------------------------------------------
 
+
 def make_exoplanet_base(
     planet_name: str = "Kepler-22b",
     host_star: str | None = "Kepler-22",
@@ -57,7 +58,7 @@ def make_exoplanet_base(
     orbital_period: float | None = 289.8,
     planet_radius: float | None = 2.4,
     planet_mass: float | None = None,
-    distance_parsecs: float | None = 190.0,
+    distance_from_earth: float | None = 190.0,
 ) -> ExoplanetBase:
     return ExoplanetBase(
         planet_name=planet_name,
@@ -67,7 +68,7 @@ def make_exoplanet_base(
         orbital_period=orbital_period,
         planet_radius=planet_radius,
         planet_mass=planet_mass,
-        distance_parsecs=distance_parsecs,
+        distance_from_earth=distance_from_earth,
     )
 
 
@@ -79,7 +80,7 @@ def make_exoplanet_model(
     orbital_period: float | None = 289.8,
     planet_radius: float | None = 2.4,
     planet_mass: float | None = None,
-    distance_parsecs: float | None = 190.0,
+    distance_from_earth: float | None = 190.0,
 ) -> Exoplanet:
     return Exoplanet(
         id=uuid.uuid4(),
@@ -90,13 +91,14 @@ def make_exoplanet_model(
         orbital_period=orbital_period,
         planet_radius=planet_radius,
         planet_mass=planet_mass,
-        distance_parsecs=distance_parsecs,
+        distance_from_earth=distance_from_earth,
     )
 
 
 # ---------------------------------------------------------------------------
 # ExoplanetFilters
 # ---------------------------------------------------------------------------
+
 
 def make_exoplanet_filters(**kwargs) -> ExoplanetFilters:
     return ExoplanetFilters(**kwargs)
@@ -105,6 +107,7 @@ def make_exoplanet_filters(**kwargs) -> ExoplanetFilters:
 # ---------------------------------------------------------------------------
 # User / UserCreate
 # ---------------------------------------------------------------------------
+
 
 def make_user_create(
     email: str = "test@example.com",
@@ -141,6 +144,7 @@ def make_user_model(
 # Item / ItemCreate
 # ---------------------------------------------------------------------------
 
+
 def make_item_create(
     title: str = "Test Item",
     description: str | None = "A test item",
@@ -165,6 +169,7 @@ def make_item_model(
 # LoadResult
 # ---------------------------------------------------------------------------
 
+
 def make_load_result(
     attempted: int = 5,
     inserted: int = 3,
@@ -182,6 +187,7 @@ def make_load_result(
 # ---------------------------------------------------------------------------
 # ETLMetrics / ETLReport
 # ---------------------------------------------------------------------------
+
 
 def make_etl_metrics(
     extracted: int = 10,
@@ -211,13 +217,16 @@ def make_etl_report(
     transformed: int = 9,
     errors: list[str] | None = None,
 ) -> ETLReport:
-    metrics = make_etl_metrics(extracted=extracted, transformed=transformed, errors=errors)
+    metrics = make_etl_metrics(
+        extracted=extracted, transformed=transformed, errors=errors
+    )
     return ETLReport.from_metrics(metrics)
 
 
 # ---------------------------------------------------------------------------
 # ETLConfig
 # ---------------------------------------------------------------------------
+
 
 def make_etl_config(
     limit: int | None = 100,

@@ -3,8 +3,8 @@
 import pytest
 from sqlmodel import Session, delete, select
 
-from app.models import ETLRun
 from app.etl.run_repository import save_etl_run
+from app.models import ETLRun
 from tests.factories import make_etl_report
 
 
@@ -16,7 +16,6 @@ def clean_etl_runs(db: Session):
 
 
 class TestSaveETLRun:
-
     def test_saves_run_to_db(self, db: Session):
         report = make_etl_report(extracted=100, transformed=95)
         save_etl_run(db, report)

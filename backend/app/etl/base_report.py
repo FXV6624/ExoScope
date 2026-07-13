@@ -1,9 +1,11 @@
-from pydantic import BaseModel, Field
 from datetime import datetime
+
+from pydantic import BaseModel, Field
+
 from app.etl.schemas import LoadResult
 
-class ETLBaseReport(BaseModel):
 
+class ETLBaseReport(BaseModel):
     extracted: int = 0
 
     transformed: int = 0

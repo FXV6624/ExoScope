@@ -1,16 +1,16 @@
 """Integration tests for the full ETL Pipeline (ExoplanetETL)."""
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from sqlmodel import Session, delete, select
 
-from app.models import Exoplanet, ETLRun
-from app.etl.pipeline import ExoplanetETL
 from app.etl.config import ETLConfig
 from app.etl.enums import LoadMode
+from app.etl.pipeline import ExoplanetETL
 from app.etl.report import ETLReport
-from tests.factories import make_exoplanet_raw, make_exoplanet_base
-
+from app.models import ETLRun, Exoplanet
+from tests.factories import make_exoplanet_raw
 
 NASA_ROWS = [
     make_exoplanet_raw("Pipeline-A", "Star-A"),
@@ -31,8 +31,9 @@ def clean_tables(db: Session):
 
 
 class TestExoplanetETLPipeline:
-
-    def _run_with_mock_extract(self, db: Session, config: ETLConfig, data=None) -> ETLReport:
+    def _run_with_mock_extract(
+        self, db: Session, config: ETLConfig, data=None
+    ) -> ETLReport:
         if data is None:
             data = NASA_ROWS
         with patch("app.etl.pipeline.extract", return_value=data):
@@ -40,14 +41,18 @@ class TestExoplanetETLPipeline:
             return etl.run()
 
     def test_full_pipeline_succeeds(self, db: Session):
-        config = ETLConfig(limit=3, dry_run=False, persist_run=False, load_mode=LoadMode.UPSERT)
+        config = ETLConfig(
+            limit=3, dry_run=False, persist_run=False, load_mode=LoadMode.UPSERT
+        )
         report = self._run_with_mock_extract(db, config)
         assert report.extracted == 3
         assert report.transformed == 3
         assert len(report.errors) == 0
 
     def test_planets_persisted_to_db(self, db: Session):
-        config = ETLConfig(limit=3, dry_run=False, persist_run=False, load_mode=LoadMode.UPSERT)
+        config = ETLConfig(
+            limit=3, dry_run=False, persist_run=False, load_mode=LoadMode.UPSERT
+        )
         self._run_with_mock_extract(db, config)
 
         planets = db.exec(select(Exoplanet)).all()

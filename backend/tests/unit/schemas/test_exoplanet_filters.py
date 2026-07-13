@@ -1,13 +1,9 @@
 """Unit tests for ExoplanetFilters schema."""
 
-import pytest
-from pydantic import ValidationError
-
 from app.schemas.exoplanet import ExoplanetFilters
 
 
 class TestExoplanetFilters:
-
     def test_empty_filters(self):
         """All fields optional → empty instance is valid."""
         f = ExoplanetFilters()
@@ -19,7 +15,9 @@ class TestExoplanetFilters:
         assert f.max_discovery_year is None
 
     def test_string_filters(self):
-        f = ExoplanetFilters(planet_name="Kepler", host_star="Sun", discovery_method="Transit")
+        f = ExoplanetFilters(
+            planet_name="Kepler", host_star="Sun", discovery_method="Transit"
+        )
         assert f.planet_name == "Kepler"
         assert f.host_star == "Sun"
         assert f.discovery_method == "Transit"
@@ -58,10 +56,30 @@ class TestExoplanetFilters:
         f = ExoplanetFilters(planet_name="X")
         d = f.model_dump()
         expected_keys = {
-            "planet_name", "host_star", "discovery_method", "discovery_year",
-            "min_discovery_year", "max_discovery_year",
-            "min_orbital_period", "max_orbital_period",
-            "min_planet_radius", "max_planet_radius",
-            "min_planet_mass", "max_planet_mass",
+            "planet_name",
+            "host_star",
+            "discovery_method",
+            "discovery_year",
+            "min_discovery_year",
+            "max_discovery_year",
+            "min_orbital_period",
+            "max_orbital_period",
+            "min_planet_radius",
+            "max_planet_radius",
+            "min_planet_mass",
+            "max_planet_mass",
+            "composition",
+            "min_composition_confidence",
+            "min_habitability_score",
+            "max_habitability_score",
+            "min_habitability_confidence",
+            "min_distance_from_earth",
+            "max_distance_from_earth",
+            "min_equilibrium_temperature",
+            "max_equilibrium_temperature",
+            "system_planet_count",
+            "min_system_planet_count",
+            "min_orbital_eccentricity",
+            "max_orbital_eccentricity",
         }
         assert expected_keys == set(d.keys())

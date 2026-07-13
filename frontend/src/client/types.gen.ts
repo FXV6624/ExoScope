@@ -9,6 +9,39 @@ export type Body_login_login_access_token = {
     client_secret?: (string | null);
 };
 
+export type CompletenessStats = {
+    host_star: number;
+    discovery_year: number;
+    discovery_method: number;
+    planet_radius: number;
+    planet_mass: number;
+    planet_density: number;
+    equilibrium_temperature: number;
+    incident_flux: number;
+    orbital_period: number;
+    semi_major_axis: number;
+    orbital_eccentricity: number;
+    stellar_effective_temperature: number;
+    stellar_radius: number;
+    stellar_mass: number;
+    stellar_luminosity: number;
+    stellar_age: number;
+    distance_from_earth: number;
+    system_planet_count: number;
+    system_star_count: number;
+    composition: number;
+    composition_confidence: number;
+    habitability_score: number;
+    habitability_confidence: number;
+};
+
+export type CompositionStats = {
+    by_composition: {
+        [key: string]: (number);
+    };
+    average_confidence?: (number | null);
+};
+
 export type ETLConfig = {
     /**
      * Max number of records to extract. None = no limit
@@ -40,6 +73,10 @@ export type ExoplanetPublic = {
     distance_from_earth?: (number | null);
     system_planet_count?: (number | null);
     system_star_count?: (number | null);
+    composition?: (PlanetComposition | null);
+    composition_confidence?: (number | null);
+    habitability_score?: (number | null);
+    habitability_confidence?: (number | null);
     id: string;
 };
 
@@ -56,6 +93,23 @@ export type ExoplanetStats = {
     by_decade: {
         [key: string]: (number);
     };
+    composition: CompositionStats;
+    habitability: HabitabilityStats;
+    radius: SummaryStats;
+    mass: SummaryStats;
+    density: SummaryStats;
+    equilibrium_temperature: SummaryStats;
+    orbital_period: SummaryStats;
+    distance: SummaryStats;
+    completeness: CompletenessStats;
+};
+
+export type HabitabilityStats = {
+    average?: (number | null);
+    minimum?: (number | null);
+    maximum?: (number | null);
+    average_confidence?: (number | null);
+    potentially_habitable?: number;
 };
 
 export type HTTPValidationError = {
@@ -96,11 +150,19 @@ export type NewPassword = {
     new_password: string;
 };
 
+export type PlanetComposition = 'Rocky' | 'Super Earth' | 'Mini Neptune' | 'Ice Giant' | 'Gas Giant' | 'Unknown';
+
 export type PrivateUserCreate = {
     email: string;
     password: string;
     full_name: string;
     is_verified?: boolean;
+};
+
+export type SummaryStats = {
+    average?: (number | null);
+    minimum?: (number | null);
+    maximum?: (number | null);
 };
 
 export type Token = {
@@ -171,23 +233,41 @@ export type EtlRunExoplanetEtlData = {
 export type EtlRunExoplanetEtlResponse = (unknown);
 
 export type ExoplanetsReadExoplanetsData = {
+    composition?: (PlanetComposition | null);
     discoveryMethod?: (string | null);
     discoveryYear?: (number | null);
     hostStar?: (string | null);
     limit?: number;
     maxDiscoveryYear?: (number | null);
+    maxDistanceFromEarth?: (number | null);
+    maxEquilibriumTemperature?: (number | null);
+    maxHabitabilityScore?: (number | null);
+    maxOrbitalEccentricity?: (number | null);
     maxOrbitalPeriod?: (number | null);
     maxPlanetMass?: (number | null);
     maxPlanetRadius?: (number | null);
+    minCompositionConfidence?: (number | null);
     minDiscoveryYear?: (number | null);
+    minDistanceFromEarth?: (number | null);
+    minEquilibriumTemperature?: (number | null);
+    minHabitabilityConfidence?: (number | null);
+    minHabitabilityScore?: (number | null);
+    minOrbitalEccentricity?: (number | null);
     minOrbitalPeriod?: (number | null);
     minPlanetMass?: (number | null);
     minPlanetRadius?: (number | null);
+    minSystemPlanetCount?: (number | null);
     planetName?: (string | null);
     skip?: number;
+    systemPlanetCount?: (number | null);
 };
 
 export type ExoplanetsReadExoplanetsResponse = (ExoplanetsPublic);
+
+export type ExoplanetsGetExoplanetStatsData = {
+    habitabilityConfidenceThreshold?: number;
+    habitabilityScoreThreshold?: number;
+};
 
 export type ExoplanetsGetExoplanetStatsResponse = (ExoplanetStats);
 

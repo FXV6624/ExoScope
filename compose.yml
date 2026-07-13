@@ -11,7 +11,7 @@ services:
       timeout: 10s
     volumes:
       - app-db-data:/var/lib/postgresql/data/pgdata
-    env_file: 
+    env_file:
       - .env
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
@@ -135,7 +135,7 @@ services:
     - ./backend/app:/app/backend/app
 
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/utils/health-check/').read()"]
       interval: 10s
       timeout: 5s
       retries: 5

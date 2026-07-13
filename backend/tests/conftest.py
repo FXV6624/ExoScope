@@ -8,23 +8,41 @@ Organización:
 """
 
 from collections.abc import Generator
-from typing import Any
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
 from sqlmodel import Session, delete
 
 from app.core.config import settings
 from app.core.db import engine, init_db
 from app.main import app
-from app.models import Item, User, Exoplanet, ETLRun
+from app.models import ETLRun, Exoplanet, Item, User
 from tests.utils.user import authentication_token_from_email
 from tests.utils.utils import get_superuser_token_headers
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_cache_and_limiter():
+    from app.core.limiter import limiter
+
+    limiter.enabled = False
+
+    FastAPICache.init(InMemoryBackend())
+
+    with (
+        patch("app.main.init_cache", new_callable=AsyncMock),
+        patch("app.main.close_cache", new_callable=AsyncMock),
+    ):
+        yield
 
 
 # ---------------------------------------------------------------------------
 # DATABASE
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture(scope="session", autouse=True)
 def db() -> Generator[Session, None, None]:
@@ -48,6 +66,7 @@ def db() -> Generator[Session, None, None]:
 # HTTP CLIENT
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture(scope="module")
 def client() -> Generator[TestClient, None, None]:
     """TestClient de FastAPI para tests de API."""
@@ -58,6 +77,7 @@ def client() -> Generator[TestClient, None, None]:
 # ---------------------------------------------------------------------------
 # AUTH HEADERS
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture(scope="module")
 def superuser_token_headers(client: TestClient) -> dict[str, str]:

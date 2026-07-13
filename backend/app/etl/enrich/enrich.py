@@ -5,9 +5,7 @@ from .habitability import calculate_habitability
 
 
 def enrich(planets: list[ExoplanetBase]) -> list[ExoplanetBase]:
-
     for planet in planets:
-
         composition = calculate_composition(planet)
         habitability = calculate_habitability(planet)
 

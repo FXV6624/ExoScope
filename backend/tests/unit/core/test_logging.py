@@ -1,13 +1,11 @@
 """Unit tests for core.logging module."""
 
 import logging
-import pytest
 
 from app.core.logging import setup_logging
 
 
 class TestSetupLogging:
-
     def test_setup_logging_runs_without_error(self):
         """Calling setup_logging() should not raise any exception."""
         setup_logging()

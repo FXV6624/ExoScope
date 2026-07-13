@@ -1,9 +1,10 @@
-from pydantic import BaseModel
-from typing import Optional
 import uuid
+
+from pydantic import BaseModel
 from sqlmodel import SQLModel
-from app.models import ExoplanetBase
+
 from app.core.enums.exoplanet import PlanetComposition
+from app.models import ExoplanetBase
 
 
 class ExoplanetRaw(BaseModel):
@@ -32,45 +33,49 @@ class ExoplanetRaw(BaseModel):
 class ExoplanetPublic(ExoplanetBase):
     id: uuid.UUID
 
+
 class ExoplanetsPublic(SQLModel):
     data: list[ExoplanetPublic]
     count: int
 
+
 class ExoplanetFilters(BaseModel):
-    planet_name: Optional[str] = None
-    host_star: Optional[str] = None
-    discovery_method: Optional[str] = None
-    discovery_year: Optional[int] = None
-    min_discovery_year: Optional[int] = None
-    max_discovery_year: Optional[int] = None
-    min_orbital_period: Optional[float] = None
-    max_orbital_period: Optional[float] = None
-    min_planet_radius: Optional[float] = None
-    max_planet_radius: Optional[float] = None
-    min_planet_mass: Optional[float] = None
-    max_planet_mass: Optional[float] = None
-    composition: Optional[PlanetComposition] = None
-    min_composition_confidence: Optional[float] = None
-    min_habitability_score: Optional[float] = None
-    max_habitability_score: Optional[float] = None
-    min_habitability_confidence: Optional[float] = None
-    min_distance_from_earth: Optional[float] = None
-    max_distance_from_earth: Optional[float] = None
-    min_equilibrium_temperature: Optional[float] = None
-    max_equilibrium_temperature: Optional[float] = None
-    system_planet_count: Optional[int] = None
-    min_system_planet_count: Optional[int] = None
-    min_orbital_eccentricity: Optional[float] = None
-    max_orbital_eccentricity: Optional[float] = None
+    planet_name: str | None = None
+    host_star: str | None = None
+    discovery_method: str | None = None
+    discovery_year: int | None = None
+    min_discovery_year: int | None = None
+    max_discovery_year: int | None = None
+    min_orbital_period: float | None = None
+    max_orbital_period: float | None = None
+    min_planet_radius: float | None = None
+    max_planet_radius: float | None = None
+    min_planet_mass: float | None = None
+    max_planet_mass: float | None = None
+    composition: PlanetComposition | None = None
+    min_composition_confidence: float | None = None
+    min_habitability_score: float | None = None
+    max_habitability_score: float | None = None
+    min_habitability_confidence: float | None = None
+    min_distance_from_earth: float | None = None
+    max_distance_from_earth: float | None = None
+    min_equilibrium_temperature: float | None = None
+    max_equilibrium_temperature: float | None = None
+    system_planet_count: int | None = None
+    min_system_planet_count: int | None = None
+    min_orbital_eccentricity: float | None = None
+    max_orbital_eccentricity: float | None = None
 
 
 class CompositionResult(BaseModel):
     composition: PlanetComposition
     confidence: float
 
+
 class HabitabilityResult(BaseModel):
     score: float
     confidence: float
+
 
 class SummaryStats(BaseModel):
     average: float | None = None
@@ -81,6 +86,7 @@ class SummaryStats(BaseModel):
 class HabitabilityStats(SummaryStats):
     average_confidence: float | None = None
     potentially_habitable: int = 0
+
 
 class CompositionStats(BaseModel):
     by_composition: dict[PlanetComposition, int]

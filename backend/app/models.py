@@ -1,16 +1,19 @@
 import uuid
 from datetime import datetime, timezone
-from app.core.enums.exoplanet import PlanetComposition
-from sqlalchemy import DateTime, Column, String
+from typing import Any
+
 from pydantic import EmailStr
-from sqlalchemy import DateTime, Column
-from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
+from sqlalchemy import Column, DateTime, String
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
+
+from app.core.enums.exoplanet import PlanetComposition
 from app.etl.report import ETLReport
 
 
 def get_datetime_utc() -> datetime:
     return datetime.now(timezone.utc)
+
 
 # Shared properties
 class UserBase(SQLModel):
@@ -49,6 +52,7 @@ class Item(ItemBase, table=True):
     )
     owner: User | None = Relationship(back_populates="items")
 
+
 class ExoplanetBase(SQLModel):
     planet_name: str
     host_star: str | None = None
@@ -70,7 +74,10 @@ class ExoplanetBase(SQLModel):
     distance_from_earth: float | None = None
     system_planet_count: int | None = None
     system_star_count: int | None = None
-    composition: PlanetComposition | None = Field(default=None,sa_column=Column(String, nullable=True),)
+    composition: PlanetComposition | None = Field(
+        default=None,
+        sa_column=Column(String, nullable=True),
+    )
     composition_confidence: float | None = None
     habitability_score: float | None = None
     habitability_confidence: float | None = None
@@ -89,7 +96,7 @@ class ETLRun(SQLModel, table=True):
     finished_at: datetime
     extracted: int
     transformed: int
-    load_result: dict = Field(sa_column=Column(JSONB))
+    load_result: dict[str, Any] = Field(sa_column=Column(JSONB))
     extract_time: float
     transform_time: float
     load_time: float
@@ -98,21 +105,17 @@ class ETLRun(SQLModel, table=True):
     errors: str = ""
 
     @classmethod
-    def create(cls, report: ETLReport):
+    def create(cls, report: ETLReport) -> "ETLRun":
         return cls(
-        started_at=report.started_at,
-        finished_at=report.finished_at,
-
-        extracted=report.extracted,
-        transformed=report.transformed,
-
-        load_result=report.load_result.model_dump(),
-
-        extract_time=report.extract_time,
-        transform_time=report.transform_time,
-        load_time=report.load_time,
-        total_time=report.duration_seconds,
-
-        success=not report.errors,
-        errors=" | ".join(report.errors),
-    )
+            started_at=report.started_at,  # type: ignore
+            finished_at=report.finished_at,  # type: ignore
+            extracted=report.extracted,
+            transformed=report.transformed,
+            load_result=report.load_result.model_dump(),
+            extract_time=report.extract_time,
+            transform_time=report.transform_time,
+            load_time=report.load_time,
+            total_time=report.duration_seconds,
+            success=not report.errors,
+            errors=" | ".join(report.errors),
+        )

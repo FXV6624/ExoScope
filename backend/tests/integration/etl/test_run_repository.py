@@ -3,8 +3,8 @@
 import pytest
 from sqlmodel import Session, delete, select
 
-from app.models import ETLRun
 from app.etl.run_repository import save_etl_run
+from app.models import ETLRun
 from tests.factories import make_etl_report, make_load_result
 
 
@@ -18,10 +18,11 @@ def clean_etl_runs(db: Session):
 
 
 class TestSaveETLRunIntegration:
-
     def test_persists_complete_report(self, db: Session):
         report = make_etl_report(extracted=200, transformed=195)
-        report.load_result = make_load_result(attempted=195, inserted=180, updated=10, skipped=5)
+        report.load_result = make_load_result(
+            attempted=195, inserted=180, updated=10, skipped=5
+        )
         save_etl_run(db, report)
 
         run = db.exec(select(ETLRun)).first()

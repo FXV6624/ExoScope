@@ -8,19 +8,17 @@ usan en múltiples tests.
 import uuid
 from datetime import timedelta
 
-from fastapi.testclient import TestClient
 from sqlmodel import Session
 
-from app.core.config import settings
 from app.core.security import create_access_token, get_password_hash
-from app.models import User, Item, Exoplanet
+from app.models import Exoplanet, Item, User
 from app.repositories.users import create_user
 from app.schemas.user import UserCreate
-
 
 # ---------------------------------------------------------------------------
 # Token helpers
 # ---------------------------------------------------------------------------
+
 
 def get_auth_headers(user_id: uuid.UUID) -> dict[str, str]:
     """Genera headers de autorización válidos para un UUID de usuario."""
@@ -48,6 +46,7 @@ def get_invalid_auth_headers() -> dict[str, str]:
 # ---------------------------------------------------------------------------
 # DB helpers
 # ---------------------------------------------------------------------------
+
 
 def create_test_user(
     session: Session,
@@ -83,7 +82,7 @@ def create_test_exoplanet(
         orbital_period=300.0,
         planet_radius=2.0,
         planet_mass=5.0,
-        distance_parsecs=100.0,
+        distance_from_earth=100.0,
     )
     session.add(planet)
     session.commit()
@@ -113,6 +112,7 @@ def create_test_item(
 # Assertion helpers
 # ---------------------------------------------------------------------------
 
+
 def assert_pagination_response(data: dict, expected_count: int | None = None) -> None:
     """Valida que una respuesta de paginación tenga la estructura correcta."""
     assert "data" in data
@@ -123,7 +123,9 @@ def assert_pagination_response(data: dict, expected_count: int | None = None) ->
         assert data["count"] == expected_count
 
 
-def assert_error_response(response, status_code: int, detail: str | None = None) -> None:
+def assert_error_response(
+    response, status_code: int, detail: str | None = None
+) -> None:
     """Valida que una respuesta de error tenga el código y detalle esperados."""
     assert response.status_code == status_code
     if detail:

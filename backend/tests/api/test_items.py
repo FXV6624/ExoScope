@@ -1,28 +1,32 @@
 """API tests for /items endpoints."""
 
 import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, delete
 
 from app.core.config import settings
+from app.core.security import get_password_hash
 from app.models import Item, User
 from app.repositories.users import create_user
 from app.schemas.user import UserCreate
-from app.core.security import get_password_hash
-
 
 API = settings.API_V1_STR
 
 
-def _create_test_user(db: Session, email: str, password: str = "password12345", is_superuser: bool = False) -> User:
+def _create_test_user(
+    db: Session, email: str, password: str = "password12345", is_superuser: bool = False
+) -> User:
     uc = UserCreate(email=email, password=password, is_superuser=is_superuser)
     hashed = get_password_hash(password)
     return create_user(session=db, user_create=uc, hashed_password=hashed)
 
 
 def _get_token(client: TestClient, email: str, password: str) -> dict[str, str]:
-    response = client.post(f"{API}/login/access-token", data={"username": email, "password": password})
+    response = client.post(
+        f"{API}/login/access-token", data={"username": email, "password": password}
+    )
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 
@@ -50,7 +54,6 @@ def other_user(db: Session):
 
 
 class TestCreateItem:
-
     def test_create_item_success(self, client: TestClient, item_user):
         user, password = item_user
         headers = _get_token(client, user.email, password)
@@ -68,15 +71,16 @@ class TestCreateItem:
 
 
 class TestGetItems:
-
-    def test_read_items_returns_only_own_items_for_normal_user(self, client: TestClient, db: Session, item_user, other_user):
+    def test_read_items_returns_only_own_items_for_normal_user(
+        self, client: TestClient, db: Session, item_user, other_user
+    ):
         user1, pass1 = item_user
         user2, pass2 = other_user
-        
+
         # User 1 creates an item
         h1 = _get_token(client, user1.email, pass1)
         client.post(f"{API}/items/", json={"title": "User 1 Item"}, headers=h1)
-        
+
         # User 2 creates an item
         h2 = _get_token(client, user2.email, pass2)
         client.post(f"{API}/items/", json={"title": "User 2 Item"}, headers=h2)
@@ -90,7 +94,9 @@ class TestGetItems:
         assert "User 1 Item" in titles
         assert "User 2 Item" not in titles
 
-    def test_superuser_can_read_all_items(self, client: TestClient, superuser_token_headers: dict, item_user):
+    def test_superuser_can_read_all_items(
+        self, client: TestClient, superuser_token_headers: dict, item_user
+    ):
         user, password = item_user
         h = _get_token(client, user.email, password)
         client.post(f"{API}/items/", json={"title": "Superuser Visible"}, headers=h)
@@ -103,7 +109,6 @@ class TestGetItems:
 
 
 class TestGetItemById:
-
     def test_read_own_item(self, client: TestClient, item_user):
         user, password = item_user
         headers = _get_token(client, user.email, password)
@@ -114,7 +119,9 @@ class TestGetItemById:
         assert response.status_code == 200
         assert response.json()["title"] == "Own Item"
 
-    def test_read_other_user_item_forbidden(self, client: TestClient, item_user, other_user):
+    def test_read_other_user_item_forbidden(
+        self, client: TestClient, item_user, other_user
+    ):
         user1, pass1 = item_user
         user2, pass2 = other_user
         h1 = _get_token(client, user1.email, pass1)
@@ -127,20 +134,22 @@ class TestGetItemById:
 
 
 class TestUpdateItem:
-
     def test_update_own_item(self, client: TestClient, item_user):
         user, password = item_user
         headers = _get_token(client, user.email, password)
-        res = client.post(f"{API}/items/", json={"title": "Before Update"}, headers=headers)
+        res = client.post(
+            f"{API}/items/", json={"title": "Before Update"}, headers=headers
+        )
         item_id = res.json()["id"]
 
-        response = client.put(f"{API}/items/{item_id}", json={"title": "After Update"}, headers=headers)
+        response = client.put(
+            f"{API}/items/{item_id}", json={"title": "After Update"}, headers=headers
+        )
         assert response.status_code == 200
         assert response.json()["title"] == "After Update"
 
 
 class TestDeleteItem:
-
     def test_delete_own_item(self, client: TestClient, item_user):
         user, password = item_user
         headers = _get_token(client, user.email, password)

@@ -1,13 +1,14 @@
 """Integration tests for UserRepository against a real PostgreSQL DB."""
 
 import uuid
+
 import pytest
 from sqlmodel import Session, delete
 
+from app.core.security import get_password_hash
 from app.models import User
 from app.repositories.users import create_user, get_user_by_email, update_user
 from app.schemas.user import UserCreate
-from app.core.security import get_password_hash
 
 
 @pytest.fixture(autouse=True)
@@ -23,7 +24,6 @@ def _make_user_create(email: str, password: str = "password123secure") -> UserCr
 
 
 class TestCreateUser:
-
     def test_creates_user_in_db(self, db: Session):
         user_create = _make_user_create("create@testdomain.com")
         hashed = get_password_hash(user_create.password)
@@ -53,7 +53,6 @@ class TestCreateUser:
 
 
 class TestGetUserByEmail:
-
     def test_returns_user_when_found(self, db: Session):
         user_create = _make_user_create("find@testdomain.com")
         hashed = get_password_hash(user_create.password)
@@ -78,11 +77,10 @@ class TestGetUserByEmail:
 
 
 class TestUpdateUser:
-
     def test_update_full_name(self, db: Session):
         user_create = _make_user_create("update@testdomain.com")
         hashed = get_password_hash(user_create.password)
         user = create_user(session=db, user_create=user_create, hashed_password=hashed)
-    
+
         updated = update_user(session=db, db_user=user, full_name="New Name")
         assert updated.full_name == "New Name"

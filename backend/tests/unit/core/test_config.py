@@ -2,11 +2,10 @@
 
 import pytest
 
-from app.core.config import Settings, settings, parse_cors
+from app.core.config import parse_cors, settings
 
 
 class TestParseCors:
-
     def test_comma_separated_string(self):
         result = parse_cors("http://localhost,http://example.com")
         assert result == ["http://localhost", "http://example.com"]
@@ -34,7 +33,6 @@ class TestParseCors:
 
 
 class TestSettings:
-
     def test_settings_instance_exists(self):
         assert settings is not None
 

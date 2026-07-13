@@ -7,7 +7,6 @@ from app.schemas.exoplanet import ExoplanetRaw
 
 
 class TestExoplanetRaw:
-
     def test_valid_full_payload(self):
         raw = ExoplanetRaw(
             pl_name="Kepler-22b",

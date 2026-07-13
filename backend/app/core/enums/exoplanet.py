@@ -1,6 +1,7 @@
-from enum import StrEnum
+from enum import Enum
 
-class PlanetComposition(StrEnum):
+
+class PlanetComposition(str, Enum):
     ROCKY = "Rocky"
     SUPER_EARTH = "Super Earth"
     MINI_NEPTUNE = "Mini Neptune"

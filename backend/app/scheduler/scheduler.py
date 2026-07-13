@@ -1,7 +1,9 @@
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.background import (  # type: ignore[import-untyped]
+    BackgroundScheduler,
+)
 
-from app.scheduler.jobs import run_exoplanet_etl_job
 from app.core.config import settings
+from app.scheduler.jobs import run_exoplanet_etl_job
 
 scheduler = BackgroundScheduler(timezone="UTC")
 
@@ -17,11 +19,11 @@ if settings.ETL_SCHEDULER_ENABLED:
     )
 
 
-def start_scheduler():
+def start_scheduler() -> None:
     if not scheduler.running:
         scheduler.start()
 
 
-def stop_scheduler():
+def stop_scheduler() -> None:
     if scheduler.running:
         scheduler.shutdown()

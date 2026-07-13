@@ -1,10 +1,11 @@
 """Unit tests for ExoplanetsPublic schema."""
 
 import uuid
+
 import pytest
 from pydantic import ValidationError
 
-from app.schemas.exoplanet import ExoplanetsPublic, ExoplanetPublic
+from app.schemas.exoplanet import ExoplanetPublic, ExoplanetsPublic
 
 
 def _make_public(name: str = "Kepler-22b") -> ExoplanetPublic:
@@ -12,7 +13,6 @@ def _make_public(name: str = "Kepler-22b") -> ExoplanetPublic:
 
 
 class TestExoplanetsPublic:
-
     def test_valid_creation_empty_list(self):
         ep = ExoplanetsPublic(data=[], count=0)
         assert ep.data == []

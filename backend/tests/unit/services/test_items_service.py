@@ -1,11 +1,10 @@
 """Unit tests for services/items.py (with mocked DB)."""
 
 import uuid
-import pytest
 from unittest.mock import MagicMock, patch
 
-from app.services import items as item_service
 from app.models import Item, User
+from app.services import items as item_service
 
 
 def _make_user(is_superuser=False):
@@ -24,7 +23,6 @@ def _make_item(owner_id=None):
 
 
 class TestGetItems:
-
     def test_superuser_queries_all_items(self):
         user = _make_user(is_superuser=True)
         session = MagicMock()
@@ -52,7 +50,6 @@ class TestGetItems:
 
 
 class TestGetItem:
-
     def test_item_not_found_returns_not_found(self):
         session = MagicMock()
         session.get.return_value = None
@@ -90,22 +87,22 @@ class TestGetItem:
 
 
 class TestCreateItem:
-
     def test_creates_and_returns_item(self):
         user = _make_user()
         session = MagicMock()
         item_in = MagicMock()
         item_in.model_validate = MagicMock()
 
-        with patch.object(Item, "model_validate", return_value=_make_item(owner_id=user.id)) as mock_validate:
-            result = item_service.create_item(session, item_in, user)
+        with patch.object(
+            Item, "model_validate", return_value=_make_item(owner_id=user.id)
+        ):
+            item_service.create_item(session, item_in, user)
             session.add.assert_called_once()
             session.commit.assert_called_once()
             session.refresh.assert_called_once()
 
 
 class TestUpdateItem:
-
     def test_updates_and_returns_item(self):
         session = MagicMock()
         item = _make_item()
@@ -113,14 +110,13 @@ class TestUpdateItem:
         item_in.model_dump.return_value = {"title": "New Title"}
         item.sqlmodel_update = MagicMock()
 
-        result = item_service.update_item(session, item, item_in)
+        item_service.update_item(session, item, item_in)
         item.sqlmodel_update.assert_called_once_with({"title": "New Title"})
         session.add.assert_called_once_with(item)
         session.commit.assert_called_once()
 
 
 class TestDeleteItem:
-
     def test_deletes_and_commits(self):
         session = MagicMock()
         item = _make_item()

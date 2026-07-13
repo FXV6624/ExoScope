@@ -1,16 +1,13 @@
 """API tests for authentication endpoints (/login/access-token, /login/test-token, etc.)."""
 
-import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-
 
 API = settings.API_V1_STR
 
 
 class TestLoginAccessToken:
-
     def test_valid_login_returns_token(self, client: TestClient):
         data = {
             "username": settings.FIRST_SUPERUSER,
@@ -38,9 +35,12 @@ class TestLoginAccessToken:
 
 
 class TestTestToken:
-
-    def test_test_token_returns_current_user(self, client: TestClient, superuser_token_headers: dict):
-        response = client.post(f"{API}/login/test-token", headers=superuser_token_headers)
+    def test_test_token_returns_current_user(
+        self, client: TestClient, superuser_token_headers: dict
+    ):
+        response = client.post(
+            f"{API}/login/test-token", headers=superuser_token_headers
+        )
         assert response.status_code == 200
         body = response.json()
         assert "email" in body
@@ -57,7 +57,6 @@ class TestTestToken:
 
 
 class TestPasswordRecovery:
-
     def test_recover_password_always_returns_200(self, client: TestClient):
         """Should return 200 even for unknown emails (prevent enumeration)."""
         response = client.post(f"{API}/password-recovery/nobody@nowhere.com")
@@ -65,12 +64,16 @@ class TestPasswordRecovery:
         assert "message" in response.json()
 
     def test_recover_password_for_known_user(self, client: TestClient):
-        response = client.post(f"{API}/password-recovery/{settings.FIRST_SUPERUSER}")
+        from unittest.mock import patch
+
+        with patch("app.api.routes.login.send_email"):
+            response = client.post(
+                f"{API}/password-recovery/{settings.FIRST_SUPERUSER}"
+            )
         assert response.status_code == 200
 
 
 class TestResetPassword:
-
     def test_reset_with_invalid_token_returns_400(self, client: TestClient):
         payload = {"token": "invalid-token", "new_password": "newSecurePass123"}
         response = client.post(f"{API}/reset-password/", json=payload)

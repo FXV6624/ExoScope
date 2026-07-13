@@ -1,13 +1,9 @@
 """Unit tests for LoadResult schema."""
 
-import pytest
-from pydantic import ValidationError
-
 from app.etl.schemas import LoadResult
 
 
 class TestLoadResult:
-
     def test_defaults_are_zero(self):
         lr = LoadResult()
         assert lr.attempted == 0

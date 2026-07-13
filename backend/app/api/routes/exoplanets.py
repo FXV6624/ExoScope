@@ -1,12 +1,22 @@
-from typing import Annotated
-from fastapi import Query
 import uuid
-from fastapi import APIRouter, HTTPException, Depends, Request
+from typing import Annotated, Any
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi_cache.decorator import cache
+
 from app.api.deps import CurrentUser, SessionDep
-from app.schemas.exoplanet import ExoplanetFilters, ExoplanetPublic, ExoplanetStats, ExoplanetsPublic
-from app.services.exoplanets import read_exoplanets_service, get_exoplanet_stats_service, read_exoplanet_by_id_service
 from app.core.limiter import limiter
+from app.schemas.exoplanet import (
+    ExoplanetFilters,
+    ExoplanetPublic,
+    ExoplanetsPublic,
+    ExoplanetStats,
+)
+from app.services.exoplanets import (
+    get_exoplanet_stats_service,
+    read_exoplanet_by_id_service,
+    read_exoplanets_service,
+)
 
 router = APIRouter(prefix="/exoplanets", tags=["exoplanets"])
 
@@ -14,31 +24,49 @@ router = APIRouter(prefix="/exoplanets", tags=["exoplanets"])
 @router.get("/", response_model=ExoplanetsPublic)
 @limiter.limit("60/minute")
 @cache(expire=300)
-def read_exoplanets(request: Request, session: SessionDep, current_user: CurrentUser, skip: int = 0, 
-    limit: int = 50, filters: ExoplanetFilters = Depends()):
+def read_exoplanets(
+    request: Request,  # noqa: ARG001
+    session: SessionDep,
+    _current_user: CurrentUser,
+    skip: int = 0,
+    limit: int = 50,
+    filters: ExoplanetFilters = Depends(),
+) -> Any:
     """
     Retrieve a list of exoplanets with optional filters.
     """
-    return read_exoplanets_service(session, filters, skip,limit)
+    return read_exoplanets_service(session, filters, skip, limit)
 
 
 @router.get("/stats", response_model=ExoplanetStats)
 @limiter.limit("30/minute")
 @cache(expire=600)
-def get_exoplanet_stats(request: Request, session: SessionDep, current_user: CurrentUser,
-     habitability_score_threshold: Annotated[float,Query(ge=0, le=100)] = 80.0,
-     habitability_confidence_threshold: Annotated[float,Query(ge=0, le=1)] = 0.8,):
+def get_exoplanet_stats(
+    request: Request,  # noqa: ARG001
+    session: SessionDep,
+    _current_user: CurrentUser,
+    habitability_score_threshold: Annotated[float, Query(ge=0, le=100)] = 80.0,
+    habitability_confidence_threshold: Annotated[float, Query(ge=0, le=1)] = 0.8,
+) -> Any:
     """
     Retrieve statistics about the exoplanets dataset.
     """
-    stats = get_exoplanet_stats_service(session, habitability_score_threshold, habitability_confidence_threshold)
+    stats = get_exoplanet_stats_service(
+        session, habitability_score_threshold, habitability_confidence_threshold
+    )
 
     return stats
+
 
 @router.get("/{exoplanet_id:uuid}", response_model=ExoplanetPublic)
 @limiter.limit("120/minute")
 @cache(expire=300)
-def read_exoplanet_by_id(request: Request, exoplanet_id: uuid.UUID, session: SessionDep, current_user: CurrentUser):
+def read_exoplanet_by_id(
+    request: Request,  # noqa: ARG001
+    exoplanet_id: uuid.UUID,
+    session: SessionDep,
+    _current_user: CurrentUser,
+) -> Any:
     """
     Get a specific exoplanet by ID.
     """
@@ -46,6 +74,3 @@ def read_exoplanet_by_id(request: Request, exoplanet_id: uuid.UUID, session: Ses
     if not exoplanet:
         raise HTTPException(status_code=404, detail="Exoplanet not found")
     return exoplanet
-
-
-

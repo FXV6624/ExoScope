@@ -1,15 +1,15 @@
 """Unit tests for ExoplanetPublic schema."""
 
 import uuid
+
 import pytest
 from pydantic import ValidationError
 
-from app.schemas.exoplanet import ExoplanetPublic
 from app.models import ExoplanetBase
+from app.schemas.exoplanet import ExoplanetPublic
 
 
 class TestExoplanetPublic:
-
     def test_valid_creation(self):
         planet_id = uuid.uuid4()
         ep = ExoplanetPublic(
@@ -21,7 +21,7 @@ class TestExoplanetPublic:
             orbital_period=289.8,
             planet_radius=2.4,
             planet_mass=None,
-            distance_parsecs=190.0,
+            distance_from_earth=190.0,
         )
         assert ep.id == planet_id
         assert ep.planet_name == "Kepler-22b"
@@ -46,7 +46,7 @@ class TestExoplanetPublic:
         assert ep.orbital_period is None
         assert ep.planet_radius is None
         assert ep.planet_mass is None
-        assert ep.distance_parsecs is None
+        assert ep.distance_from_earth is None
 
     def test_id_auto_uuid_str_input(self):
         """UUID can be provided as a string."""

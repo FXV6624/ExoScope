@@ -1,7 +1,5 @@
 """Unit tests for UpsertLoadStrategy (mocked session)."""
 
-import uuid
-import pytest
 from unittest.mock import MagicMock, patch
 
 from app.etl.load_strategies.upsert import UpsertLoadStrategy
@@ -10,7 +8,6 @@ from tests.factories import make_exoplanet_model
 
 
 class TestUpsertLoadStrategy:
-
     def _make_session(self, existing_keys=None):
         """existing_keys: set of (planet_name, host_star) tuples already in DB."""
         session = MagicMock()

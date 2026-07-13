@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build images
+        run: docker compose build
+
+      - name: Start services and wait for healthcheck
+        run: docker compose up -d backend db redis proxy --wait
+
+      - name: Inspect backend logs on failure
+        if: failure()
+        run: |
+          docker compose logs db
+          docker compose logs backend
+          docker compose logs prestart
+
+      - name: Run Backend tests
+        run: docker compose exec -T backend pytest
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down

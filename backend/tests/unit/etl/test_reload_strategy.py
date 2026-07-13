@@ -1,7 +1,6 @@
 """Unit tests for ReloadLoadStrategy (mocked session)."""
 
-import pytest
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 
 from app.etl.load_strategies.reload import ReloadLoadStrategy
 from app.etl.schemas import LoadResult
@@ -9,7 +8,6 @@ from tests.factories import make_exoplanet_model
 
 
 class TestReloadLoadStrategy:
-
     def _make_session(self):
         return MagicMock()
 
@@ -28,7 +26,11 @@ class TestReloadLoadStrategy:
 
     def test_all_planets_inserted_after_reload(self):
         session = self._make_session()
-        planets = [make_exoplanet_model("A"), make_exoplanet_model("B"), make_exoplanet_model("C")]
+        planets = [
+            make_exoplanet_model("A"),
+            make_exoplanet_model("B"),
+            make_exoplanet_model("C"),
+        ]
 
         strategy = ReloadLoadStrategy()
         with patch("app.etl.load_strategies.reload.build_insert_stmt") as mock_stmt:

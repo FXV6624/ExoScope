@@ -95,6 +95,7 @@ function NavButton({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={disabled}
       className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors disabled:cursor-not-allowed"
@@ -251,6 +252,7 @@ export function ExoplanetsTable({ data, onSelect }: ExoplanetsTableProps) {
         >
           {COLUMNS.map(({ key, label }) => (
             <button
+              type="button"
               key={key}
               onClick={() => handleSort(key)}
               className="flex items-center gap-1 px-4 py-2.5 text-left text-space-muted transition-colors hover:text-cyan-400"
@@ -278,10 +280,17 @@ export function ExoplanetsTable({ data, onSelect }: ExoplanetsTableProps) {
             </div>
           ) : (
             pageData.map((planet, i) => (
-              <div
+              <button
+                type="button" // Exigido por Biome para evitar recargas accidentales de formularios
                 key={planet.id}
                 onClick={() => onSelect(planet.id)}
-                className="grid cursor-pointer items-center"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault()
+                    onSelect(planet.id)
+                  }
+                }}
+                className="grid w-full cursor-pointer items-center text-left bg-transparent border-none p-0 outline-none focus-visible:ring-1 focus-visible:ring-cyan-500"
                 style={{
                   gridTemplateColumns: gridCols,
                   borderBottom:
@@ -328,7 +337,7 @@ export function ExoplanetsTable({ data, onSelect }: ExoplanetsTableProps) {
                     <span style={{ color: "#334155" }}>—</span>
                   )}
                 </div>
-              </div>
+              </button>
             ))
           )}
         </div>

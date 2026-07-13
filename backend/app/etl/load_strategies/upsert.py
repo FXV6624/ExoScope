@@ -1,23 +1,22 @@
-from sqlalchemy import tuple_, select
-from sqlalchemy.dialects.postgresql import insert
-from sqlmodel import Session
+from sqlalchemy import select, tuple_
+from sqlmodel import Session, col
 
-from app.models import Exoplanet
 from app.etl.schemas import LoadResult
+from app.models import Exoplanet
+
 from .base import LoadStrategy
-from .statement import build_insert_stmt, BATCH_SIZE
+from .statement import BATCH_SIZE, build_insert_stmt
 
 
 class UpsertLoadStrategy(LoadStrategy):
-
     def load(self, session: Session, planets: list[Exoplanet]) -> LoadResult:
-
         keys = {(p.planet_name, p.host_star) for p in planets}
 
-        existing_query = select(Exoplanet.planet_name, Exoplanet.host_star).where(
-            tuple_(Exoplanet.planet_name, Exoplanet.host_star).in_(keys))
-        
-        existing = set(session.exec(existing_query).all())
+        existing_query = select(
+            col(Exoplanet.planet_name), col(Exoplanet.host_star)
+        ).where(tuple_(col(Exoplanet.planet_name), col(Exoplanet.host_star)).in_(keys))
+
+        existing = set(session.exec(existing_query).all())  # type: ignore
 
         inserted = 0
         updated = 0
@@ -66,4 +65,9 @@ class UpsertLoadStrategy(LoadStrategy):
 
         session.commit()
 
-        return LoadResult(attempted=len(planets),inserted=inserted,updated=updated,skipped=0,)
+        return LoadResult(
+            attempted=len(planets),
+            inserted=inserted,
+            updated=updated,
+            skipped=0,
+        )

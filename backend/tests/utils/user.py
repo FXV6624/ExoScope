@@ -1,10 +1,10 @@
-from app.schemas.user import UserCreate, UserUpdate
-import app.repositories.users
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
+import app.repositories.users
 from app.core.config import settings
 from app.models import User
+from app.schemas.user import UserCreate
 from tests.utils.utils import random_email, random_lower_string
 
 
@@ -25,8 +25,11 @@ def create_random_user(db: Session) -> User:
     password = random_lower_string()
     user_in = UserCreate(email=email, password=password)
     from app.core.security import get_password_hash
+
     hashed = get_password_hash(password)
-    user = app.repositories.users.create_user(session=db, user_create=user_in, hashed_password=hashed)
+    user = app.repositories.users.create_user(
+        session=db, user_create=user_in, hashed_password=hashed
+    )
     return user
 
 
@@ -43,13 +46,19 @@ def authentication_token_from_email(
     if not user:
         user_in_create = UserCreate(email=email, password=password)
         from app.core.security import get_password_hash
+
         hashed = get_password_hash(password)
-        user = app.repositories.users.create_user(session=db, user_create=user_in_create, hashed_password=hashed)
+        user = app.repositories.users.create_user(
+            session=db, user_create=user_in_create, hashed_password=hashed
+        )
     else:
         from app.core.security import get_password_hash
+
         hashed = get_password_hash(password)
         if not user.id:
             raise Exception("User id not set")
-        user = app.repositories.users.update_user(session=db, db_user=user, hashed_password=hashed)
+        user = app.repositories.users.update_user(
+            session=db, db_user=user, hashed_password=hashed
+        )
 
     return user_authentication_headers(client=client, email=email, password=password)

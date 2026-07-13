@@ -1,15 +1,10 @@
 """Unit tests for ETL build_insert_stmt helper."""
 
-import pytest
-from sqlalchemy.dialects.postgresql import insert as pg_insert
-
 from app.etl.load_strategies.statement import build_insert_stmt
-from app.models import Exoplanet, ExoplanetBase
 from tests.factories import make_exoplanet_model
 
 
 class TestBuildInsertStmt:
-
     def test_returns_insert_construct(self):
         planets = [make_exoplanet_model()]
         stmt = build_insert_stmt(planets)
@@ -48,7 +43,7 @@ class TestBuildInsertStmt:
             orbital_period=365.0,
             planet_radius=1.0,
             planet_mass=1.0,
-            distance_parsecs=10.0,
+            distance_from_earth=10.0,
         )
         stmt = build_insert_stmt([planet])
         compiled = str(stmt.compile(compile_kwargs={"literal_binds": True}))
@@ -58,7 +53,7 @@ class TestBuildInsertStmt:
         assert "orbital_period" in compiled.lower()
         assert "planet_radius" in compiled.lower()
         assert "planet_mass" in compiled.lower()
-        assert "distance_parsecs" in compiled.lower()
+        assert "distance_from_earth" in compiled.lower()
 
     def test_none_fields_included_as_null(self):
         planet = make_exoplanet_model(

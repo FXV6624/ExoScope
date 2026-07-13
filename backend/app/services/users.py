@@ -1,9 +1,11 @@
-from app.core.security import verify_password
-from app.repositories.users import get_user_by_email, update_user, create_user
-from app.core.security import get_password_hash
-from app.models import User
+from sqlmodel import Session
 
-# Dummy hash to use for timing attack prevention when user is not found 
+from app.core.security import get_password_hash, verify_password
+from app.models import User
+from app.repositories.users import create_user, get_user_by_email, update_user
+from app.schemas.user import UserCreate
+
+# Dummy hash to use for timing attack prevention when user is not found
 # # This is an Argon2 hash of a random password, used to ensure constant-time comparison
 DUMMY_HASH = "$argon2id$v=19$m=65536,t=3,p=4$MjQyZWE1MzBjYjJlZTI0Yw$YTU4NGM5ZTZmYjE2NzZlZjY0ZWY3ZGRkY2U2OWFjNjk"
 
@@ -11,7 +13,7 @@ DUMMY_HASH = "$argon2id$v=19$m=65536,t=3,p=4$MjQyZWE1MzBjYjJlZTI0Yw$YTU4NGM5ZTZm
 # -----------------------
 # AUTH
 # -----------------------
-def authenticate_user(session, email: str, password: str) -> User | None:
+def authenticate_user(session: Session, email: str, password: str) -> User | None:
     user = get_user_by_email(session, email)
 
     if not user:
@@ -24,7 +26,7 @@ def authenticate_user(session, email: str, password: str) -> User | None:
         return None
 
     if updated_hash:
-        update_user(session=session,db_user=user,hashed_password=updated_hash)
+        update_user(session=session, db_user=user, hashed_password=updated_hash)
 
     return user
 
@@ -32,29 +34,33 @@ def authenticate_user(session, email: str, password: str) -> User | None:
 # -----------------------
 # GET USER
 # -----------------------
-def get_user(session, email: str):
+def get_user(session: Session, email: str) -> User | None:
     return get_user_by_email(session, email)
 
 
 # -----------------------
 # CREATE USER
 # -----------------------
-def create_new_user(session, user_in, hashed_password: str):
-    return create_user(session=session,user_create=user_in,hashed_password=hashed_password)
+def create_new_user(
+    session: Session, user_in: UserCreate, hashed_password: str
+) -> User:
+    return create_user(
+        session=session, user_create=user_in, hashed_password=hashed_password
+    )
 
 
 # -----------------------
 # UPDATE PASSWORD
 # -----------------------
-def update_password(session, user, new_password: str):
+def update_password(session: Session, user: User, new_password: str) -> User:
     hashed = get_password_hash(new_password)
 
-    return update_user(session=session,db_user=user,hashed_password=hashed)
+    return update_user(session=session, db_user=user, hashed_password=hashed)
 
 
 # -----------------------
 # DELETE USER
 # -----------------------
-def delete_user(session, user):
+def delete_user(session: Session, user: User) -> None:
     session.delete(user)
     session.commit()

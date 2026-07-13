@@ -4,7 +4,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from app.core.logging import setup_logging
 import emails  # type: ignore[import-untyped]
 import jwt
 from jinja2 import Template
@@ -12,6 +11,7 @@ from jwt.exceptions import InvalidTokenError
 
 from app.core import security
 from app.core.config import settings
+from app.core.logging import setup_logging
 
 setup_logging()
 logger = logging.getLogger(__name__)

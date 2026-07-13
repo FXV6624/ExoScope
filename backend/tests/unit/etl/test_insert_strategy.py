@@ -1,7 +1,6 @@
 """Unit tests for InsertLoadStrategy (mocked session)."""
 
 import uuid
-import pytest
 from unittest.mock import MagicMock, patch
 
 from app.etl.load_strategies.insert import InsertLoadStrategy
@@ -10,7 +9,6 @@ from tests.factories import make_exoplanet_model
 
 
 class TestInsertLoadStrategy:
-
     def _make_session(self, inserted_ids=None):
         session = MagicMock()
         result_mock = MagicMock()
@@ -27,7 +25,7 @@ class TestInsertLoadStrategy:
         with patch("app.etl.load_strategies.insert.build_insert_stmt") as mock_stmt:
             mock_stmt.return_value.on_conflict_do_nothing.return_value.returning.return_value = MagicMock()
             session.exec.return_value.all.return_value = ids
-            result = strategy.load(session, planets)
+            strategy.load(session, planets)
 
         assert session.commit.called
 
@@ -43,7 +41,11 @@ class TestInsertLoadStrategy:
         assert isinstance(result, LoadResult)
 
     def test_attempted_equals_input_length(self):
-        planets = [make_exoplanet_model("A"), make_exoplanet_model("B"), make_exoplanet_model("C")]
+        planets = [
+            make_exoplanet_model("A"),
+            make_exoplanet_model("B"),
+            make_exoplanet_model("C"),
+        ]
         ids = [uuid.uuid4(), uuid.uuid4()]  # 2 inserted, 1 skipped
         session = self._make_session(inserted_ids=ids)
 

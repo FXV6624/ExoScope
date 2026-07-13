@@ -1,9 +1,9 @@
-from dataclasses import dataclass
 from collections.abc import Callable
+from dataclasses import dataclass
+from operator import attrgetter
 
 from app.core.enums.exoplanet import PlanetComposition
 from app.models import ExoplanetBase
-from operator import attrgetter
 
 
 @dataclass(frozen=True, slots=True)
@@ -13,6 +13,7 @@ class ClassificationThreshold:
     min_density: float | None
     radius_confidence: float
     density_confidence: float
+
 
 PLANET_CLASSIFICATIONS = (
     ClassificationThreshold(
@@ -52,6 +53,7 @@ PLANET_CLASSIFICATIONS = (
     ),
 )
 
+
 @dataclass(frozen=True, slots=True)
 class HabitabilityWeights:
     equilibrium_temperature: float
@@ -61,6 +63,7 @@ class HabitabilityWeights:
     stellar_age: float
     stellar_mass: float
     orbital_eccentricity: float
+
 
 WEIGHTS = HabitabilityWeights(
     equilibrium_temperature=0.30,
@@ -79,6 +82,7 @@ class HabitabilityCriterion:
     optimum: float
     sigma: float
     weight: float
+
 
 CRITERIA = (
     HabitabilityCriterion(

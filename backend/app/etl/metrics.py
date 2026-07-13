@@ -1,6 +1,4 @@
-from pydantic import Field
 from datetime import datetime
-
 
 from app.etl.base_report import ETLBaseReport
 
