@@ -4,7 +4,7 @@ services:
     image: postgres:18
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/utils/health-check/').read()"]
       interval: 10s
       retries: 5
       start_period: 30s
