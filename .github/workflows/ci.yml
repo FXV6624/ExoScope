@@ -22,6 +22,12 @@ jobs:
       - name: Start services and wait for healthcheck
         run: docker compose up -d backend db redis proxy --wait
 
+      - name: Inspect backend logs on failure
+        if: failure()
+        run: |
+          docker compose logs backend
+          docker compose logs prestart
+
       - name: Run Backend tests
         run: docker compose exec -T backend pytest
 
