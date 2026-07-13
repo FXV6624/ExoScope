@@ -1,8 +1,9 @@
 from app.etl.enums import LoadMode
-from .upsert import UpsertLoadStrategy
+
+from .base import LoadStrategy
 from .insert import InsertLoadStrategy
 from .reload import ReloadLoadStrategy
-from .base import LoadStrategy
+from .upsert import UpsertLoadStrategy
 
 
 def get_load_strategy(mode: LoadMode) -> LoadStrategy:

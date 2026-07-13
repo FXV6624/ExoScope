@@ -1,11 +1,8 @@
 """Unit tests for ExoplanetQueryBuilder (no DB required)."""
 
-import pytest
-from sqlmodel import select
 
-from app.schemas.exoplanet import ExoplanetFilters
 from app.repositories.exoplanet_query_builder import build_exoplanet_query
-from app.models import Exoplanet
+from app.schemas.exoplanet import ExoplanetFilters
 
 
 class TestBuildExoplanetQuery:

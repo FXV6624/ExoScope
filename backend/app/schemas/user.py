@@ -2,8 +2,10 @@ import uuid
 from datetime import datetime
 
 from pydantic import EmailStr
-from app.models import UserBase
 from sqlmodel import Field, SQLModel
+
+from app.models import UserBase
+
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):

@@ -1,16 +1,16 @@
 """API tests for /users endpoints."""
 
 import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, delete
 
 from app.core.config import settings
 from app.core.security import get_password_hash
-from app.models import User, Item
+from app.models import Item, User
 from app.repositories.users import create_user
 from app.schemas.user import UserCreate
-
 
 API = settings.API_V1_STR
 

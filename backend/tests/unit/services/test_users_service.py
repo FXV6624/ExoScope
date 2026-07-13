@@ -1,11 +1,10 @@
 """Unit tests for services/users.py (with mocked DB)."""
 
 import uuid
-import pytest
 from unittest.mock import MagicMock, patch
 
-from app.services import users as user_service
 from app.models import User
+from app.services import users as user_service
 from app.services.users import DUMMY_HASH
 
 
@@ -22,7 +21,7 @@ class TestAuthenticateUser:
 
     def test_returns_none_when_user_not_found(self):
         session = MagicMock()
-        with patch("app.services.users.get_user_by_email", return_value=None) as mock_get, \
+        with patch("app.services.users.get_user_by_email", return_value=None), \
              patch("app.services.users.verify_password", return_value=(False, None)) as mock_verify:
             result = user_service.authenticate_user(session, "noone@x.com", "password")
             assert result is None
@@ -75,7 +74,7 @@ class TestUpdatePassword:
         new_hash = "$argon2id$newhash"
         with patch("app.services.users.get_password_hash", return_value=new_hash) as mock_hash, \
              patch("app.services.users.update_user", return_value=user) as mock_update:
-            result = user_service.update_password(session, user, "newpassword123")
+            user_service.update_password(session, user, "newpassword123")
             mock_hash.assert_called_once_with("newpassword123")
             mock_update.assert_called_once()
 

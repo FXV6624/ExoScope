@@ -1,9 +1,9 @@
-from dataclasses import dataclass
 from collections.abc import Callable
+from dataclasses import dataclass
+from operator import attrgetter
 
 from app.core.enums.exoplanet import PlanetComposition
 from app.models import ExoplanetBase
-from operator import attrgetter
 
 
 @dataclass(frozen=True, slots=True)

@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class PlanetComposition(str, Enum):
     ROCKY = "Rocky"
     SUPER_EARTH = "Super Earth"

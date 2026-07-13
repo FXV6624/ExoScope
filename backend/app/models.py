@@ -1,11 +1,12 @@
 import uuid
 from datetime import datetime, timezone
-from app.core.enums.exoplanet import PlanetComposition
-from sqlalchemy import DateTime, Column, String
+
 from pydantic import EmailStr
-from sqlalchemy import DateTime, Column
-from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
+from sqlalchemy import Column, DateTime, String
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
+
+from app.core.enums.exoplanet import PlanetComposition
 from app.etl.report import ETLReport
 
 

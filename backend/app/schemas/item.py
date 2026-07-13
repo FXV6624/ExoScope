@@ -1,8 +1,10 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
+
+from sqlmodel import Field, SQLModel
 
 from app.models import ItemBase
-from sqlmodel import Field,SQLModel
+
 
 # Properties to receive on item creation
 class ItemCreate(ItemBase):

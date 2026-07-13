@@ -1,16 +1,16 @@
 """API tests for /items endpoints."""
 
 import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, delete
 
 from app.core.config import settings
+from app.core.security import get_password_hash
 from app.models import Item, User
 from app.repositories.users import create_user
 from app.schemas.user import UserCreate
-from app.core.security import get_password_hash
-
 
 API = settings.API_V1_STR
 
@@ -72,11 +72,11 @@ class TestGetItems:
     def test_read_items_returns_only_own_items_for_normal_user(self, client: TestClient, db: Session, item_user, other_user):
         user1, pass1 = item_user
         user2, pass2 = other_user
-        
+
         # User 1 creates an item
         h1 = _get_token(client, user1.email, pass1)
         client.post(f"{API}/items/", json={"title": "User 1 Item"}, headers=h1)
-        
+
         # User 2 creates an item
         h2 = _get_token(client, user2.email, pass2)
         client.post(f"{API}/items/", json={"title": "User 2 Item"}, headers=h2)

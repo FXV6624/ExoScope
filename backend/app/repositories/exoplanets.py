@@ -1,12 +1,11 @@
 import uuid
-from typing import Optional
 
 from sqlalchemy import Select
-from sqlmodel import Session, func, col, select
+from sqlmodel import Session, col, func, select
 
-from app.schemas.exoplanet import ExoplanetFilters
-from app.repositories.exoplanet_query_builder import build_exoplanet_query
 from app.models import Exoplanet
+from app.repositories.exoplanet_query_builder import build_exoplanet_query
+from app.schemas.exoplanet import ExoplanetFilters
 
 
 def get_exoplanets_with_filters(session: Session,filters: ExoplanetFilters,
@@ -30,7 +29,7 @@ def get_exoplanets(session: Session,query,skip: int,limit: int) -> list[Exoplane
     return session.exec(statement).all()
 
 
-def count_exoplanets(session: Session,query: Optional[Select] = None) -> int:
+def count_exoplanets(session: Session,query: Select | None = None) -> int:
     """
     Count total exoplanets, with or without filters.
     """

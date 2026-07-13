@@ -1,13 +1,11 @@
 """API tests for /etl endpoints."""
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
+
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-from app.etl.report import ETLReport
 from tests.factories import make_etl_report
-
 
 API = settings.API_V1_STR
 
@@ -30,7 +28,7 @@ class TestRunETL:
 
         payload = {"limit": 50, "dry_run": True, "load_mode": "upsert"}
         response = client.post(f"{API}/etl/run", headers=superuser_token_headers, json=payload)
-        
+
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "ok"

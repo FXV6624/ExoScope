@@ -1,7 +1,5 @@
 """Unit tests for ExoplanetFilters schema."""
 
-import pytest
-from pydantic import ValidationError
 
 from app.schemas.exoplanet import ExoplanetFilters
 

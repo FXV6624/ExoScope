@@ -8,15 +8,12 @@ usan en múltiples tests.
 import uuid
 from datetime import timedelta
 
-from fastapi.testclient import TestClient
 from sqlmodel import Session
 
-from app.core.config import settings
 from app.core.security import create_access_token, get_password_hash
-from app.models import User, Item, Exoplanet
+from app.models import Exoplanet, Item, User
 from app.repositories.users import create_user
 from app.schemas.user import UserCreate
-
 
 # ---------------------------------------------------------------------------
 # Token helpers

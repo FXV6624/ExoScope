@@ -1,17 +1,17 @@
 """Unit tests for core.security module."""
 
-import pytest
 from datetime import timedelta
 
 import jwt
+import pytest
 
-from app.core.security import (
-    create_access_token,
-    verify_password,
-    get_password_hash,
-    ALGORITHM,
-)
 from app.core.config import settings
+from app.core.security import (
+    ALGORITHM,
+    create_access_token,
+    get_password_hash,
+    verify_password,
+)
 
 
 class TestCreateAccessToken:

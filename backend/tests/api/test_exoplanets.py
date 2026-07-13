@@ -1,13 +1,13 @@
 """API tests for /exoplanets endpoints."""
 
 import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import Session, delete
 
 from app.core.config import settings
 from app.models import Exoplanet
-
 
 API = settings.API_V1_STR
 

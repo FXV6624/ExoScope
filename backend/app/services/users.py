@@ -1,9 +1,8 @@
-from app.core.security import verify_password
-from app.repositories.users import get_user_by_email, update_user, create_user
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, verify_password
 from app.models import User
+from app.repositories.users import create_user, get_user_by_email, update_user
 
-# Dummy hash to use for timing attack prevention when user is not found 
+# Dummy hash to use for timing attack prevention when user is not found
 # # This is an Argon2 hash of a random password, used to ensure constant-time comparison
 DUMMY_HASH = "$argon2id$v=19$m=65536,t=3,p=4$MjQyZWE1MzBjYjJlZTI0Yw$YTU4NGM5ZTZmYjE2NzZlZjY0ZWY3ZGRkY2U2OWFjNjk"
 

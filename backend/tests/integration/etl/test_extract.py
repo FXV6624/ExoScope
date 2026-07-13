@@ -1,11 +1,11 @@
 """Integration tests for ETL extract step."""
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 from app.etl.extract import extract
 from app.schemas.exoplanet import ExoplanetRaw
-
 
 NASA_SAMPLE = [
     {

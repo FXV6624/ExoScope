@@ -1,18 +1,18 @@
 """Integration tests for ExoplanetRepository against a real PostgreSQL DB."""
 
 import uuid
+
 import pytest
 from sqlmodel import Session, delete
 
 from app.models import Exoplanet
-from app.schemas.exoplanet import ExoplanetFilters
+from app.repositories.exoplanet_query_builder import build_exoplanet_query
 from app.repositories.exoplanets import (
-    get_exoplanets_with_filters,
-    get_exoplanets,
     count_exoplanets,
     get_exoplanet_by_id,
+    get_exoplanets_with_filters,
 )
-from app.repositories.exoplanet_query_builder import build_exoplanet_query
+from app.schemas.exoplanet import ExoplanetFilters
 
 
 @pytest.fixture(autouse=True)

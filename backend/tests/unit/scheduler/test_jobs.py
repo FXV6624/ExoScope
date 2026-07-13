@@ -1,6 +1,5 @@
 """Unit tests for scheduler jobs."""
 
-import pytest
 from unittest.mock import MagicMock, patch
 
 from app.scheduler.jobs import run_exoplanet_etl_job

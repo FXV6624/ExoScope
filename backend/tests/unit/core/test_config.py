@@ -2,7 +2,7 @@
 
 import pytest
 
-from app.core.config import Settings, settings, parse_cors
+from app.core.config import parse_cors, settings
 
 
 class TestParseCors:

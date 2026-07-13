@@ -2,18 +2,21 @@ from datetime import timedelta
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import HTMLResponse
-
-from app.schemas.user import UserPublic, UserUpdate
-from app.schemas.auth import Message, Token, NewPassword
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
-from app.core.config import settings
 from app.core import security
-
+from app.core.config import settings
+from app.schemas.auth import Message, NewPassword, Token
+from app.schemas.user import UserPublic
 from app.services import users as user_service
-from app.utils import generate_password_reset_token,generate_reset_password_email,send_email,verify_password_reset_token
+from app.utils import (
+    generate_password_reset_token,
+    generate_reset_password_email,
+    send_email,
+    verify_password_reset_token,
+)
 
 router = APIRouter(tags=["login"])
 
@@ -23,7 +26,7 @@ router = APIRouter(tags=["login"])
 # -------------------------
 @router.post("/login/access-token")
 def login_access_token(session: SessionDep,form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> Token:
-    
+
     user = user_service.authenticate_user(session=session,email=form_data.username,password=form_data.password)
 
     if not user:

@@ -3,15 +3,15 @@ from contextlib import asynccontextmanager
 import sentry_sdk
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
-from starlette.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
-from slowapi import _rate_limit_exceeded_handler
+from starlette.middleware.cors import CORSMiddleware
 
-from app.core.limiter import limiter
 from app.api.main import api_router
-from app.core.cache import init_cache, close_cache
+from app.core.cache import close_cache, init_cache
 from app.core.config import settings
+from app.core.limiter import limiter
 from app.scheduler.scheduler import start_scheduler, stop_scheduler
 
 
@@ -27,7 +27,7 @@ if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
 
     await init_cache()
     start_scheduler()

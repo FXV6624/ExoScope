@@ -1,10 +1,11 @@
 from sqlmodel import Session
-from sqlalchemy.dialects.postgresql import insert
 
-from app.models import Exoplanet
-from .base import LoadStrategy
 from app.etl.schemas import LoadResult
-from .statement import build_insert_stmt, BATCH_SIZE
+from app.models import Exoplanet
+
+from .base import LoadStrategy
+from .statement import BATCH_SIZE, build_insert_stmt
+
 
 class InsertLoadStrategy(LoadStrategy):
 

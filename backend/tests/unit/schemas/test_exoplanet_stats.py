@@ -3,8 +3,8 @@
 import pytest
 from pydantic import ValidationError
 
-from app.schemas.exoplanet import ExoplanetStats
 from app.core.enums.exoplanet import PlanetComposition
+from app.schemas.exoplanet import ExoplanetStats
 
 
 def get_mock_stats():

@@ -1,10 +1,10 @@
-from app.schemas.user import UserCreate
 from sqlmodel import Session, create_engine, select
 
-from app.repositories import users
 from app.core.config import settings
-from app.models import User
 from app.core.security import get_password_hash
+from app.models import User
+from app.repositories import users
+from app.schemas.user import UserCreate
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 

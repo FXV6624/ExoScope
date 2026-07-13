@@ -1,12 +1,10 @@
 import uuid
-from typing import Any
 
 from fastapi import APIRouter, HTTPException
 
 from app.api.deps import CurrentUser, SessionDep
-from app.schemas.item import ItemCreate, ItemPublic, ItemUpdate, ItemsPublic
 from app.schemas.auth import Message
-
+from app.schemas.item import ItemCreate, ItemPublic, ItemsPublic, ItemUpdate
 from app.services import items as item_service
 
 router = APIRouter(prefix="/items", tags=["items"])

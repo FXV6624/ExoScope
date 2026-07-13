@@ -1,7 +1,6 @@
 """Unit tests for core.logging module."""
 
 import logging
-import pytest
 
 from app.core.logging import setup_logging
 

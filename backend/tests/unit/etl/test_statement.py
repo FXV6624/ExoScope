@@ -1,10 +1,7 @@
 """Unit tests for ETL build_insert_stmt helper."""
 
-import pytest
-from sqlalchemy.dialects.postgresql import insert as pg_insert
 
 from app.etl.load_strategies.statement import build_insert_stmt
-from app.models import Exoplanet, ExoplanetBase
 from tests.factories import make_exoplanet_model
 
 

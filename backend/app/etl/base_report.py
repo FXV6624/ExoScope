@@ -1,6 +1,9 @@
-from pydantic import BaseModel, Field
 from datetime import datetime
+
+from pydantic import BaseModel, Field
+
 from app.etl.schemas import LoadResult
+
 
 class ETLBaseReport(BaseModel):
 

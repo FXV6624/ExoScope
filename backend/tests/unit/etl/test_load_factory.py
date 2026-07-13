@@ -5,8 +5,8 @@ import pytest
 from app.etl.enums import LoadMode
 from app.etl.load_strategies.factory import get_load_strategy
 from app.etl.load_strategies.insert import InsertLoadStrategy
-from app.etl.load_strategies.upsert import UpsertLoadStrategy
 from app.etl.load_strategies.reload import ReloadLoadStrategy
+from app.etl.load_strategies.upsert import UpsertLoadStrategy
 
 
 class TestGetLoadStrategy:

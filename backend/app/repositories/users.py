@@ -1,5 +1,6 @@
-from app.models import User
 from sqlmodel import select
+
+from app.models import User
 
 
 def create_user(session, user_create, hashed_password: str):

@@ -17,7 +17,6 @@ dev = [
     { name = "redis", specifier = ">=8.0.1" },
     { name = "zizmor", specifier = ">=1.23.1" },
 ]
-github-actions = [{ name = "smokeshow", specifier = ">=0.5.0" }]
 
 [[package]]
 name = "alembic"
@@ -2203,19 +2202,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b9/52/24527cf25a8b508926aff53350b0136561dfe86c7125f61526653666e1b2/slowapi-0.1.10.tar.gz", hash = "sha256:d320d5bc04d9f171a77fb16700faf3036d85b00f420f22924c8a225f95bd14f9", size = 13841, upload-time = "2026-06-13T11:59:31.571Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c4/8b/1d359f38706b4097d9a943bf8bd22599f537de4cbaff1e622d3e3936e164/slowapi-0.1.10-py3-none-any.whl", hash = "sha256:3acb61561dc9d687e3d3669362ff6a439de9ba44e2fed3a9c165da26b4b83e28", size = 14921, upload-time = "2026-06-13T11:59:30.485Z" },
-]
-
-[[package]]
-name = "smokeshow"
-version = "0.5.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "httpx" },
-    { name = "typer" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/75/94/c99b76517c268ef8d5c2ff88faba5a019664bd69e4754944afa294b4f24c/smokeshow-0.5.0.tar.gz", hash = "sha256:91dcabc29ac3116bff59b4d8a7bda4ae3ccc4c70742a38cec7127b8162e4a0f6", size = 101349, upload-time = "2025-01-07T19:41:51.732Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/77/10/0d23e4953eb7c1e1ad848084b3115f19234f34f907658ed11bed0d826aee/smokeshow-0.5.0-py3-none-any.whl", hash = "sha256:da12a960fc7cb525efc4035a0c3c9363b6217ea7e66bc39b9ed3cd8bed6eeedc", size = 8389, upload-time = "2025-01-07T19:41:49.194Z" },
 ]
 
 [[package]]

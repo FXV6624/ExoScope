@@ -1,25 +1,28 @@
 import uuid
-from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import select, func, col, delete
+from sqlmodel import col, delete, func, select
 
 from app.api.deps import (
     CurrentUser,
     SessionDep,
     get_current_active_superuser,
 )
-
-from app.schemas.user import UserCreate,UserPublic,UserUpdate,UserRegister,UserUpdateMe,UsersPublic,UpdatePassword
-
-from app.schemas.auth import Message
-from app.models import User, Item
-
-from app.services import users as user_service
-from app.core.security import get_password_hash
 from app.core.config import settings
+from app.core.security import get_password_hash
+from app.models import Item, User
+from app.schemas.auth import Message
+from app.schemas.user import (
+    UpdatePassword,
+    UserCreate,
+    UserPublic,
+    UserRegister,
+    UsersPublic,
+    UserUpdate,
+    UserUpdateMe,
+)
+from app.services import users as user_service
 from app.utils import generate_new_account_email, send_email
-
 
 router = APIRouter(prefix="/users", tags=["users"])
 

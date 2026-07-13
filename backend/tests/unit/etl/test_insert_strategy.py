@@ -1,7 +1,6 @@
 """Unit tests for InsertLoadStrategy (mocked session)."""
 
 import uuid
-import pytest
 from unittest.mock import MagicMock, patch
 
 from app.etl.load_strategies.insert import InsertLoadStrategy
@@ -27,7 +26,7 @@ class TestInsertLoadStrategy:
         with patch("app.etl.load_strategies.insert.build_insert_stmt") as mock_stmt:
             mock_stmt.return_value.on_conflict_do_nothing.return_value.returning.return_value = MagicMock()
             session.exec.return_value.all.return_value = ids
-            result = strategy.load(session, planets)
+            strategy.load(session, planets)
 
         assert session.commit.called
 

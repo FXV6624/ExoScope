@@ -1,10 +1,10 @@
-from app.schemas.user import UserCreate, UserUpdate
-import app.repositories.users
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
+import app.repositories.users
 from app.core.config import settings
 from app.models import User
+from app.schemas.user import UserCreate
 from tests.utils.utils import random_email, random_lower_string
 
 

@@ -1,10 +1,8 @@
 """API tests for authentication endpoints (/login/access-token, /login/test-token, etc.)."""
 
-import pytest
 from fastapi.testclient import TestClient
 
 from app.core.config import settings
-
 
 API = settings.API_V1_STR
 

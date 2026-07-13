@@ -1,10 +1,11 @@
 """Unit tests for ETLReport schema."""
 
-import pytest
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
-from app.etl.report import ETLReport
+import pytest
+
 from app.etl.metrics import ETLMetrics
+from app.etl.report import ETLReport
 from app.etl.schemas import LoadResult
 from tests.factories import make_etl_metrics, make_load_result
 

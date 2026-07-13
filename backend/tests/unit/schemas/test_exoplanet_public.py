@@ -1,11 +1,12 @@
 """Unit tests for ExoplanetPublic schema."""
 
 import uuid
+
 import pytest
 from pydantic import ValidationError
 
-from app.schemas.exoplanet import ExoplanetPublic
 from app.models import ExoplanetBase
+from app.schemas.exoplanet import ExoplanetPublic
 
 
 class TestExoplanetPublic:

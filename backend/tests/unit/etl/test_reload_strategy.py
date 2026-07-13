@@ -1,7 +1,6 @@
 """Unit tests for ReloadLoadStrategy (mocked session)."""
 
-import pytest
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 
 from app.etl.load_strategies.reload import ReloadLoadStrategy
 from app.etl.schemas import LoadResult

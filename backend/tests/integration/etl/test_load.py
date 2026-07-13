@@ -3,11 +3,10 @@
 import pytest
 from sqlmodel import Session, delete, select
 
-from app.models import Exoplanet
-from app.etl.load import load
 from app.etl.enums import LoadMode
+from app.etl.load import load
 from app.etl.schemas import LoadResult
-from tests.factories import make_exoplanet_base
+from app.models import Exoplanet
 
 
 @pytest.fixture(autouse=True)

@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.postgresql import insert
-from app.models import Exoplanet
 
+from app.models import Exoplanet
 
 BATCH_SIZE = 1000
 def build_insert_stmt(planets: list[Exoplanet]):

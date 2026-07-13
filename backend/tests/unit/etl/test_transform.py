@@ -1,9 +1,8 @@
 """Unit tests for ETL transform step."""
 
-import pytest
 from app.etl.transform import transform
-from app.schemas.exoplanet import ExoplanetRaw
 from app.models import ExoplanetBase
+from app.schemas.exoplanet import ExoplanetRaw
 from tests.factories import make_exoplanet_raw
 
 

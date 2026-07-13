@@ -1,14 +1,15 @@
 """Integration tests for database models (SQLModel / SQLAlchemy)."""
 
 import uuid
-import pytest
-from sqlmodel import Session, delete, select
-from sqlalchemy.exc import IntegrityError
 
-from app.models import User, Item, Exoplanet, ETLRun
+import pytest
+from sqlalchemy.exc import IntegrityError
+from sqlmodel import Session, delete, select
+
+from app.core.security import get_password_hash
+from app.models import ETLRun, Exoplanet, Item, User
 from app.repositories.users import create_user
 from app.schemas.user import UserCreate
-from app.core.security import get_password_hash
 
 
 @pytest.fixture(autouse=True)
@@ -34,7 +35,7 @@ class TestUserModel:
         uc = UserCreate(email=email, password="password12345")
         create_user(session=db, user_create=uc, hashed_password=get_password_hash(uc.password))
 
-        with pytest.raises(Exception):  # IntegrityError or similar
+        with pytest.raises(IntegrityError):
             create_user(session=db, user_create=uc, hashed_password=get_password_hash(uc.password))
             db.commit()
 
@@ -84,7 +85,7 @@ class TestExoplanetModel:
         db.commit()
 
         db.add(planet2)
-        with pytest.raises(Exception):  # Unique constraint violation
+        with pytest.raises(IntegrityError):  # Unique constraint violation
             db.commit()
         db.rollback()
 

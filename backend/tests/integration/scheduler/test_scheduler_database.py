@@ -1,7 +1,8 @@
 """Integration tests for scheduler + database interaction."""
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from sqlmodel import Session, delete, select
 
 from app.models import ETLRun, Exoplanet
@@ -45,7 +46,7 @@ class TestSchedulerDatabaseIntegration:
 
         captured_config = []
 
-        def fake_run_etl(session, config):
+        def fake_run_etl(_session, config):
             captured_config.append(config)
             return MagicMock(model_dump=lambda: {})
 
@@ -67,6 +68,4 @@ class TestSchedulerDatabaseIntegration:
             mock_session_cls.return_value.__enter__.return_value = MagicMock()
             mock_session_cls.return_value.__exit__.return_value = False
 
-            # Should not raise
-            with pytest.raises(Exception):
-                run_exoplanet_etl_job()
+            run_exoplanet_etl_job()

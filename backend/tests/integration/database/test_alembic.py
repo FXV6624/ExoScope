@@ -1,10 +1,8 @@
 """Integration tests for Alembic migrations."""
 
-import pytest
 from sqlalchemy import inspect, text
 
 from app.core.db import engine
-from app.core.config import settings
 
 
 class TestAlembicMigrations:

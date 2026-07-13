@@ -8,16 +8,15 @@ consistente a lo largo de todos los tests.
 import uuid
 from datetime import datetime, timezone
 
-from app.models import Exoplanet, Item, User, ETLRun, ExoplanetBase
-from app.schemas.exoplanet import ExoplanetRaw, ExoplanetFilters
-from app.schemas.item import ItemCreate
-from app.schemas.user import UserCreate
-from app.etl.schemas import LoadResult
-from app.etl.report import ETLReport
-from app.etl.metrics import ETLMetrics
 from app.etl.config import ETLConfig
 from app.etl.enums import LoadMode
-
+from app.etl.metrics import ETLMetrics
+from app.etl.report import ETLReport
+from app.etl.schemas import LoadResult
+from app.models import Exoplanet, ExoplanetBase, Item, User
+from app.schemas.exoplanet import ExoplanetFilters, ExoplanetRaw
+from app.schemas.item import ItemCreate
+from app.schemas.user import UserCreate
 
 # ---------------------------------------------------------------------------
 # ExoplanetRaw

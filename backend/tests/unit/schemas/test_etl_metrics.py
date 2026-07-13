@@ -1,7 +1,8 @@
 """Unit tests for ETLMetrics."""
 
+from datetime import datetime, timedelta, timezone
+
 import pytest
-from datetime import datetime, timezone, timedelta
 
 from app.etl.metrics import ETLMetrics
 from app.etl.schemas import LoadResult

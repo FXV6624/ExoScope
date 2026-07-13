@@ -1,7 +1,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from app.scheduler.jobs import run_exoplanet_etl_job
 from app.core.config import settings
+from app.scheduler.jobs import run_exoplanet_etl_job
 
 scheduler = BackgroundScheduler(timezone="UTC")
 

@@ -1,7 +1,5 @@
 """Unit tests for UpsertLoadStrategy (mocked session)."""
 
-import uuid
-import pytest
 from unittest.mock import MagicMock, patch
 
 from app.etl.load_strategies.upsert import UpsertLoadStrategy

@@ -1,12 +1,11 @@
 """Unit tests for services/exoplanets.py (with mocked repositories)."""
 
 import uuid
-import pytest
 from unittest.mock import MagicMock, patch
 
-from app.services import exoplanets as exo_service
-from app.schemas.exoplanet import ExoplanetFilters
 from app.models import Exoplanet
+from app.schemas.exoplanet import ExoplanetFilters
+from app.services import exoplanets as exo_service
 
 
 def _make_exoplanet(name="Kepler-22b"):
@@ -84,7 +83,7 @@ class TestGetExoplanetStatsService:
              patch("app.services.exoplanets.get_summary_stats", return_value=summary_stats), \
              patch("app.services.exoplanets.get_by_composition", return_value=by_composition_rows), \
              patch("app.services.exoplanets.get_completeness", return_value=mock_completeness):
-            
+
             stats = exo_service.get_exoplanet_stats_service(session)
             assert stats.total == 5000
             assert stats.by_method["Transit"] == 3000
@@ -106,7 +105,7 @@ class TestGetExoplanetStatsService:
              patch("app.services.exoplanets.get_summary_stats", return_value=summary_stats), \
              patch("app.services.exoplanets.get_by_composition", return_value=[]), \
              patch("app.services.exoplanets.get_completeness", return_value=mock_completeness):
-            
+
             stats = exo_service.get_exoplanet_stats_service(session)
             assert stats.total == 0
             assert stats.by_method == {}

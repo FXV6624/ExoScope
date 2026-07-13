@@ -1,11 +1,11 @@
-from sqlalchemy import tuple_, select
-from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy import select, tuple_
 from sqlmodel import Session
 
-from app.models import Exoplanet
 from app.etl.schemas import LoadResult
+from app.models import Exoplanet
+
 from .base import LoadStrategy
-from .statement import build_insert_stmt, BATCH_SIZE
+from .statement import BATCH_SIZE, build_insert_stmt
 
 
 class UpsertLoadStrategy(LoadStrategy):
@@ -16,7 +16,7 @@ class UpsertLoadStrategy(LoadStrategy):
 
         existing_query = select(Exoplanet.planet_name, Exoplanet.host_star).where(
             tuple_(Exoplanet.planet_name, Exoplanet.host_star).in_(keys))
-        
+
         existing = set(session.exec(existing_query).all())
 
         inserted = 0

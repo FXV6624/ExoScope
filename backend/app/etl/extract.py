@@ -1,10 +1,11 @@
-from typing import List
+
 import requests
+
 from app.schemas.exoplanet import ExoplanetRaw
 
 URL = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync"
 
-def extract(limit: int | None = None) -> List[ExoplanetRaw]:
+def extract(limit: int | None = None) -> list[ExoplanetRaw]:
     """
     Extract raw exoplanet data from NASA TAP API.
     Aplica el límite directamente en la consulta ADQL (Extract) de forma determinista.
@@ -39,5 +40,5 @@ def extract(limit: int | None = None) -> List[ExoplanetRaw]:
     response = requests.get(URL, params=params)
     response.raise_for_status()
     data = response.json()
-    
+
     return [ExoplanetRaw(**row) for row in data]

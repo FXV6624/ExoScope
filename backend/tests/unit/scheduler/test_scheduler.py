@@ -1,9 +1,8 @@
 """Unit tests for the APScheduler scheduler module."""
 
-import pytest
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import PropertyMock, patch
 
-from app.scheduler.scheduler import start_scheduler, stop_scheduler, scheduler
+from app.scheduler.scheduler import scheduler, start_scheduler, stop_scheduler
 
 
 class TestScheduler:

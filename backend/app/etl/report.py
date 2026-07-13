@@ -1,6 +1,7 @@
 from __future__ import annotations
-from app.etl.metrics import ETLMetrics
+
 from app.etl.base_report import ETLBaseReport
+from app.etl.metrics import ETLMetrics
 
 
 class ETLReport(ETLBaseReport):

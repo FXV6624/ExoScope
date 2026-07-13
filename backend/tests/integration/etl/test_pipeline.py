@@ -1,16 +1,16 @@
 """Integration tests for the full ETL Pipeline (ExoplanetETL)."""
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from sqlmodel import Session, delete, select
 
-from app.models import Exoplanet, ETLRun
-from app.etl.pipeline import ExoplanetETL
 from app.etl.config import ETLConfig
 from app.etl.enums import LoadMode
+from app.etl.pipeline import ExoplanetETL
 from app.etl.report import ETLReport
-from tests.factories import make_exoplanet_raw, make_exoplanet_base
-
+from app.models import ETLRun, Exoplanet
+from tests.factories import make_exoplanet_raw
 
 NASA_ROWS = [
     make_exoplanet_raw("Pipeline-A", "Star-A"),
