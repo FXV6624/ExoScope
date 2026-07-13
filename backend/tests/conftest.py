@@ -20,6 +20,21 @@ from app.main import app
 from app.models import Item, User, Exoplanet, ETLRun
 from tests.utils.user import authentication_token_from_email
 from tests.utils.utils import get_superuser_token_headers
+from unittest.mock import AsyncMock, patch
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.inmemory import InMemoryBackend
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_cache_and_limiter():
+    from app.core.limiter import limiter
+    limiter.enabled = False
+    
+    FastAPICache.init(InMemoryBackend())
+    
+    with patch("app.main.init_cache", new_callable=AsyncMock), \
+         patch("app.main.close_cache", new_callable=AsyncMock):
+        yield
+
 
 
 # ---------------------------------------------------------------------------

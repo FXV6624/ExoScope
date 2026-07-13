@@ -21,7 +21,7 @@ class TestTransform:
         assert planet.discovery_year == 2011
         assert planet.orbital_period == 289.8
         assert planet.planet_radius == 2.4
-        assert planet.distance_parsecs == 190.0
+        assert planet.distance_from_earth == 190.0
 
     def test_field_mapping_is_correct(self):
         """Verify NASA API field names are mapped to internal model fields."""
@@ -41,7 +41,7 @@ class TestTransform:
         assert p.planet_name == "HD 209458 b"
         assert p.host_star == "HD 209458"
         assert p.planet_mass == 0.69
-        assert p.distance_parsecs == 47.0
+        assert p.distance_from_earth == 47.0
 
     def test_empty_list_returns_empty(self):
         result = transform([])

@@ -63,5 +63,12 @@ class TestExoplanetFilters:
             "min_orbital_period", "max_orbital_period",
             "min_planet_radius", "max_planet_radius",
             "min_planet_mass", "max_planet_mass",
+            "composition", "min_composition_confidence",
+            "min_habitability_score", "max_habitability_score",
+            "min_habitability_confidence", "min_distance_from_earth",
+            "max_distance_from_earth", "min_equilibrium_temperature",
+            "max_equilibrium_temperature", "system_planet_count",
+            "min_system_planet_count", "min_orbital_eccentricity",
+            "max_orbital_eccentricity"
         }
         assert expected_keys == set(d.keys())

@@ -65,7 +65,9 @@ class TestPasswordRecovery:
         assert "message" in response.json()
 
     def test_recover_password_for_known_user(self, client: TestClient):
-        response = client.post(f"{API}/password-recovery/{settings.FIRST_SUPERUSER}")
+        from unittest.mock import patch
+        with patch("app.api.routes.login.send_email"):
+            response = client.post(f"{API}/password-recovery/{settings.FIRST_SUPERUSER}")
         assert response.status_code == 200
 
 

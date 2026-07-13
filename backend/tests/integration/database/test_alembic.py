@@ -42,9 +42,14 @@ class TestAlembicMigrations:
         inspector = inspect(engine)
         columns = {col["name"] for col in inspector.get_columns("exoplanet")}
         expected = {
-            "id", "planet_name", "host_star", "discovery_method",
-            "discovery_year", "orbital_period", "planet_radius",
-            "planet_mass", "distance_parsecs"
+            "id", "planet_name", "host_star", "discovery_year", "discovery_method",
+            "planet_radius", "planet_mass", "planet_density",
+            "equilibrium_temperature", "incident_flux", "orbital_period",
+            "semi_major_axis", "orbital_eccentricity", "stellar_effective_temperature",
+            "stellar_radius", "stellar_mass", "stellar_luminosity", "stellar_age",
+            "distance_from_earth", "system_planet_count", "system_star_count",
+            "composition", "composition_confidence", "habitability_score",
+            "habitability_confidence"
         }
         missing = expected - columns
         assert not missing, f"Exoplanet table missing columns: {missing}"

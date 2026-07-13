@@ -57,7 +57,7 @@ def make_exoplanet_base(
     orbital_period: float | None = 289.8,
     planet_radius: float | None = 2.4,
     planet_mass: float | None = None,
-    distance_parsecs: float | None = 190.0,
+    distance_from_earth: float | None = 190.0,
 ) -> ExoplanetBase:
     return ExoplanetBase(
         planet_name=planet_name,
@@ -67,7 +67,7 @@ def make_exoplanet_base(
         orbital_period=orbital_period,
         planet_radius=planet_radius,
         planet_mass=planet_mass,
-        distance_parsecs=distance_parsecs,
+        distance_from_earth=distance_from_earth,
     )
 
 
@@ -79,7 +79,7 @@ def make_exoplanet_model(
     orbital_period: float | None = 289.8,
     planet_radius: float | None = 2.4,
     planet_mass: float | None = None,
-    distance_parsecs: float | None = 190.0,
+    distance_from_earth: float | None = 190.0,
 ) -> Exoplanet:
     return Exoplanet(
         id=uuid.uuid4(),
@@ -90,7 +90,7 @@ def make_exoplanet_model(
         orbital_period=orbital_period,
         planet_radius=planet_radius,
         planet_mass=planet_mass,
-        distance_parsecs=distance_parsecs,
+        distance_from_earth=distance_from_earth,
     )
 
 

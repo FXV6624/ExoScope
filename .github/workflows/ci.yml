@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Build containers
+        run: docker compose up --build -d
+
+      - name: Wait backend
+        run: sleep 20
+
+      - name: Backend tests
+        run: docker compose exec -T backend pytest
+
+      - name: Frontend build
+        run: docker compose exec -T frontend npm run build
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down

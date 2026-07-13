@@ -82,7 +82,7 @@ def _to_dict(rows: List[Tuple[str, int]]) -> dict[str, int]:
     """
     Convert raw SQL tuples into JSON-friendly dict format.
     """
-    return {key: value for key, value in rows}
+    return {key: value for key, value in rows if key is not None}
 
 
 def _format_by_decade(rows: List[Tuple[int, int]]) -> dict[str, int]:

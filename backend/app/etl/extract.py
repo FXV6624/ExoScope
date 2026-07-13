@@ -39,6 +39,5 @@ def extract(limit: int | None = None) -> List[ExoplanetRaw]:
     response = requests.get(URL, params=params)
     response.raise_for_status()
     data = response.json()
-    print(data[0])
     
     return [ExoplanetRaw(**row) for row in data]

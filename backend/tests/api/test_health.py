@@ -24,11 +24,13 @@ class TestHealth:
         
     def test_utils_test_email_endpoint(self, client: TestClient, superuser_token_headers: dict):
         """Test the utils endpoint to ensure API router inclusions work."""
-        response = client.post(
-            f"{API}/utils/test-email/", 
-            headers=superuser_token_headers,
-            params={"email_to": "test@example.com"}
-        )
+        from unittest.mock import patch
+        with patch("app.api.routes.utils.send_email"):
+            response = client.post(
+                f"{API}/utils/test-email/", 
+                headers=superuser_token_headers,
+                params={"email_to": "test@example.com"}
+            )
         # Even if SMTP is disabled, it returns 200 or 500 depending on config.
         # We just verify the route exists
         assert response.status_code in (201, 200, 500)
