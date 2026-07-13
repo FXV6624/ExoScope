@@ -1,4 +1,6 @@
-from apscheduler.schedulers.background import BackgroundScheduler  # type: ignore[import-untyped]
+from apscheduler.schedulers.background import (  # type: ignore[import-untyped]
+    BackgroundScheduler,
+)
 
 from app.core.config import settings
 from app.scheduler.jobs import run_exoplanet_etl_job

@@ -1,7 +1,8 @@
+import logging
+
 from sqlmodel import Session
 
 from app.core.db import engine
-import logging
 from app.etl.config import ETLConfig
 from app.etl.pipeline import ExoplanetETL
 from app.etl.report import ETLReport

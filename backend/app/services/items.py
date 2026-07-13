@@ -1,7 +1,6 @@
 import uuid
-from typing import Any
 
-from sqlmodel import Session, col
+from sqlmodel import Session
 
 from app.models import Item, User
 from app.schemas.item import ItemCreate, ItemUpdate

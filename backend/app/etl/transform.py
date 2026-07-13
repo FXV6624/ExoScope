@@ -1,4 +1,5 @@
 import logging
+
 from app.models import ExoplanetBase
 from app.schemas.exoplanet import ExoplanetRaw
 

@@ -1,5 +1,6 @@
 import uuid
-from typing import Any
+from collections.abc import Sequence
+from typing import Any, TypeVar
 
 from sqlmodel import Session
 
@@ -100,9 +101,6 @@ def get_exoplanet_stats_service(
         completeness=_build_completeness(session),
     )
 
-
-from collections.abc import Sequence
-from typing import TypeVar
 
 T = TypeVar("T")
 

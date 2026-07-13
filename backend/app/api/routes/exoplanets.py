@@ -25,7 +25,7 @@ router = APIRouter(prefix="/exoplanets", tags=["exoplanets"])
 @limiter.limit("60/minute")
 @cache(expire=300)
 def read_exoplanets(
-    request: Request,
+    _request: Request,
     session: SessionDep,
     _current_user: CurrentUser,
     skip: int = 0,
@@ -42,7 +42,7 @@ def read_exoplanets(
 @limiter.limit("30/minute")
 @cache(expire=600)
 def get_exoplanet_stats(
-    request: Request,
+    _request: Request,
     session: SessionDep,
     _current_user: CurrentUser,
     habitability_score_threshold: Annotated[float, Query(ge=0, le=100)] = 80.0,
@@ -62,7 +62,7 @@ def get_exoplanet_stats(
 @limiter.limit("120/minute")
 @cache(expire=300)
 def read_exoplanet_by_id(
-    request: Request,
+    _request: Request,
     exoplanet_id: uuid.UUID,
     session: SessionDep,
     _current_user: CurrentUser,
