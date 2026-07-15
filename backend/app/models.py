@@ -106,9 +106,11 @@ class ETLRun(SQLModel, table=True):
 
     @classmethod
     def create(cls, report: ETLReport) -> "ETLRun":
+        assert report.started_at is not None
+        assert report.finished_at is not None
         return cls(
-            started_at=report.started_at,  # type: ignore
-            finished_at=report.finished_at,  # type: ignore
+            started_at=report.started_at,
+            finished_at=report.finished_at,
             extracted=report.extracted,
             transformed=report.transformed,
             load_result=report.load_result.model_dump(),

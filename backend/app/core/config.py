@@ -37,7 +37,8 @@ class Settings(BaseSettings):
     FRONTEND_HOST: str = "http://localhost:5173"
     ENVIRONMENT: Literal["local", "staging", "production"] = "local"
     ETL_SCHEDULER_ENABLED: bool = True
-    ETL_SCHEDULER_INTERVAL_HOURS: int = 24
+    ETL_SCHEDULER_INTERVAL_SECONDS: int = 86400  # 24 hours
+
     REDIS_HOST: str = "redis"
     REDIS_PORT: int = 6379
 

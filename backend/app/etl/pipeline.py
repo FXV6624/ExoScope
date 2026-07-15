@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from sqlmodel import Session
 
 from app.core.cache import clear_cache_sync
+from app.core.etl_prometheus_metrics import etl_prometheus_metrics
 from app.etl.config import ETLConfig
 from app.etl.enrich.enrich import enrich
 from app.etl.extract import extract
@@ -90,6 +91,7 @@ class ExoplanetETL:
         metrics.finished_at = datetime.now(timezone.utc)
         self.logger.info("ETL finished")
         report = ETLReport.from_metrics(metrics)
+        etl_prometheus_metrics.update(metrics)
         if self.config.persist_run:
             save_etl_run(self.session, report)
             self.logger.info("ETL run persisted to database")

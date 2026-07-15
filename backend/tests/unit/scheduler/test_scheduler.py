@@ -75,7 +75,7 @@ class TestScheduler:
             scheduler.add_job(
                 run_exoplanet_etl_job,
                 trigger="interval",
-                hours=settings.ETL_SCHEDULER_INTERVAL_HOURS,
+                seconds=settings.ETL_SCHEDULER_INTERVAL_SECONDS,
                 id="exoplanet_etl",
                 replace_existing=True,
                 max_instances=1,
