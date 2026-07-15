@@ -26,27 +26,44 @@ class TestGetItems:
     def test_superuser_queries_all_items(self):
         user = _make_user(is_superuser=True)
         session = MagicMock()
-        mock_query = MagicMock()
-        mock_query.count.return_value = 5
-        mock_query.order_by.return_value.offset.return_value.limit.return_value.all.return_value = []
-        session.query.return_value = mock_query
+
+        mock_count = MagicMock()
+        mock_count.one.return_value = 5
+        mock_items = MagicMock()
+        mock_items.all.return_value = []
+        session.exec.side_effect = [mock_count, mock_items]
 
         items, count = item_service.get_items(session, user, skip=0, limit=10)
-        # Superuser: no filter applied
-        session.query.assert_called_with(Item)
+
+        assert session.exec.call_count == 2
         assert count == 5
+        assert items == []
+
+        # Verify no filtering was applied
+        calls = session.exec.call_args_list
+        count_stmt = calls[0][0][0]
+        assert "WHERE" not in str(count_stmt)
 
     def test_normal_user_filters_by_owner(self):
         user = _make_user(is_superuser=False)
         session = MagicMock()
-        mock_query = MagicMock()
-        mock_query.filter.return_value = mock_query
-        mock_query.count.return_value = 2
-        mock_query.order_by.return_value.offset.return_value.limit.return_value.all.return_value = []
-        session.query.return_value = mock_query
+
+        mock_count = MagicMock()
+        mock_count.one.return_value = 2
+        mock_items = MagicMock()
+        mock_items.all.return_value = []
+        session.exec.side_effect = [mock_count, mock_items]
 
         items, count = item_service.get_items(session, user, skip=0, limit=10)
-        mock_query.filter.assert_called_once()
+
+        assert session.exec.call_count == 2
+        assert count == 2
+        assert items == []
+
+        # Verify filtering by owner_id was applied
+        calls = session.exec.call_args_list
+        count_stmt = calls[0][0][0]
+        assert "WHERE item.owner_id =" in str(count_stmt)
 
 
 class TestGetItem:
