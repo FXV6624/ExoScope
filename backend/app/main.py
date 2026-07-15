@@ -13,11 +13,14 @@ from app.api.main import api_router
 from app.core.cache import close_cache, init_cache
 from app.core.config import settings
 from app.core.limiter import limiter
+from app.core.monitoring import setup_monitoring
 from app.scheduler.scheduler import start_scheduler, stop_scheduler
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
-    return f"{route.tags[0]}-{route.name}"
+    if route.tags:
+        return f"{route.tags[0]}-{route.name}"
+    return route.name
 
 
 if settings.SENTRY_DSN and settings.ENVIRONMENT != "local":
@@ -44,6 +47,8 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     generate_unique_id_function=custom_generate_unique_id,
 )
+
+setup_monitoring(app)
 
 app.state.limiter = limiter
 

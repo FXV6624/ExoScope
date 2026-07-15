@@ -66,4 +66,4 @@ class TestSettings:
 
     def test_etl_scheduler_settings_exist(self):
         assert isinstance(settings.ETL_SCHEDULER_ENABLED, bool)
-        assert isinstance(settings.ETL_SCHEDULER_INTERVAL_HOURS, int)
+        assert isinstance(settings.ETL_SCHEDULER_INTERVAL_SECONDS, int)

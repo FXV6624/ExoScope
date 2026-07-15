@@ -226,6 +226,8 @@ export type ValidationError = {
     };
 };
 
+export type MetricsResponse = (unknown);
+
 export type EtlRunExoplanetEtlData = {
     requestBody: ETLConfig;
 };

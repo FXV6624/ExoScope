@@ -3,7 +3,22 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { EtlRunExoplanetEtlData, EtlRunExoplanetEtlResponse, ExoplanetsReadExoplanetsData, ExoplanetsReadExoplanetsResponse, ExoplanetsGetExoplanetStatsData, ExoplanetsGetExoplanetStatsResponse, ExoplanetsReadExoplanetByIdData, ExoplanetsReadExoplanetByIdResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlData, LoginRecoverPasswordHtmlResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserData, UsersReadUserResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { MetricsResponse, EtlRunExoplanetEtlData, EtlRunExoplanetEtlResponse, ExoplanetsReadExoplanetsData, ExoplanetsReadExoplanetsResponse, ExoplanetsGetExoplanetStatsData, ExoplanetsGetExoplanetStatsResponse, ExoplanetsReadExoplanetByIdData, ExoplanetsReadExoplanetByIdResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlData, LoginRecoverPasswordHtmlResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserData, UsersReadUserResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+
+export class DefaultService {
+    /**
+     * Metrics
+     * Endpoint that serves Prometheus metrics.
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static metrics(): CancelablePromise<MetricsResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/metrics'
+        });
+    }
+}
 
 export class EtlService {
     /**

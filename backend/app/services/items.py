@@ -1,6 +1,6 @@
 import uuid
 
-from sqlmodel import Session, col
+from sqlmodel import Session, col, func, select
 
 from app.models import Item, User
 from app.schemas.item import ItemCreate, ItemUpdate
@@ -12,16 +12,19 @@ from app.schemas.item import ItemCreate, ItemUpdate
 def get_items(
     session: Session, user: User, skip: int = 0, limit: int = 100
 ) -> tuple[list[Item], int]:
-    if user.is_superuser:
-        query = session.query(Item)
-    else:
-        query = session.query(Item).filter(col(Item.owner_id) == user.id)
+    stmt = select(Item)
+    count_stmt = select(func.count()).select_from(Item)
 
-    count: int = query.count()
+    if not user.is_superuser:
+        stmt = stmt.where(Item.owner_id == user.id)
+        count_stmt = count_stmt.where(Item.owner_id == user.id)
 
-    items = query.order_by(col(Item.created_at).desc()).offset(skip).limit(limit).all()
+    count = session.exec(count_stmt).one()
+    items = session.exec(
+        stmt.order_by(col(Item.created_at).desc()).offset(skip).limit(limit)
+    ).all()
 
-    return items, count
+    return list(items), count
 
 
 # -----------------------
