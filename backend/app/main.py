@@ -12,6 +12,7 @@ from starlette.middleware.cors import CORSMiddleware
 from app.api.main import api_router
 from app.core.cache import close_cache, init_cache
 from app.core.config import settings
+from app.core.http_logging import setup_http_logging
 from app.core.limiter import limiter
 from app.core.monitoring import setup_monitoring
 from app.scheduler.scheduler import start_scheduler, stop_scheduler
@@ -49,6 +50,7 @@ app = FastAPI(
 )
 
 setup_monitoring(app)
+setup_http_logging(app)
 
 app.state.limiter = limiter
 

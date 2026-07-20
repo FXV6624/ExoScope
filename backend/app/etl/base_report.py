@@ -15,4 +15,6 @@ class ETLBaseReport(BaseModel):
     started_at: datetime | None = None
     finished_at: datetime | None = None
 
+    success: bool = True
+
     errors: list[str] = Field(default_factory=list)

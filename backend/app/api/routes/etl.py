@@ -22,3 +22,8 @@ def run_exoplanet_etl(
     """
     report = run_etl(session, config)
     return {"status": "ok", "report": report.model_dump()}
+
+
+@router.get("/crash")
+def crash():
+    raise ValueError("Testing")

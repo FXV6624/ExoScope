@@ -133,6 +133,7 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
     - ./backend/app:/app/backend/app
+    - ./backend/logs:/app/backend/logs
 
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/utils/health-check/').read()"]
