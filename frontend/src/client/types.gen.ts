@@ -234,8 +234,6 @@ export type EtlRunExoplanetEtlData = {
 
 export type EtlRunExoplanetEtlResponse = (unknown);
 
-export type EtlCrashResponse = (unknown);
-
 export type ExoplanetsReadExoplanetsData = {
     composition?: (PlanetComposition | null);
     discoveryMethod?: (string | null);
