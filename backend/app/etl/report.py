@@ -23,5 +23,6 @@ class ETLReport(ETLBaseReport):
             extract_time=metrics.extract_duration(),
             transform_time=metrics.transform_duration(),
             load_time=metrics.load_duration(),
+            success=not metrics.errors,
             errors=metrics.errors,
         )

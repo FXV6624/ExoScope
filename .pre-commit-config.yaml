@@ -57,10 +57,10 @@ repos:
 
       - id: generate-frontend-sdk
         name: Generate Frontend SDK
-        entry: bash ./scripts/generate-client.sh
+        entry: uv run python scripts/generate_client.py
         pass_filenames: false
         language: unsupported
-        files: ^backend/.*$|^scripts/generate-client\.sh$
+        files: ^backend/.*$|^scripts/generate_client\.py$
 
       - id: add-release-date
         language: unsupported
