@@ -1,17 +1,20 @@
 import logging
 import time
 import uuid
+from collections.abc import Awaitable, Callable
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 
 from app.core.request_context import request_id_ctx
 
 logger = logging.getLogger(__name__)
 
 
-def setup_http_logging(app: FastAPI):
+def setup_http_logging(app: FastAPI) -> None:
     @app.middleware("http")
-    async def log_requests(request: Request, call_next):
+    async def log_requests(
+        request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
         request_id = str(uuid.uuid4())[:8]
         request_id_ctx.set(request_id)
 

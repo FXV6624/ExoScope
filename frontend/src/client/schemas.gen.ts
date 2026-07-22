@@ -561,6 +561,12 @@ export const ExoplanetsPublicSchema = {
     title: 'ExoplanetsPublic'
 } as const;
 
+export const ExportFormatSchema = {
+    type: 'string',
+    enum: ['csv', 'json', 'parquet'],
+    title: 'ExportFormat'
+} as const;
+
 export const HTTPValidationErrorSchema = {
     properties: {
         detail: {

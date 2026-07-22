@@ -104,6 +104,8 @@ export type ExoplanetStats = {
     completeness: CompletenessStats;
 };
 
+export type ExportFormat = 'csv' | 'json' | 'parquet';
+
 export type HabitabilityStats = {
     average?: (number | null);
     minimum?: (number | null);
@@ -278,6 +280,40 @@ export type ExoplanetsReadExoplanetByIdData = {
 };
 
 export type ExoplanetsReadExoplanetByIdResponse = (ExoplanetPublic);
+
+export type ExportsExportExoplanetsEndpointData = {
+    composition?: (PlanetComposition | null);
+    compress?: boolean;
+    discoveryMethod?: (string | null);
+    discoveryYear?: (number | null);
+    fields?: (Array<(string)> | null);
+    filename?: string;
+    format?: ExportFormat;
+    hostStar?: (string | null);
+    maxDiscoveryYear?: (number | null);
+    maxDistanceFromEarth?: (number | null);
+    maxEquilibriumTemperature?: (number | null);
+    maxHabitabilityScore?: (number | null);
+    maxOrbitalEccentricity?: (number | null);
+    maxOrbitalPeriod?: (number | null);
+    maxPlanetMass?: (number | null);
+    maxPlanetRadius?: (number | null);
+    minCompositionConfidence?: (number | null);
+    minDiscoveryYear?: (number | null);
+    minDistanceFromEarth?: (number | null);
+    minEquilibriumTemperature?: (number | null);
+    minHabitabilityConfidence?: (number | null);
+    minHabitabilityScore?: (number | null);
+    minOrbitalEccentricity?: (number | null);
+    minOrbitalPeriod?: (number | null);
+    minPlanetMass?: (number | null);
+    minPlanetRadius?: (number | null);
+    minSystemPlanetCount?: (number | null);
+    planetName?: (string | null);
+    systemPlanetCount?: (number | null);
+};
+
+export type ExportsExportExoplanetsEndpointResponse = (unknown);
 
 export type ItemsReadItemsData = {
     limit?: number;
