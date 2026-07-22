@@ -25,6 +25,7 @@ dependencies = [
     "slowapi>=0.1.10",
     "prometheus-client>=0.25.0",
     "prometheus-fastapi-instrumentator>=8.0.2",
+    "pyarrow>=25.0.0",
 ]
 
 [dependency-groups]
@@ -45,6 +46,10 @@ build-backend = "hatchling.build"
 [tool.mypy]
 strict = true
 exclude = ["venv", ".venv", "alembic"]
+
+[[tool.mypy.overrides]]
+module = "pyarrow.*"
+ignore_missing_imports = true
 
 [tool.ruff]
 target-version = "py310"

@@ -1,0 +1,313 @@
+2026-07-22 13:24:47,193 | INFO | request_id=- | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-22 13:24:47,429 | INFO | request_id=- | apscheduler.scheduler | Added job "run_exoplanet_etl_job" to job store "default"
+2026-07-22 13:24:47,429 | INFO | request_id=- | apscheduler.scheduler | Scheduler started
+2026-07-22 13:24:47,432 | INFO | request_id=- | scheduler | Next scheduled ETL | 2026-07-23 11:24:47.193817+00:00
+2026-07-22 13:24:47,432 | INFO | request_id=- | scheduler | Scheduler started | interval=86400s
+2026-07-22 13:24:47,551 | INFO | request_id=3cab14f8 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 66.65 ms | testclient
+2026-07-22 13:24:47,553 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:47,610 | WARNING | request_id=61b31ebf | app.core.http_logging | POST /api/v1/etl/run | 403 | 54.89 ms | testclient
+2026-07-22 13:24:47,611 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/etl/run "HTTP/1.1 403 Forbidden"
+2026-07-22 13:24:47,615 | WARNING | request_id=f844402b | app.core.http_logging | POST /api/v1/etl/run | 401 | 1.35 ms | testclient
+2026-07-22 13:24:47,616 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/etl/run "HTTP/1.1 401 Unauthorized"
+2026-07-22 13:24:47,659 | INFO | request_id=7571e12b | app.core.http_logging | POST /api/v1/login/access-token | 200 | 40.99 ms | testclient
+2026-07-22 13:24:47,660 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:47,669 | INFO | request_id=9f7f4fb9 | app.core.http_logging | POST /api/v1/etl/run | 200 | 7.84 ms | testclient
+2026-07-22 13:24:47,672 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/etl/run "HTTP/1.1 200 OK"
+2026-07-22 13:24:47,677 | WARNING | request_id=900f564f | app.core.http_logging | POST /api/v1/etl/run | 422 | 4.11 ms | testclient
+2026-07-22 13:24:47,679 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/etl/run "HTTP/1.1 422 Unprocessable Entity"
+2026-07-22 13:24:47,680 | INFO | request_id=- | apscheduler.scheduler | Scheduler has been shut down
+2026-07-22 13:24:47,680 | INFO | request_id=- | scheduler | Scheduler stopped
+2026-07-22 13:24:47,684 | INFO | request_id=- | apscheduler.scheduler | Scheduler started
+2026-07-22 13:24:47,684 | INFO | request_id=- | scheduler | Scheduler started | interval=86400s
+2026-07-22 13:24:47,701 | WARNING | request_id=01e11227 | app.core.http_logging | GET /api/v1/exoplanets/ | 401 | 2.11 ms | testclient
+2026-07-22 13:24:47,702 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/exoplanets/ "HTTP/1.1 401 Unauthorized"
+2026-07-22 13:24:47,753 | INFO | request_id=93eba897 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 44.51 ms | testclient
+2026-07-22 13:24:47,755 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:47,804 | INFO | request_id=bcee65b9 | app.core.http_logging | GET /api/v1/exoplanets/ | 200 | 19.20 ms | testclient
+2026-07-22 13:24:47,806 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/exoplanets/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:47,830 | INFO | request_id=c5da1368 | app.core.http_logging | GET /api/v1/exoplanets/ | 200 | 7.55 ms | testclient
+2026-07-22 13:24:47,831 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/exoplanets/?discovery_year=2020 "HTTP/1.1 200 OK"
+2026-07-22 13:24:47,841 | WARNING | request_id=aff9e617 | app.core.http_logging | GET /api/v1/exoplanets/stats | 401 | 1.64 ms | testclient
+2026-07-22 13:24:47,842 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/exoplanets/stats "HTTP/1.1 401 Unauthorized"
+2026-07-22 13:24:47,888 | INFO | request_id=19cfe5c9 | app.core.http_logging | GET /api/v1/exoplanets/stats | 200 | 26.51 ms | testclient
+2026-07-22 13:24:47,890 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/exoplanets/stats "HTTP/1.1 200 OK"
+2026-07-22 13:24:47,910 | INFO | request_id=80392573 | app.core.http_logging | GET /api/v1/exoplanets/9b6234cc-a690-4e08-9bc5-5e4146439be0 | 200 | 5.53 ms | testclient
+2026-07-22 13:24:47,911 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/exoplanets/9b6234cc-a690-4e08-9bc5-5e4146439be0 "HTTP/1.1 200 OK"
+2026-07-22 13:24:47,923 | WARNING | request_id=b1910417 | app.core.http_logging | GET /api/v1/exoplanets/ca95ea0c-0f63-4feb-a36b-0d4285254e09 | 404 | 4.31 ms | testclient
+2026-07-22 13:24:47,924 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/exoplanets/ca95ea0c-0f63-4feb-a36b-0d4285254e09 "HTTP/1.1 404 Not Found"
+2026-07-22 13:24:47,937 | WARNING | request_id=1c0157c1 | app.core.http_logging | GET /api/v1/exoplanets/not-a-uuid | 404 | 8.36 ms | testclient
+2026-07-22 13:24:47,938 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/exoplanets/not-a-uuid "HTTP/1.1 404 Not Found"
+2026-07-22 13:24:47,941 | INFO | request_id=- | apscheduler.scheduler | Scheduler has been shut down
+2026-07-22 13:24:47,941 | INFO | request_id=- | scheduler | Scheduler stopped
+2026-07-22 13:24:47,945 | INFO | request_id=- | apscheduler.scheduler | Scheduler started
+2026-07-22 13:24:47,945 | INFO | request_id=- | scheduler | Scheduler started | interval=86400s
+2026-07-22 13:24:47,948 | INFO | request_id=d5940419 | app.core.http_logging | GET /docs | 200 | 0.96 ms | testclient
+2026-07-22 13:24:47,949 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/docs "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,035 | INFO | request_id=58b285a4 | app.core.http_logging | GET /api/v1/openapi.json | 200 | 85.68 ms | testclient
+2026-07-22 13:24:48,036 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/openapi.json "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,081 | INFO | request_id=b6f92de1 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 42.54 ms | testclient
+2026-07-22 13:24:48,083 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,132 | INFO | request_id=7b10a73f | app.core.http_logging | POST /api/v1/utils/test-email/ | 201 | 47.29 ms | testclient
+2026-07-22 13:24:48,133 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/utils/test-email/?email_to=test%40example.com "HTTP/1.1 201 Created"
+2026-07-22 13:24:48,135 | INFO | request_id=- | apscheduler.scheduler | Scheduler has been shut down
+2026-07-22 13:24:48,135 | INFO | request_id=- | scheduler | Scheduler stopped
+2026-07-22 13:24:48,139 | INFO | request_id=- | apscheduler.scheduler | Scheduler started
+2026-07-22 13:24:48,139 | INFO | request_id=- | scheduler | Scheduler started | interval=86400s
+2026-07-22 13:24:48,232 | INFO | request_id=0b3e50d9 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 40.30 ms | testclient
+2026-07-22 13:24:48,234 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,248 | INFO | request_id=9697e6b1 | app.core.http_logging | POST /api/v1/items/ | 200 | 12.97 ms | testclient
+2026-07-22 13:24:48,249 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/items/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,257 | WARNING | request_id=7a555c5f | app.core.http_logging | POST /api/v1/items/ | 401 | 1.34 ms | testclient
+2026-07-22 13:24:48,257 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/items/ "HTTP/1.1 401 Unauthorized"
+2026-07-22 13:24:48,385 | INFO | request_id=7a17f94c | app.core.http_logging | POST /api/v1/login/access-token | 200 | 39.25 ms | testclient
+2026-07-22 13:24:48,387 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,397 | INFO | request_id=baa0ff77 | app.core.http_logging | POST /api/v1/items/ | 200 | 8.10 ms | testclient
+2026-07-22 13:24:48,398 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/items/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,439 | INFO | request_id=6a322d82 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 40.65 ms | testclient
+2026-07-22 13:24:48,441 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,450 | INFO | request_id=22100ebe | app.core.http_logging | POST /api/v1/items/ | 200 | 8.28 ms | testclient
+2026-07-22 13:24:48,451 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/items/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,458 | INFO | request_id=6189a0f4 | app.core.http_logging | GET /api/v1/items/ | 200 | 6.09 ms | testclient
+2026-07-22 13:24:48,460 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/items/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,510 | INFO | request_id=adceb36b | app.core.http_logging | POST /api/v1/login/access-token | 200 | 39.99 ms | testclient
+2026-07-22 13:24:48,512 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,604 | INFO | request_id=b7cfd773 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 40.09 ms | testclient
+2026-07-22 13:24:48,605 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,616 | INFO | request_id=6298efda | app.core.http_logging | POST /api/v1/items/ | 200 | 8.23 ms | testclient
+2026-07-22 13:24:48,617 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/items/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,622 | INFO | request_id=420679a3 | app.core.http_logging | GET /api/v1/items/ | 200 | 5.27 ms | testclient
+2026-07-22 13:24:48,625 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/items/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,713 | INFO | request_id=69c7a292 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 40.25 ms | testclient
+2026-07-22 13:24:48,715 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,724 | INFO | request_id=fbf0f903 | app.core.http_logging | POST /api/v1/items/ | 200 | 8.39 ms | testclient
+2026-07-22 13:24:48,726 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/items/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,731 | INFO | request_id=35e52ccf | app.core.http_logging | GET /api/v1/items/12e55020-b19d-44e5-ba41-5bd8f395b448 | 200 | 4.68 ms | testclient
+2026-07-22 13:24:48,733 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/items/12e55020-b19d-44e5-ba41-5bd8f395b448 "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,864 | INFO | request_id=063463ce | app.core.http_logging | POST /api/v1/login/access-token | 200 | 39.82 ms | testclient
+2026-07-22 13:24:48,866 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,875 | INFO | request_id=bb05ae16 | app.core.http_logging | POST /api/v1/items/ | 200 | 8.02 ms | testclient
+2026-07-22 13:24:48,877 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/items/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,916 | INFO | request_id=53f2a429 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 38.47 ms | testclient
+2026-07-22 13:24:48,918 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:48,923 | WARNING | request_id=0163554b | app.core.http_logging | GET /api/v1/items/49bfebef-ad1e-46db-83e4-46fdb8995fc1 | 403 | 5.00 ms | testclient
+2026-07-22 13:24:48,925 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/items/49bfebef-ad1e-46db-83e4-46fdb8995fc1 "HTTP/1.1 403 Forbidden"
+2026-07-22 13:24:49,020 | INFO | request_id=d7e2b713 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 42.37 ms | testclient
+2026-07-22 13:24:49,022 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,031 | INFO | request_id=808aad4d | app.core.http_logging | POST /api/v1/items/ | 200 | 8.21 ms | testclient
+2026-07-22 13:24:49,032 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/items/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,042 | INFO | request_id=852c4652 | app.core.http_logging | PUT /api/v1/items/8d18d1a4-5f26-40ff-a20f-e466056dd7f1 | 200 | 8.84 ms | testclient
+2026-07-22 13:24:49,044 | INFO | request_id=- | httpx | HTTP Request: PUT http://testserver/api/v1/items/8d18d1a4-5f26-40ff-a20f-e466056dd7f1 "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,130 | INFO | request_id=4f762a01 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 38.85 ms | testclient
+2026-07-22 13:24:49,132 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,141 | INFO | request_id=78b113a5 | app.core.http_logging | POST /api/v1/items/ | 200 | 8.07 ms | testclient
+2026-07-22 13:24:49,143 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/items/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,151 | INFO | request_id=d9a1768c | app.core.http_logging | DELETE /api/v1/items/13d3db18-dfc6-4932-bf83-6b76afa151cd | 200 | 7.42 ms | testclient
+2026-07-22 13:24:49,151 | INFO | request_id=- | httpx | HTTP Request: DELETE http://testserver/api/v1/items/13d3db18-dfc6-4932-bf83-6b76afa151cd "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,158 | WARNING | request_id=dcf376eb | app.core.http_logging | GET /api/v1/items/13d3db18-dfc6-4932-bf83-6b76afa151cd | 404 | 4.37 ms | testclient
+2026-07-22 13:24:49,158 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/items/13d3db18-dfc6-4932-bf83-6b76afa151cd "HTTP/1.1 404 Not Found"
+2026-07-22 13:24:49,161 | INFO | request_id=- | apscheduler.scheduler | Scheduler has been shut down
+2026-07-22 13:24:49,162 | INFO | request_id=- | scheduler | Scheduler stopped
+2026-07-22 13:24:49,165 | INFO | request_id=- | apscheduler.scheduler | Scheduler started
+2026-07-22 13:24:49,166 | INFO | request_id=- | scheduler | Scheduler started | interval=86400s
+2026-07-22 13:24:49,207 | INFO | request_id=4a2d0caa | app.core.http_logging | POST /api/v1/login/access-token | 200 | 39.60 ms | testclient
+2026-07-22 13:24:49,209 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,251 | WARNING | request_id=e91f6323 | app.core.http_logging | POST /api/v1/login/access-token | 400 | 39.84 ms | testclient
+2026-07-22 13:24:49,252 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 400 Bad Request"
+2026-07-22 13:24:49,294 | WARNING | request_id=6831c44b | app.core.http_logging | POST /api/v1/login/access-token | 400 | 40.44 ms | testclient
+2026-07-22 13:24:49,295 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 400 Bad Request"
+2026-07-22 13:24:49,307 | WARNING | request_id=181f9fc0 | app.core.http_logging | POST /api/v1/login/access-token | 422 | 9.78 ms | testclient
+2026-07-22 13:24:49,308 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 422 Unprocessable Entity"
+2026-07-22 13:24:49,350 | INFO | request_id=232e54c5 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 39.42 ms | testclient
+2026-07-22 13:24:49,351 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,356 | INFO | request_id=e5563940 | app.core.http_logging | POST /api/v1/login/test-token | 200 | 3.34 ms | testclient
+2026-07-22 13:24:49,357 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/test-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,360 | WARNING | request_id=f4cb3184 | app.core.http_logging | POST /api/v1/login/test-token | 401 | 0.72 ms | testclient
+2026-07-22 13:24:49,361 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/test-token "HTTP/1.1 401 Unauthorized"
+2026-07-22 13:24:49,364 | WARNING | request_id=374f7554 | app.core.http_logging | POST /api/v1/login/test-token | 403 | 1.05 ms | testclient
+2026-07-22 13:24:49,365 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/test-token "HTTP/1.1 403 Forbidden"
+2026-07-22 13:24:49,369 | INFO | request_id=c2d54fb8 | app.core.http_logging | POST /api/v1/password-recovery/nobody@nowhere.com | 200 | 2.89 ms | testclient
+2026-07-22 13:24:49,371 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/password-recovery/nobody@nowhere.com "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,377 | INFO | request_id=e8b5abc8 | app.core.http_logging | POST /api/v1/password-recovery/admin@example.com | 200 | 4.08 ms | testclient
+2026-07-22 13:24:49,378 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/password-recovery/admin@example.com "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,382 | WARNING | request_id=876a8125 | app.core.http_logging | POST /api/v1/reset-password/ | 400 | 1.75 ms | testclient
+2026-07-22 13:24:49,383 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/reset-password/ "HTTP/1.1 400 Bad Request"
+2026-07-22 13:24:49,386 | WARNING | request_id=2679dcbb | app.core.http_logging | POST /api/v1/reset-password/ | 422 | 1.29 ms | testclient
+2026-07-22 13:24:49,387 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/reset-password/ "HTTP/1.1 422 Unprocessable Entity"
+2026-07-22 13:24:49,388 | INFO | request_id=- | apscheduler.scheduler | Scheduler has been shut down
+2026-07-22 13:24:49,388 | INFO | request_id=- | scheduler | Scheduler stopped
+2026-07-22 13:24:49,391 | INFO | request_id=- | apscheduler.scheduler | Scheduler started
+2026-07-22 13:24:49,392 | INFO | request_id=- | scheduler | Scheduler started | interval=86400s
+2026-07-22 13:24:49,433 | INFO | request_id=78a0e831 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 40.21 ms | testclient
+2026-07-22 13:24:49,435 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,448 | INFO | request_id=64b3f1e9 | app.core.http_logging | GET /api/v1/users/ | 200 | 11.10 ms | testclient
+2026-07-22 13:24:49,450 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/users/ "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,546 | INFO | request_id=dae175cf | app.core.http_logging | POST /api/v1/login/access-token | 200 | 39.53 ms | testclient
+2026-07-22 13:24:49,548 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,553 | WARNING | request_id=83f40928 | app.core.http_logging | GET /api/v1/users/ | 403 | 3.51 ms | testclient
+2026-07-22 13:24:49,554 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/users/ "HTTP/1.1 403 Forbidden"
+2026-07-22 13:24:49,561 | WARNING | request_id=3cdd9655 | app.core.http_logging | GET /api/v1/users/ | 401 | 0.80 ms | testclient
+2026-07-22 13:24:49,562 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/users/ "HTTP/1.1 401 Unauthorized"
+2026-07-22 13:24:49,567 | INFO | request_id=69d39b04 | app.core.http_logging | GET /api/v1/users/me | 200 | 3.43 ms | testclient
+2026-07-22 13:24:49,568 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/users/me "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,571 | WARNING | request_id=86c44939 | app.core.http_logging | GET /api/v1/users/me | 401 | 0.76 ms | testclient
+2026-07-22 13:24:49,572 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/users/me "HTTP/1.1 401 Unauthorized"
+2026-07-22 13:24:49,656 | INFO | request_id=d3434b59 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 39.88 ms | testclient
+2026-07-22 13:24:49,658 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,667 | INFO | request_id=f4b47922 | app.core.http_logging | PATCH /api/v1/users/me | 200 | 8.86 ms | testclient
+2026-07-22 13:24:49,669 | INFO | request_id=- | httpx | HTTP Request: PATCH http://testserver/api/v1/users/me "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,720 | INFO | request_id=7ff30ea0 | app.core.http_logging | POST /api/v1/users/signup | 200 | 46.23 ms | testclient
+2026-07-22 13:24:49,721 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/users/signup "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,771 | WARNING | request_id=06413602 | app.core.http_logging | POST /api/v1/users/signup | 400 | 3.54 ms | testclient
+2026-07-22 13:24:49,772 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/users/signup "HTTP/1.1 400 Bad Request"
+2026-07-22 13:24:49,778 | WARNING | request_id=3fb44740 | app.core.http_logging | POST /api/v1/users/signup | 422 | 1.27 ms | testclient
+2026-07-22 13:24:49,779 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/users/signup "HTTP/1.1 422 Unprocessable Entity"
+2026-07-22 13:24:49,863 | INFO | request_id=4c02a0aa | app.core.http_logging | POST /api/v1/login/access-token | 200 | 39.71 ms | testclient
+2026-07-22 13:24:49,865 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,869 | INFO | request_id=723cfe25 | app.core.http_logging | GET /api/v1/users/0caf661f-c582-41e5-aae0-6179e5cb481a | 200 | 3.47 ms | testclient
+2026-07-22 13:24:49,870 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/users/0caf661f-c582-41e5-aae0-6179e5cb481a "HTTP/1.1 200 OK"
+2026-07-22 13:24:49,926 | INFO | request_id=b6ff427f | app.core.http_logging | GET /api/v1/users/fcc689b8-db19-4f48-8764-881467a79191 | 200 | 4.13 ms | testclient
+2026-07-22 13:24:49,927 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/users/fcc689b8-db19-4f48-8764-881467a79191 "HTTP/1.1 200 OK"
+2026-07-22 13:24:50,018 | INFO | request_id=76d43e53 | app.core.http_logging | POST /api/v1/login/access-token | 200 | 40.82 ms | testclient
+2026-07-22 13:24:50,020 | INFO | request_id=- | httpx | HTTP Request: POST http://testserver/api/v1/login/access-token "HTTP/1.1 200 OK"
+2026-07-22 13:24:50,026 | WARNING | request_id=a9b4aeeb | app.core.http_logging | GET /api/v1/users/c8c2d2ea-b6c2-4cb9-92fb-322462072974 | 404 | 4.68 ms | testclient
+2026-07-22 13:24:50,027 | INFO | request_id=- | httpx | HTTP Request: GET http://testserver/api/v1/users/c8c2d2ea-b6c2-4cb9-92fb-322462072974 "HTTP/1.1 404 Not Found"
+2026-07-22 13:24:50,091 | INFO | request_id=57a6390d | app.core.http_logging | DELETE /api/v1/users/7f284f1f-0328-4ab9-b7ad-d5d5e8694813 | 200 | 12.13 ms | testclient
+2026-07-22 13:24:50,092 | INFO | request_id=- | httpx | HTTP Request: DELETE http://testserver/api/v1/users/7f284f1f-0328-4ab9-b7ad-d5d5e8694813 "HTTP/1.1 200 OK"
+2026-07-22 13:24:50,100 | WARNING | request_id=ee591e1e | app.core.http_logging | DELETE /api/v1/users/108d6618-98bd-4a92-a5e9-d63d3dcd5dae | 403 | 3.76 ms | testclient
+2026-07-22 13:24:50,101 | INFO | request_id=- | httpx | HTTP Request: DELETE http://testserver/api/v1/users/108d6618-98bd-4a92-a5e9-d63d3dcd5dae "HTTP/1.1 403 Forbidden"
+2026-07-22 13:24:50,102 | INFO | request_id=- | apscheduler.scheduler | Scheduler has been shut down
+2026-07-22 13:24:50,102 | INFO | request_id=- | scheduler | Scheduler stopped
+2026-07-22 13:24:50,732 | INFO | request_id=- | exoplanet_etl | ETL started | dry_run=False | load_mode=LoadMode.UPSERT | persist_run=False | limit=3
+2026-07-22 13:24:50,732 | INFO | request_id=- | exoplanet_etl | Extract step started | limit=3
+2026-07-22 13:24:50,732 | INFO | request_id=- | exoplanet_etl | Extract step completed | extracted=3
+2026-07-22 13:24:50,732 | INFO | request_id=- | exoplanet_etl | Transform step started
+2026-07-22 13:24:50,733 | INFO | request_id=- | exoplanet_etl | Transform step completed | transformed=3
+2026-07-22 13:24:50,733 | INFO | request_id=- | exoplanet_etl | Enrich step started
+2026-07-22 13:24:50,733 | INFO | request_id=- | exoplanet_etl | Enrich step completed
+2026-07-22 13:24:50,733 | INFO | request_id=- | exoplanet_etl | Preparing 3 planets for database load
+2026-07-22 13:24:50,733 | INFO | request_id=- | exoplanet_etl | Load step started
+2026-07-22 13:24:50,740 | INFO | request_id=- | exoplanet_etl | Load step completed | inserted=3 | updated=0 | skipped=0
+2026-07-22 13:24:50,740 | INFO | request_id=- | exoplanet_etl | ETL completed | extracted=3 | transformed=3 | inserted=3 | updated=0 | skipped=0 | duration=0.01s
+2026-07-22 13:24:50,740 | INFO | request_id=- | exoplanet_etl | Clearing API cache after ETL update
+2026-07-22 13:24:50,747 | INFO | request_id=- | exoplanet_etl | ETL started | dry_run=False | load_mode=LoadMode.UPSERT | persist_run=False | limit=3
+2026-07-22 13:24:50,748 | INFO | request_id=- | exoplanet_etl | Extract step started | limit=3
+2026-07-22 13:24:50,748 | INFO | request_id=- | exoplanet_etl | Extract step completed | extracted=3
+2026-07-22 13:24:50,748 | INFO | request_id=- | exoplanet_etl | Transform step started
+2026-07-22 13:24:50,748 | INFO | request_id=- | exoplanet_etl | Transform step completed | transformed=3
+2026-07-22 13:24:50,749 | INFO | request_id=- | exoplanet_etl | Enrich step started
+2026-07-22 13:24:50,749 | INFO | request_id=- | exoplanet_etl | Enrich step completed
+2026-07-22 13:24:50,749 | INFO | request_id=- | exoplanet_etl | Preparing 3 planets for database load
+2026-07-22 13:24:50,749 | INFO | request_id=- | exoplanet_etl | Load step started
+2026-07-22 13:24:50,755 | INFO | request_id=- | exoplanet_etl | Load step completed | inserted=3 | updated=0 | skipped=0
+2026-07-22 13:24:50,755 | INFO | request_id=- | exoplanet_etl | ETL completed | extracted=3 | transformed=3 | inserted=3 | updated=0 | skipped=0 | duration=0.01s
+2026-07-22 13:24:50,755 | INFO | request_id=- | exoplanet_etl | Clearing API cache after ETL update
+2026-07-22 13:24:50,764 | INFO | request_id=- | exoplanet_etl | ETL started | dry_run=True | load_mode=LoadMode.UPSERT | persist_run=False | limit=3
+2026-07-22 13:24:50,765 | INFO | request_id=- | exoplanet_etl | Extract step started | limit=3
+2026-07-22 13:24:50,765 | INFO | request_id=- | exoplanet_etl | Extract step completed | extracted=3
+2026-07-22 13:24:50,765 | INFO | request_id=- | exoplanet_etl | Transform step started
+2026-07-22 13:24:50,765 | INFO | request_id=- | exoplanet_etl | Transform step completed | transformed=3
+2026-07-22 13:24:50,766 | INFO | request_id=- | exoplanet_etl | Enrich step started
+2026-07-22 13:24:50,766 | INFO | request_id=- | exoplanet_etl | Enrich step completed
+2026-07-22 13:24:50,766 | INFO | request_id=- | exoplanet_etl | Dry run enabled | database changes skipped
+2026-07-22 13:24:50,766 | INFO | request_id=- | exoplanet_etl | ETL completed | extracted=3 | transformed=3 | inserted=0 | updated=0 | skipped=0 | duration=0.00s
+2026-07-22 13:24:50,766 | INFO | request_id=- | exoplanet_etl | Cache not invalidated (no data changes)
+2026-07-22 13:24:50,773 | INFO | request_id=- | exoplanet_etl | ETL started | dry_run=True | load_mode=LoadMode.UPSERT | persist_run=True | limit=3
+2026-07-22 13:24:50,773 | INFO | request_id=- | exoplanet_etl | Extract step started | limit=3
+2026-07-22 13:24:50,773 | INFO | request_id=- | exoplanet_etl | Extract step completed | extracted=3
+2026-07-22 13:24:50,774 | INFO | request_id=- | exoplanet_etl | Transform step started
+2026-07-22 13:24:50,774 | INFO | request_id=- | exoplanet_etl | Transform step completed | transformed=3
+2026-07-22 13:24:50,774 | INFO | request_id=- | exoplanet_etl | Enrich step started
+2026-07-22 13:24:50,774 | INFO | request_id=- | exoplanet_etl | Enrich step completed
+2026-07-22 13:24:50,774 | INFO | request_id=- | exoplanet_etl | Dry run enabled | database changes skipped
+2026-07-22 13:24:50,775 | INFO | request_id=- | exoplanet_etl | ETL completed | extracted=3 | transformed=3 | inserted=0 | updated=0 | skipped=0 | duration=0.00s
+2026-07-22 13:24:50,780 | INFO | request_id=- | exoplanet_etl | ETL run persisted to database
+2026-07-22 13:24:50,781 | INFO | request_id=- | exoplanet_etl | Cache not invalidated (no data changes)
+2026-07-22 13:24:50,788 | INFO | request_id=- | exoplanet_etl | ETL started | dry_run=True | load_mode=LoadMode.UPSERT | persist_run=False | limit=3
+2026-07-22 13:24:50,789 | INFO | request_id=- | exoplanet_etl | Extract step started | limit=3
+2026-07-22 13:24:50,789 | INFO | request_id=- | exoplanet_etl | Extract step completed | extracted=3
+2026-07-22 13:24:50,789 | INFO | request_id=- | exoplanet_etl | Transform step started
+2026-07-22 13:24:50,789 | INFO | request_id=- | exoplanet_etl | Transform step completed | transformed=3
+2026-07-22 13:24:50,790 | INFO | request_id=- | exoplanet_etl | Enrich step started
+2026-07-22 13:24:50,790 | INFO | request_id=- | exoplanet_etl | Enrich step completed
+2026-07-22 13:24:50,790 | INFO | request_id=- | exoplanet_etl | Dry run enabled | database changes skipped
+2026-07-22 13:24:50,790 | INFO | request_id=- | exoplanet_etl | ETL completed | extracted=3 | transformed=3 | inserted=0 | updated=0 | skipped=0 | duration=0.00s
+2026-07-22 13:24:50,790 | INFO | request_id=- | exoplanet_etl | Cache not invalidated (no data changes)
+2026-07-22 13:24:50,797 | INFO | request_id=- | exoplanet_etl | ETL started | dry_run=False | load_mode=LoadMode.UPSERT | persist_run=False | limit=3
+2026-07-22 13:24:50,797 | INFO | request_id=- | exoplanet_etl | Extract step started | limit=3
+2026-07-22 13:24:50,797 | ERROR | request_id=- | exoplanet_etl | Extract failed
+Traceback (most recent call last):
+  File "C:\Users\frapa\Desktop\Data-Engineering-Platform\backend\app\etl\pipeline.py", line 44, in run
+    data = extract(self.config.limit)
+  File "C:\Users\frapa\AppData\Local\Programs\Python\Python310\lib\unittest\mock.py", line 1114, in __call__
+    return self._mock_call(*args, **kwargs)
+  File "C:\Users\frapa\AppData\Local\Programs\Python\Python310\lib\unittest\mock.py", line 1118, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+  File "C:\Users\frapa\AppData\Local\Programs\Python\Python310\lib\unittest\mock.py", line 1173, in _execute_mock_call
+    raise effect
+Exception: API down
+2026-07-22 13:24:50,811 | INFO | request_id=- | exoplanet_etl | ETL started | dry_run=False | load_mode=LoadMode.UPSERT | persist_run=False | limit=3
+2026-07-22 13:24:50,811 | INFO | request_id=- | exoplanet_etl | Extract step started | limit=3
+2026-07-22 13:24:50,812 | INFO | request_id=- | exoplanet_etl | Extract step completed | extracted=3
+2026-07-22 13:24:50,812 | INFO | request_id=- | exoplanet_etl | Transform step started
+2026-07-22 13:24:50,812 | INFO | request_id=- | exoplanet_etl | Transform step completed | transformed=3
+2026-07-22 13:24:50,812 | INFO | request_id=- | exoplanet_etl | Enrich step started
+2026-07-22 13:24:50,812 | INFO | request_id=- | exoplanet_etl | Enrich step completed
+2026-07-22 13:24:50,813 | INFO | request_id=- | exoplanet_etl | Preparing 3 planets for database load
+2026-07-22 13:24:50,813 | INFO | request_id=- | exoplanet_etl | Load step started
+2026-07-22 13:24:50,820 | INFO | request_id=- | exoplanet_etl | Load step completed | inserted=3 | updated=0 | skipped=0
+2026-07-22 13:24:50,821 | INFO | request_id=- | exoplanet_etl | ETL completed | extracted=3 | transformed=3 | inserted=3 | updated=0 | skipped=0 | duration=0.01s
+2026-07-22 13:24:50,821 | INFO | request_id=- | exoplanet_etl | Clearing API cache after ETL update
+2026-07-22 13:24:50,838 | INFO | request_id=- | exoplanet_etl | ETL started | dry_run=False | load_mode=LoadMode.UPSERT | persist_run=False | limit=None
+2026-07-22 13:24:50,839 | INFO | request_id=- | exoplanet_etl | Extract step started | limit=None
+2026-07-22 13:24:50,839 | INFO | request_id=- | exoplanet_etl | Extract step completed | extracted=0
+2026-07-22 13:24:50,839 | INFO | request_id=- | exoplanet_etl | Transform step started
+2026-07-22 13:24:50,839 | INFO | request_id=- | exoplanet_etl | Transform step completed | transformed=0
+2026-07-22 13:24:50,840 | INFO | request_id=- | exoplanet_etl | Enrich step started
+2026-07-22 13:24:50,840 | INFO | request_id=- | exoplanet_etl | Enrich step completed
+2026-07-22 13:24:50,840 | INFO | request_id=- | exoplanet_etl | Preparing 0 planets for database load
+2026-07-22 13:24:50,841 | INFO | request_id=- | exoplanet_etl | Load step started
+2026-07-22 13:24:50,841 | INFO | request_id=- | exoplanet_etl | Load step completed | inserted=0 | updated=0 | skipped=0
+2026-07-22 13:24:50,841 | INFO | request_id=- | exoplanet_etl | ETL completed | extracted=0 | transformed=0 | inserted=0 | updated=0 | skipped=0 | duration=0.00s
+2026-07-22 13:24:50,841 | INFO | request_id=- | exoplanet_etl | Cache not invalidated (no data changes)
+2026-07-22 13:24:51,748 | INFO | request_id=- | scheduler | Scheduled ETL started
+2026-07-22 13:24:51,749 | INFO | request_id=- | exoplanet_etl | ETL started | dry_run=False | load_mode=LoadMode.UPSERT | persist_run=True | limit=None
+2026-07-22 13:24:51,749 | INFO | request_id=- | exoplanet_etl | Extract step started | limit=None
+2026-07-22 13:24:51,749 | INFO | request_id=- | exoplanet_etl | Extract step completed | extracted=2
+2026-07-22 13:24:51,749 | INFO | request_id=- | exoplanet_etl | Transform step started
+2026-07-22 13:24:51,749 | INFO | request_id=- | exoplanet_etl | Transform step completed | transformed=2
+2026-07-22 13:24:51,750 | INFO | request_id=- | exoplanet_etl | Enrich step started
+2026-07-22 13:24:51,750 | INFO | request_id=- | exoplanet_etl | Enrich step completed
+2026-07-22 13:24:51,750 | INFO | request_id=- | exoplanet_etl | Preparing 2 planets for database load
+2026-07-22 13:24:51,750 | INFO | request_id=- | exoplanet_etl | Load step started
+2026-07-22 13:24:51,755 | INFO | request_id=- | exoplanet_etl | Load step completed | inserted=2 | updated=0 | skipped=0
+2026-07-22 13:24:51,756 | INFO | request_id=- | exoplanet_etl | ETL completed | extracted=2 | transformed=2 | inserted=2 | updated=0 | skipped=0 | duration=0.01s
+2026-07-22 13:24:51,758 | INFO | request_id=- | exoplanet_etl | ETL run persisted to database
+2026-07-22 13:24:51,758 | INFO | request_id=- | exoplanet_etl | Clearing API cache after ETL update
+2026-07-22 13:24:51,759 | INFO | request_id=- | app.etl.main | ETL process completed. Report: {'extracted': 2, 'transformed': 2, 'load_result': {'attempted': 2, 'inserted': 2, 'updated': 0, 'skipped': 0}, 'started_at': datetime.datetime(2026, 7, 22, 11, 24, 51, 749328, tzinfo=datetime.timezone.utc), 'finished_at': datetime.datetime(2026, 7, 22, 11, 24, 51, 756068, tzinfo=datetime.timezone.utc), 'success': True, 'errors': [], 'duration_seconds': 0.00674, 'extract_time': 0.000535, 'transform_time': 0.0, 'load_time': 0.005174}
+2026-07-22 13:24:51,760 | INFO | request_id=- | scheduler | Scheduled ETL completed successfully
+2026-07-22 13:24:51,768 | INFO | request_id=- | scheduler | Scheduled ETL started
+2026-07-22 13:24:51,768 | INFO | request_id=- | scheduler | Scheduled ETL completed successfully
+2026-07-22 13:24:51,774 | INFO | request_id=- | scheduler | Scheduled ETL started
+2026-07-22 13:24:51,775 | ERROR | request_id=- | scheduler | Scheduled ETL failed
+Traceback (most recent call last):
+  File "C:\Users\frapa\Desktop\Data-Engineering-Platform\backend\app\scheduler\jobs.py", line 21, in run_exoplanet_etl_job
+    run_etl(session, config)
+  File "C:\Users\frapa\AppData\Local\Programs\Python\Python310\lib\unittest\mock.py", line 1114, in __call__
+    return self._mock_call(*args, **kwargs)
+  File "C:\Users\frapa\AppData\Local\Programs\Python\Python310\lib\unittest\mock.py", line 1118, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+  File "C:\Users\frapa\AppData\Local\Programs\Python\Python310\lib\unittest\mock.py", line 1173, in _execute_mock_call
+    raise effect
+Exception: ETL failed
+2026-07-22 13:24:51,775 | INFO | request_id=- | scheduler | Scheduled ETL completed successfully
+2026-07-22 13:24:51,780 | INFO | request_id=- | app.backend_pre_start | Starting call to 'app.backend_pre_start.init', this is the 1st time calling it.
+2026-07-22 13:24:51,783 | INFO | request_id=- | app.tests_pre_start | Starting call to 'app.tests_pre_start.init', this is the 1st time calling it.
+2026-07-22 13:24:52,307 | INFO | request_id=- | scheduler | Scheduled ETL started
+2026-07-22 13:24:52,307 | INFO | request_id=- | scheduler | Scheduled ETL completed successfully
+2026-07-22 13:24:52,310 | INFO | request_id=- | scheduler | Scheduled ETL started
+2026-07-22 13:24:52,310 | INFO | request_id=- | scheduler | Scheduled ETL completed successfully
+2026-07-22 13:24:52,312 | INFO | request_id=- | scheduler | Scheduled ETL started
+2026-07-22 13:24:52,313 | INFO | request_id=- | scheduler | Scheduled ETL completed successfully
+2026-07-22 13:24:52,315 | INFO | request_id=- | scheduler | Scheduler started | interval=86400s
+2026-07-22 13:24:52,318 | INFO | request_id=- | scheduler | Scheduler stopped
+2026-07-22 13:24:52,321 | INFO | request_id=- | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts

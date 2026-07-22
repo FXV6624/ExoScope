@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { MetricsResponse, EtlRunExoplanetEtlData, EtlRunExoplanetEtlResponse, ExoplanetsReadExoplanetsData, ExoplanetsReadExoplanetsResponse, ExoplanetsGetExoplanetStatsData, ExoplanetsGetExoplanetStatsResponse, ExoplanetsReadExoplanetByIdData, ExoplanetsReadExoplanetByIdResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlData, LoginRecoverPasswordHtmlResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserData, UsersReadUserResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { MetricsResponse, EtlRunExoplanetEtlData, EtlRunExoplanetEtlResponse, ExoplanetsReadExoplanetsData, ExoplanetsReadExoplanetsResponse, ExoplanetsGetExoplanetStatsData, ExoplanetsGetExoplanetStatsResponse, ExoplanetsReadExoplanetByIdData, ExoplanetsReadExoplanetByIdResponse, ExportsExportExoplanetsEndpointData, ExportsExportExoplanetsEndpointResponse, ItemsReadItemsData, ItemsReadItemsResponse, ItemsCreateItemData, ItemsCreateItemResponse, ItemsReadItemData, ItemsReadItemResponse, ItemsUpdateItemData, ItemsUpdateItemResponse, ItemsDeleteItemData, ItemsDeleteItemResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlData, LoginRecoverPasswordHtmlResponse, PrivateCreateUserData, PrivateCreateUserResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserData, UsersReadUserResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class DefaultService {
     /**
@@ -153,6 +153,85 @@ export class ExoplanetsService {
             url: '/api/v1/exoplanets/{exoplanet_id}',
             path: {
                 exoplanet_id: data.exoplanetId
+            },
+            errors: {
+                422: 'Validation Error'
+            }
+        });
+    }
+}
+
+export class ExportsService {
+    /**
+     * Export Exoplanets Endpoint
+     * Export exoplanets using the selected format.
+     * @param data The data for the request.
+     * @param data.format
+     * @param data.filename
+     * @param data.fields
+     * @param data.compress
+     * @param data.planetName
+     * @param data.hostStar
+     * @param data.discoveryMethod
+     * @param data.discoveryYear
+     * @param data.minDiscoveryYear
+     * @param data.maxDiscoveryYear
+     * @param data.minOrbitalPeriod
+     * @param data.maxOrbitalPeriod
+     * @param data.minPlanetRadius
+     * @param data.maxPlanetRadius
+     * @param data.minPlanetMass
+     * @param data.maxPlanetMass
+     * @param data.composition
+     * @param data.minCompositionConfidence
+     * @param data.minHabitabilityScore
+     * @param data.maxHabitabilityScore
+     * @param data.minHabitabilityConfidence
+     * @param data.minDistanceFromEarth
+     * @param data.maxDistanceFromEarth
+     * @param data.minEquilibriumTemperature
+     * @param data.maxEquilibriumTemperature
+     * @param data.systemPlanetCount
+     * @param data.minSystemPlanetCount
+     * @param data.minOrbitalEccentricity
+     * @param data.maxOrbitalEccentricity
+     * @returns unknown Successful Response
+     * @throws ApiError
+     */
+    public static exportExoplanetsEndpoint(data: ExportsExportExoplanetsEndpointData = {}): CancelablePromise<ExportsExportExoplanetsEndpointResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/exports/export',
+            query: {
+                format: data.format,
+                filename: data.filename,
+                fields: data.fields,
+                compress: data.compress,
+                planet_name: data.planetName,
+                host_star: data.hostStar,
+                discovery_method: data.discoveryMethod,
+                discovery_year: data.discoveryYear,
+                min_discovery_year: data.minDiscoveryYear,
+                max_discovery_year: data.maxDiscoveryYear,
+                min_orbital_period: data.minOrbitalPeriod,
+                max_orbital_period: data.maxOrbitalPeriod,
+                min_planet_radius: data.minPlanetRadius,
+                max_planet_radius: data.maxPlanetRadius,
+                min_planet_mass: data.minPlanetMass,
+                max_planet_mass: data.maxPlanetMass,
+                composition: data.composition,
+                min_composition_confidence: data.minCompositionConfidence,
+                min_habitability_score: data.minHabitabilityScore,
+                max_habitability_score: data.maxHabitabilityScore,
+                min_habitability_confidence: data.minHabitabilityConfidence,
+                min_distance_from_earth: data.minDistanceFromEarth,
+                max_distance_from_earth: data.maxDistanceFromEarth,
+                min_equilibrium_temperature: data.minEquilibriumTemperature,
+                max_equilibrium_temperature: data.maxEquilibriumTemperature,
+                system_planet_count: data.systemPlanetCount,
+                min_system_planet_count: data.minSystemPlanetCount,
+                min_orbital_eccentricity: data.minOrbitalEccentricity,
+                max_orbital_eccentricity: data.maxOrbitalEccentricity
             },
             errors: {
                 422: 'Validation Error'
