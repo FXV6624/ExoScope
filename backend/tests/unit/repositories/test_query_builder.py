@@ -76,3 +76,31 @@ class TestBuildExoplanetQuery:
         query = build_exoplanet_query(filters)
         compiled = str(query.compile(compile_kwargs={"literal_binds": True}))
         assert "discovery_year" in compiled.lower()
+
+    def test_planet_class_filter(self):
+        filters = ExoplanetFilters(
+            planet_class="Super Earth", min_planet_class_confidence=0.8
+        )
+        query = build_exoplanet_query(filters)
+        compiled = str(query.compile(compile_kwargs={"literal_binds": True}))
+        assert "planet_class" in compiled.lower()
+        assert "planet_class_confidence" in compiled.lower()
+
+    def test_composition_filter(self):
+        filters = ExoplanetFilters(composition="Rocky", min_composition_confidence=0.7)
+        query = build_exoplanet_query(filters)
+        compiled = str(query.compile(compile_kwargs={"literal_binds": True}))
+        assert "composition" in compiled.lower()
+        assert "composition_confidence" in compiled.lower()
+
+    def test_has_custom_photo_true(self):
+        filters = ExoplanetFilters(has_custom_photo=True)
+        query = build_exoplanet_query(filters)
+        compiled = str(query.compile(compile_kwargs={"literal_binds": True}))
+        assert "photo_url like 'http%'" in compiled.lower()
+
+    def test_has_custom_photo_false(self):
+        filters = ExoplanetFilters(has_custom_photo=False)
+        query = build_exoplanet_query(filters)
+        compiled = str(query.compile(compile_kwargs={"literal_binds": True}))
+        assert "photo_url like '/assets/%'" in compiled.lower()

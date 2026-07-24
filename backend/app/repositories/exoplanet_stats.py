@@ -44,6 +44,15 @@ def get_by_composition(session: Session) -> Sequence[Any]:
     ).all()
 
 
+def get_by_planet_class(session: Session) -> Sequence[Any]:
+    return session.exec(
+        select(
+            Exoplanet.planet_class,
+            func.count(),
+        ).group_by(Exoplanet.planet_class)
+    ).all()
+
+
 def get_summary_stats(session: Session, column: Any) -> tuple[Any, Any, Any]:
     avg_, min_, max_ = session.exec(
         select(

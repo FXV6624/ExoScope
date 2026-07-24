@@ -61,8 +61,12 @@ export class ExoplanetsService {
      * @param data.maxPlanetRadius
      * @param data.minPlanetMass
      * @param data.maxPlanetMass
+     * @param data.planetClass
+     * @param data.minPlanetClassConfidence
+     * @param data.maxPlanetClassConfidence
      * @param data.composition
      * @param data.minCompositionConfidence
+     * @param data.maxCompositionConfidence
      * @param data.minHabitabilityScore
      * @param data.maxHabitabilityScore
      * @param data.minHabitabilityConfidence
@@ -74,6 +78,7 @@ export class ExoplanetsService {
      * @param data.minSystemPlanetCount
      * @param data.minOrbitalEccentricity
      * @param data.maxOrbitalEccentricity
+     * @param data.hasCustomPhoto
      * @returns ExoplanetsPublic Successful Response
      * @throws ApiError
      */
@@ -96,8 +101,12 @@ export class ExoplanetsService {
                 max_planet_radius: data.maxPlanetRadius,
                 min_planet_mass: data.minPlanetMass,
                 max_planet_mass: data.maxPlanetMass,
+                planet_class: data.planetClass,
+                min_planet_class_confidence: data.minPlanetClassConfidence,
+                max_planet_class_confidence: data.maxPlanetClassConfidence,
                 composition: data.composition,
                 min_composition_confidence: data.minCompositionConfidence,
+                max_composition_confidence: data.maxCompositionConfidence,
                 min_habitability_score: data.minHabitabilityScore,
                 max_habitability_score: data.maxHabitabilityScore,
                 min_habitability_confidence: data.minHabitabilityConfidence,
@@ -108,7 +117,8 @@ export class ExoplanetsService {
                 system_planet_count: data.systemPlanetCount,
                 min_system_planet_count: data.minSystemPlanetCount,
                 min_orbital_eccentricity: data.minOrbitalEccentricity,
-                max_orbital_eccentricity: data.maxOrbitalEccentricity
+                max_orbital_eccentricity: data.maxOrbitalEccentricity,
+                has_custom_photo: data.hasCustomPhoto
             },
             errors: {
                 422: 'Validation Error'
@@ -182,8 +192,12 @@ export class ExportsService {
      * @param data.maxPlanetRadius
      * @param data.minPlanetMass
      * @param data.maxPlanetMass
+     * @param data.planetClass
+     * @param data.minPlanetClassConfidence
+     * @param data.maxPlanetClassConfidence
      * @param data.composition
      * @param data.minCompositionConfidence
+     * @param data.maxCompositionConfidence
      * @param data.minHabitabilityScore
      * @param data.maxHabitabilityScore
      * @param data.minHabitabilityConfidence
@@ -195,6 +209,7 @@ export class ExportsService {
      * @param data.minSystemPlanetCount
      * @param data.minOrbitalEccentricity
      * @param data.maxOrbitalEccentricity
+     * @param data.hasCustomPhoto
      * @returns unknown Successful Response
      * @throws ApiError
      */
@@ -219,8 +234,12 @@ export class ExportsService {
                 max_planet_radius: data.maxPlanetRadius,
                 min_planet_mass: data.minPlanetMass,
                 max_planet_mass: data.maxPlanetMass,
+                planet_class: data.planetClass,
+                min_planet_class_confidence: data.minPlanetClassConfidence,
+                max_planet_class_confidence: data.maxPlanetClassConfidence,
                 composition: data.composition,
                 min_composition_confidence: data.minCompositionConfidence,
+                max_composition_confidence: data.maxCompositionConfidence,
                 min_habitability_score: data.minHabitabilityScore,
                 max_habitability_score: data.maxHabitabilityScore,
                 min_habitability_confidence: data.minHabitabilityConfidence,
@@ -231,7 +250,8 @@ export class ExportsService {
                 system_planet_count: data.systemPlanetCount,
                 min_system_planet_count: data.minSystemPlanetCount,
                 min_orbital_eccentricity: data.minOrbitalEccentricity,
-                max_orbital_eccentricity: data.maxOrbitalEccentricity
+                max_orbital_eccentricity: data.maxOrbitalEccentricity,
+                has_custom_photo: data.hasCustomPhoto
             },
             errors: {
                 422: 'Validation Error'

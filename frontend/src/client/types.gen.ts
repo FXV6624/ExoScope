@@ -29,6 +29,8 @@ export type CompletenessStats = {
     distance_from_earth: number;
     system_planet_count: number;
     system_star_count: number;
+    planet_class: number;
+    planet_class_confidence: number;
     composition: number;
     composition_confidence: number;
     habitability_score: number;
@@ -73,10 +75,13 @@ export type ExoplanetPublic = {
     distance_from_earth?: (number | null);
     system_planet_count?: (number | null);
     system_star_count?: (number | null);
+    planet_class?: (PlanetClass | null);
+    planet_class_confidence?: (number | null);
     composition?: (PlanetComposition | null);
     composition_confidence?: (number | null);
     habitability_score?: (number | null);
     habitability_confidence?: (number | null);
+    photo_url?: (string | null);
     id: string;
 };
 
@@ -93,6 +98,7 @@ export type ExoplanetStats = {
     by_decade: {
         [key: string]: (number);
     };
+    planet_class: PlanetClassStats;
     composition: CompositionStats;
     habitability: HabitabilityStats;
     radius: SummaryStats;
@@ -152,7 +158,16 @@ export type NewPassword = {
     new_password: string;
 };
 
-export type PlanetComposition = 'Rocky' | 'Super Earth' | 'Mini Neptune' | 'Ice Giant' | 'Gas Giant' | 'Unknown';
+export type PlanetClass = 'Terrestrial' | 'Super Earth' | 'Sub-Neptune' | 'Neptune' | 'Ice Giant' | 'Gas Giant' | 'Unknown';
+
+export type PlanetClassStats = {
+    by_class: {
+        [key: string]: (number);
+    };
+    average_confidence?: (number | null);
+};
+
+export type PlanetComposition = 'Rocky' | 'Rocky-Iron' | 'Water World' | 'Ice' | 'Hydrogen-Helium' | 'Unknown';
 
 export type PrivateUserCreate = {
     email: string;
@@ -240,14 +255,17 @@ export type ExoplanetsReadExoplanetsData = {
     composition?: (PlanetComposition | null);
     discoveryMethod?: (string | null);
     discoveryYear?: (number | null);
+    hasCustomPhoto?: (boolean | null);
     hostStar?: (string | null);
     limit?: number;
+    maxCompositionConfidence?: (number | null);
     maxDiscoveryYear?: (number | null);
     maxDistanceFromEarth?: (number | null);
     maxEquilibriumTemperature?: (number | null);
     maxHabitabilityScore?: (number | null);
     maxOrbitalEccentricity?: (number | null);
     maxOrbitalPeriod?: (number | null);
+    maxPlanetClassConfidence?: (number | null);
     maxPlanetMass?: (number | null);
     maxPlanetRadius?: (number | null);
     minCompositionConfidence?: (number | null);
@@ -258,9 +276,11 @@ export type ExoplanetsReadExoplanetsData = {
     minHabitabilityScore?: (number | null);
     minOrbitalEccentricity?: (number | null);
     minOrbitalPeriod?: (number | null);
+    minPlanetClassConfidence?: (number | null);
     minPlanetMass?: (number | null);
     minPlanetRadius?: (number | null);
     minSystemPlanetCount?: (number | null);
+    planetClass?: (PlanetClass | null);
     planetName?: (string | null);
     skip?: number;
     systemPlanetCount?: (number | null);
@@ -289,13 +309,16 @@ export type ExportsExportExoplanetsEndpointData = {
     fields?: (Array<(string)> | null);
     filename?: string;
     format?: ExportFormat;
+    hasCustomPhoto?: (boolean | null);
     hostStar?: (string | null);
+    maxCompositionConfidence?: (number | null);
     maxDiscoveryYear?: (number | null);
     maxDistanceFromEarth?: (number | null);
     maxEquilibriumTemperature?: (number | null);
     maxHabitabilityScore?: (number | null);
     maxOrbitalEccentricity?: (number | null);
     maxOrbitalPeriod?: (number | null);
+    maxPlanetClassConfidence?: (number | null);
     maxPlanetMass?: (number | null);
     maxPlanetRadius?: (number | null);
     minCompositionConfidence?: (number | null);
@@ -306,9 +329,11 @@ export type ExportsExportExoplanetsEndpointData = {
     minHabitabilityScore?: (number | null);
     minOrbitalEccentricity?: (number | null);
     minOrbitalPeriod?: (number | null);
+    minPlanetClassConfidence?: (number | null);
     minPlanetMass?: (number | null);
     minPlanetRadius?: (number | null);
     minSystemPlanetCount?: (number | null);
+    planetClass?: (PlanetClass | null);
     planetName?: (string | null);
     systemPlanetCount?: (number | null);
 };

@@ -2,56 +2,71 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from operator import attrgetter
 
-from app.core.enums.exoplanet import PlanetComposition
+from app.core.enums.exoplanet import PlanetClass, PlanetComposition
 from app.models import ExoplanetBase
 
 
 @dataclass(frozen=True, slots=True)
-class ClassificationThreshold:
-    composition: PlanetComposition
+class ClassThreshold:
+    planet_class: PlanetClass
     max_radius: float | None
-    min_density: float | None
-    radius_confidence: float
-    density_confidence: float
 
 
-PLANET_CLASSIFICATIONS = (
-    ClassificationThreshold(
-        composition=PlanetComposition.ROCKY,
-        max_radius=1.6,
-        min_density=5.0,
-        radius_confidence=0.75,
-        density_confidence=0.95,
+PLANET_CLASS_THRESHOLDS: tuple[ClassThreshold, ...] = (
+    ClassThreshold(planet_class=PlanetClass.TERRESTRIAL, max_radius=1.25),
+    ClassThreshold(planet_class=PlanetClass.SUPER_EARTH, max_radius=2.0),
+    ClassThreshold(planet_class=PlanetClass.SUB_NEPTUNE, max_radius=4.0),
+    ClassThreshold(planet_class=PlanetClass.NEPTUNE, max_radius=6.0),
+    ClassThreshold(planet_class=PlanetClass.ICE_GIANT, max_radius=10.0),
+    ClassThreshold(planet_class=PlanetClass.GAS_GIANT, max_radius=None),
+)
+
+PLANET_CLASS_BOUNDARIES: tuple[float, ...] = tuple(
+    t.max_radius for t in PLANET_CLASS_THRESHOLDS if t.max_radius is not None
+)
+
+
+@dataclass(frozen=True, slots=True)
+class CompositionDensityThreshold:
+    composition: PlanetComposition
+    min_density: float
+
+
+COMPOSITION_DENSITY_THRESHOLDS: tuple[CompositionDensityThreshold, ...] = (
+    CompositionDensityThreshold(
+        composition=PlanetComposition.ROCKY_IRON, min_density=6.0
     ),
-    ClassificationThreshold(
-        composition=PlanetComposition.SUPER_EARTH,
-        max_radius=2.5,
-        min_density=3.0,
-        radius_confidence=0.72,
-        density_confidence=0.90,
+    CompositionDensityThreshold(composition=PlanetComposition.ROCKY, min_density=4.0),
+    CompositionDensityThreshold(
+        composition=PlanetComposition.WATER_WORLD, min_density=2.0
     ),
-    ClassificationThreshold(
-        composition=PlanetComposition.MINI_NEPTUNE,
-        max_radius=4.0,
-        min_density=1.5,
-        radius_confidence=0.70,
-        density_confidence=0.88,
-    ),
-    ClassificationThreshold(
-        composition=PlanetComposition.ICE_GIANT,
-        max_radius=6.0,
-        min_density=None,
-        radius_confidence=0.68,
-        density_confidence=0.90,
-    ),
-    ClassificationThreshold(
-        composition=PlanetComposition.GAS_GIANT,
-        max_radius=None,
-        min_density=None,
-        radius_confidence=0.70,
-        density_confidence=0.92,
+    CompositionDensityThreshold(composition=PlanetComposition.ICE, min_density=1.0),
+    CompositionDensityThreshold(
+        composition=PlanetComposition.HYDROGEN_HELIUM, min_density=0.0
     ),
 )
+
+COMPOSITION_DENSITY_BOUNDARIES: tuple[float, ...] = (1.0, 2.0, 4.0, 6.0)
+
+
+@dataclass(frozen=True, slots=True)
+class CompositionRadiusThreshold:
+    composition: PlanetComposition
+    max_radius: float | None
+
+
+COMPOSITION_RADIUS_THRESHOLDS: tuple[CompositionRadiusThreshold, ...] = (
+    CompositionRadiusThreshold(composition=PlanetComposition.ROCKY, max_radius=1.6),
+    CompositionRadiusThreshold(
+        composition=PlanetComposition.WATER_WORLD, max_radius=2.4
+    ),
+    CompositionRadiusThreshold(composition=PlanetComposition.ICE, max_radius=6.0),
+    CompositionRadiusThreshold(
+        composition=PlanetComposition.HYDROGEN_HELIUM, max_radius=None
+    ),
+)
+
+COMPOSITION_RADIUS_BOUNDARIES: tuple[float, ...] = (1.6, 2.4, 6.0)
 
 
 @dataclass(frozen=True, slots=True)
@@ -128,3 +143,12 @@ CRITERIA = (
         weight=WEIGHTS.orbital_eccentricity,
     ),
 )
+
+DEFAULT_IMAGES: dict[PlanetComposition, str] = {
+    PlanetComposition.ROCKY: "/assets/images/planets/rocky.png",
+    PlanetComposition.ROCKY_IRON: "/assets/images/planets/rocky_iron.png",
+    PlanetComposition.WATER_WORLD: "/assets/images/planets/water_world.png",
+    PlanetComposition.ICE: "/assets/images/planets/ice.png",
+    PlanetComposition.HYDROGEN_HELIUM: "/assets/images/planets/hydrogen_helium.png",
+    PlanetComposition.UNKNOWN: "/assets/images/planets/unknown.png",
+}

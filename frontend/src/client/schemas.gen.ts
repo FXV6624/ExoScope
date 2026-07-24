@@ -135,6 +135,14 @@ export const CompletenessStatsSchema = {
             type: 'number',
             title: 'System Star Count'
         },
+        planet_class: {
+            type: 'number',
+            title: 'Planet Class'
+        },
+        planet_class_confidence: {
+            type: 'number',
+            title: 'Planet Class Confidence'
+        },
         composition: {
             type: 'number',
             title: 'Composition'
@@ -153,7 +161,7 @@ export const CompletenessStatsSchema = {
         }
     },
     type: 'object',
-    required: ['host_star', 'discovery_year', 'discovery_method', 'planet_radius', 'planet_mass', 'planet_density', 'equilibrium_temperature', 'incident_flux', 'orbital_period', 'semi_major_axis', 'orbital_eccentricity', 'stellar_effective_temperature', 'stellar_radius', 'stellar_mass', 'stellar_luminosity', 'stellar_age', 'distance_from_earth', 'system_planet_count', 'system_star_count', 'composition', 'composition_confidence', 'habitability_score', 'habitability_confidence'],
+    required: ['host_star', 'discovery_year', 'discovery_method', 'planet_radius', 'planet_mass', 'planet_density', 'equilibrium_temperature', 'incident_flux', 'orbital_period', 'semi_major_axis', 'orbital_eccentricity', 'stellar_effective_temperature', 'stellar_radius', 'stellar_mass', 'stellar_luminosity', 'stellar_age', 'distance_from_earth', 'system_planet_count', 'system_star_count', 'planet_class', 'planet_class_confidence', 'composition', 'composition_confidence', 'habitability_score', 'habitability_confidence'],
     title: 'CompletenessStats'
 } as const;
 
@@ -435,6 +443,27 @@ export const ExoplanetPublicSchema = {
             ],
             title: 'System Star Count'
         },
+        planet_class: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/PlanetClass'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        planet_class_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Planet Class Confidence'
+        },
         composition: {
             anyOf: [
                 {
@@ -478,6 +507,17 @@ export const ExoplanetPublicSchema = {
             ],
             title: 'Habitability Confidence'
         },
+        photo_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Photo Url'
+        },
         id: {
             type: 'string',
             format: 'uuid',
@@ -509,6 +549,9 @@ export const ExoplanetStatsSchema = {
             type: 'object',
             title: 'By Decade'
         },
+        planet_class: {
+            '$ref': '#/components/schemas/PlanetClassStats'
+        },
         composition: {
             '$ref': '#/components/schemas/CompositionStats'
         },
@@ -538,7 +581,7 @@ export const ExoplanetStatsSchema = {
         }
     },
     type: 'object',
-    required: ['total', 'by_method', 'by_decade', 'composition', 'habitability', 'radius', 'mass', 'density', 'equilibrium_temperature', 'orbital_period', 'distance', 'completeness'],
+    required: ['total', 'by_method', 'by_decade', 'planet_class', 'composition', 'habitability', 'radius', 'mass', 'density', 'equilibrium_temperature', 'orbital_period', 'distance', 'completeness'],
     title: 'ExoplanetStats'
 } as const;
 
@@ -798,9 +841,44 @@ export const NewPasswordSchema = {
     title: 'NewPassword'
 } as const;
 
+export const PlanetClassSchema = {
+    type: 'string',
+    enum: ['Terrestrial', 'Super Earth', 'Sub-Neptune', 'Neptune', 'Ice Giant', 'Gas Giant', 'Unknown'],
+    title: 'PlanetClass'
+} as const;
+
+export const PlanetClassStatsSchema = {
+    properties: {
+        by_class: {
+            additionalProperties: {
+                type: 'integer'
+            },
+            propertyNames: {
+                '$ref': '#/components/schemas/PlanetClass'
+            },
+            type: 'object',
+            title: 'By Class'
+        },
+        average_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Average Confidence'
+        }
+    },
+    type: 'object',
+    required: ['by_class'],
+    title: 'PlanetClassStats'
+} as const;
+
 export const PlanetCompositionSchema = {
     type: 'string',
-    enum: ['Rocky', 'Super Earth', 'Mini Neptune', 'Ice Giant', 'Gas Giant', 'Unknown'],
+    enum: ['Rocky', 'Rocky-Iron', 'Water World', 'Ice', 'Hydrogen-Helium', 'Unknown'],
     title: 'PlanetComposition'
 } as const;
 

@@ -43,6 +43,7 @@ def _update_next_run_metric() -> None:
     """Read the real next_run_time from APScheduler and publish it."""
     job = scheduler.get_job("exoplanet_etl")
     if job:
-        if job.next_run_time:
-            scheduler_prometheus_metrics.update_next_run(job.next_run_time.timestamp())
-        logger.info("Next scheduled ETL | %s", job.next_run_time)
+        next_run = getattr(job, "next_run_time", None)
+        if next_run:
+            scheduler_prometheus_metrics.update_next_run(next_run.timestamp())
+        logger.info("Next scheduled ETL | %s", next_run)
