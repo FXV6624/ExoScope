@@ -29,6 +29,8 @@ export type CompletenessStats = {
     distance_from_earth: number;
     system_planet_count: number;
     system_star_count: number;
+    planet_class: number;
+    planet_class_confidence: number;
     composition: number;
     composition_confidence: number;
     habitability_score: number;
@@ -52,6 +54,43 @@ export type ETLConfig = {
     load_mode?: LoadMode;
 };
 
+export type ExoplanetField = 'planet_name' | 'host_star' | 'discovery_year' | 'discovery_method' | 'planet_radius' | 'planet_mass' | 'planet_density' | 'equilibrium_temperature' | 'incident_flux' | 'orbital_period' | 'semi_major_axis' | 'orbital_eccentricity' | 'stellar_effective_temperature' | 'stellar_radius' | 'stellar_mass' | 'stellar_luminosity' | 'stellar_age' | 'distance_from_earth' | 'system_planet_count' | 'system_star_count' | 'planet_class' | 'planet_class_confidence' | 'composition' | 'composition_confidence' | 'habitability_score' | 'habitability_confidence' | 'photo_url';
+
+export type ExoplanetFilters = {
+    planet_name?: (string | null);
+    host_star?: (string | null);
+    discovery_method?: (string | null);
+    discovery_year?: (number | null);
+    min_discovery_year?: (number | null);
+    max_discovery_year?: (number | null);
+    min_orbital_period?: (number | null);
+    max_orbital_period?: (number | null);
+    min_planet_radius?: (number | null);
+    max_planet_radius?: (number | null);
+    min_planet_mass?: (number | null);
+    max_planet_mass?: (number | null);
+    planet_class?: (PlanetClass | null);
+    min_planet_class_confidence?: (number | null);
+    max_planet_class_confidence?: (number | null);
+    composition?: (PlanetComposition | null);
+    min_composition_confidence?: (number | null);
+    max_composition_confidence?: (number | null);
+    min_habitability_score?: (number | null);
+    max_habitability_score?: (number | null);
+    min_habitability_confidence?: (number | null);
+    min_distance_from_earth?: (number | null);
+    max_distance_from_earth?: (number | null);
+    min_equilibrium_temperature?: (number | null);
+    max_equilibrium_temperature?: (number | null);
+    system_planet_count?: (number | null);
+    min_system_planet_count?: (number | null);
+    min_orbital_eccentricity?: (number | null);
+    max_orbital_eccentricity?: (number | null);
+    has_custom_photo?: (boolean | null);
+    sort_by?: (ExoplanetSortField | null);
+    order?: SortOrder;
+};
+
 export type ExoplanetPublic = {
     planet_name: string;
     host_star?: (string | null);
@@ -73,16 +112,32 @@ export type ExoplanetPublic = {
     distance_from_earth?: (number | null);
     system_planet_count?: (number | null);
     system_star_count?: (number | null);
+    planet_class?: (PlanetClass | null);
+    planet_class_confidence?: (number | null);
     composition?: (PlanetComposition | null);
     composition_confidence?: (number | null);
     habitability_score?: (number | null);
     habitability_confidence?: (number | null);
+    photo_url?: (string | null);
     id: string;
 };
 
-export type ExoplanetsPublic = {
-    data: Array<ExoplanetPublic>;
+export type ExoplanetQueryMetadata = {
     count: number;
+    returned: number;
+    skip: number;
+    limit: number;
+    sort_by: ExoplanetSortField;
+    order: SortOrder;
+    fields?: (Array<ExoplanetField> | null);
+    filters: ExoplanetFilters;
+};
+
+export type ExoplanetSortField = 'planet_name' | 'host_star' | 'discovery_year' | 'discovery_method' | 'planet_radius' | 'planet_mass' | 'planet_density' | 'equilibrium_temperature' | 'incident_flux' | 'orbital_period' | 'semi_major_axis' | 'orbital_eccentricity' | 'stellar_effective_temperature' | 'stellar_radius' | 'stellar_mass' | 'stellar_luminosity' | 'stellar_age' | 'distance_from_earth' | 'system_planet_count' | 'system_star_count' | 'planet_class' | 'planet_class_confidence' | 'composition' | 'composition_confidence' | 'habitability_score' | 'habitability_confidence';
+
+export type ExoplanetsQueryResponse = {
+    data: Array<unknown>;
+    meta: ExoplanetQueryMetadata;
 };
 
 export type ExoplanetStats = {
@@ -93,6 +148,7 @@ export type ExoplanetStats = {
     by_decade: {
         [key: string]: (number);
     };
+    planet_class: PlanetClassStats;
     composition: CompositionStats;
     habitability: HabitabilityStats;
     radius: SummaryStats;
@@ -152,7 +208,16 @@ export type NewPassword = {
     new_password: string;
 };
 
-export type PlanetComposition = 'Rocky' | 'Super Earth' | 'Mini Neptune' | 'Ice Giant' | 'Gas Giant' | 'Unknown';
+export type PlanetClass = 'Terrestrial' | 'Super Earth' | 'Sub-Neptune' | 'Neptune' | 'Ice Giant' | 'Gas Giant' | 'Unknown';
+
+export type PlanetClassStats = {
+    by_class: {
+        [key: string]: (number);
+    };
+    average_confidence?: (number | null);
+};
+
+export type PlanetComposition = 'Rocky' | 'Rocky-Iron' | 'Water World' | 'Ice' | 'Hydrogen-Helium' | 'Unknown';
 
 export type PrivateUserCreate = {
     email: string;
@@ -160,6 +225,8 @@ export type PrivateUserCreate = {
     full_name: string;
     is_verified?: boolean;
 };
+
+export type SortOrder = 'asc' | 'desc';
 
 export type SummaryStats = {
     average?: (number | null);
@@ -240,14 +307,17 @@ export type ExoplanetsReadExoplanetsData = {
     composition?: (PlanetComposition | null);
     discoveryMethod?: (string | null);
     discoveryYear?: (number | null);
+    hasCustomPhoto?: (boolean | null);
     hostStar?: (string | null);
     limit?: number;
+    maxCompositionConfidence?: (number | null);
     maxDiscoveryYear?: (number | null);
     maxDistanceFromEarth?: (number | null);
     maxEquilibriumTemperature?: (number | null);
     maxHabitabilityScore?: (number | null);
     maxOrbitalEccentricity?: (number | null);
     maxOrbitalPeriod?: (number | null);
+    maxPlanetClassConfidence?: (number | null);
     maxPlanetMass?: (number | null);
     maxPlanetRadius?: (number | null);
     minCompositionConfidence?: (number | null);
@@ -258,15 +328,59 @@ export type ExoplanetsReadExoplanetsData = {
     minHabitabilityScore?: (number | null);
     minOrbitalEccentricity?: (number | null);
     minOrbitalPeriod?: (number | null);
+    minPlanetClassConfidence?: (number | null);
     minPlanetMass?: (number | null);
     minPlanetRadius?: (number | null);
     minSystemPlanetCount?: (number | null);
+    order?: SortOrder;
+    planetClass?: (PlanetClass | null);
     planetName?: (string | null);
     skip?: number;
+    sortBy?: (ExoplanetSortField | null);
     systemPlanetCount?: (number | null);
 };
 
-export type ExoplanetsReadExoplanetsResponse = (ExoplanetsPublic);
+export type ExoplanetsReadExoplanetsResponse = (ExoplanetsQueryResponse);
+
+export type ExoplanetsReadExoplanetsFieldsData = {
+    composition?: (PlanetComposition | null);
+    discoveryMethod?: (string | null);
+    discoveryYear?: (number | null);
+    fields: Array<ExoplanetField>;
+    hasCustomPhoto?: (boolean | null);
+    hostStar?: (string | null);
+    limit?: number;
+    maxCompositionConfidence?: (number | null);
+    maxDiscoveryYear?: (number | null);
+    maxDistanceFromEarth?: (number | null);
+    maxEquilibriumTemperature?: (number | null);
+    maxHabitabilityScore?: (number | null);
+    maxOrbitalEccentricity?: (number | null);
+    maxOrbitalPeriod?: (number | null);
+    maxPlanetClassConfidence?: (number | null);
+    maxPlanetMass?: (number | null);
+    maxPlanetRadius?: (number | null);
+    minCompositionConfidence?: (number | null);
+    minDiscoveryYear?: (number | null);
+    minDistanceFromEarth?: (number | null);
+    minEquilibriumTemperature?: (number | null);
+    minHabitabilityConfidence?: (number | null);
+    minHabitabilityScore?: (number | null);
+    minOrbitalEccentricity?: (number | null);
+    minOrbitalPeriod?: (number | null);
+    minPlanetClassConfidence?: (number | null);
+    minPlanetMass?: (number | null);
+    minPlanetRadius?: (number | null);
+    minSystemPlanetCount?: (number | null);
+    order?: SortOrder;
+    planetClass?: (PlanetClass | null);
+    planetName?: (string | null);
+    skip?: number;
+    sortBy?: (ExoplanetSortField | null);
+    systemPlanetCount?: (number | null);
+};
+
+export type ExoplanetsReadExoplanetsFieldsResponse = (ExoplanetsQueryResponse);
 
 export type ExoplanetsGetExoplanetStatsData = {
     habitabilityConfidenceThreshold?: number;
@@ -289,13 +403,16 @@ export type ExportsExportExoplanetsEndpointData = {
     fields?: (Array<(string)> | null);
     filename?: string;
     format?: ExportFormat;
+    hasCustomPhoto?: (boolean | null);
     hostStar?: (string | null);
+    maxCompositionConfidence?: (number | null);
     maxDiscoveryYear?: (number | null);
     maxDistanceFromEarth?: (number | null);
     maxEquilibriumTemperature?: (number | null);
     maxHabitabilityScore?: (number | null);
     maxOrbitalEccentricity?: (number | null);
     maxOrbitalPeriod?: (number | null);
+    maxPlanetClassConfidence?: (number | null);
     maxPlanetMass?: (number | null);
     maxPlanetRadius?: (number | null);
     minCompositionConfidence?: (number | null);
@@ -306,10 +423,14 @@ export type ExportsExportExoplanetsEndpointData = {
     minHabitabilityScore?: (number | null);
     minOrbitalEccentricity?: (number | null);
     minOrbitalPeriod?: (number | null);
+    minPlanetClassConfidence?: (number | null);
     minPlanetMass?: (number | null);
     minPlanetRadius?: (number | null);
     minSystemPlanetCount?: (number | null);
+    order?: SortOrder;
+    planetClass?: (PlanetClass | null);
     planetName?: (string | null);
+    sortBy?: (ExoplanetSortField | null);
     systemPlanetCount?: (number | null);
 };
 

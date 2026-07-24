@@ -4,11 +4,13 @@ from typing import Any, TypeVar
 
 from sqlmodel import Session
 
+from app.core.enums.exoplanet import ExoplanetField, ExoplanetSortField, SortOrder
 from app.models import Exoplanet
 from app.repositories.exoplanet_stats import (
     get_by_composition,
     get_by_discovery_decade,
     get_by_discovery_method,
+    get_by_planet_class,
     get_completeness,
     get_habitability_stats,
     get_summary_stats,
@@ -22,20 +24,69 @@ from app.schemas.exoplanet import (
     CompletenessStats,
     CompositionStats,
     ExoplanetFilters,
+    ExoplanetQueryMetadata,
+    ExoplanetsQueryResponse,
     ExoplanetStats,
     HabitabilityStats,
+    PlanetClassStats,
     SummaryStats,
 )
+from app.services.planet_photo import find_photo_url
 
 
 def read_exoplanets_service(
-    session: Session, filters: ExoplanetFilters, skip: int, limit: int
-) -> dict[str, Any]:
+    session: Session,
+    filters: ExoplanetFilters,
+    skip: int,
+    limit: int,
+    sort_by: ExoplanetSortField,
+    order: SortOrder,
+    fields: list[ExoplanetField] | None = None,
+) -> ExoplanetsQueryResponse:
     """
     Orchestrates repository calls for filtered + paginated exoplanets.
     """
-    data, count = get_exoplanets_with_filters(session, filters, skip, limit)
-    return {"data": data, "count": count}
+    raw_data, count = get_exoplanets_with_filters(
+        session,
+        filters,
+        skip,
+        limit,
+        sort_by,
+        order,
+        fields,
+    )
+
+    data: list[Any]
+    if fields is not None:
+        data = _serialize_selected_fields(raw_data, fields)
+    else:
+        data = list(raw_data)
+
+    return ExoplanetsQueryResponse(
+        data=data,
+        meta=ExoplanetQueryMetadata(
+            count=count,
+            returned=len(data),
+            skip=skip,
+            limit=limit,
+            sort_by=sort_by,
+            order=order,
+            fields=fields,
+            filters=filters,
+        ),
+    )
+
+
+def _serialize_selected_fields(
+    rows: Sequence[Any],
+    fields: list[ExoplanetField],
+) -> list[dict[str, Any]]:
+    """
+    Convert ORM model objects into dictionaries with only the requested fields.
+    """
+    return [
+        {field.value: getattr(row, field.value) for field in fields} for row in rows
+    ]
 
 
 def read_exoplanet_by_id_service(
@@ -43,8 +94,22 @@ def read_exoplanet_by_id_service(
 ) -> Exoplanet | None:
     """
     Retrieve a single exoplanet by its UUID.
+    If photo_url is default or missing, attempts to resolve a NASA photo on-demand
+    and persists it in DB for future requests.
     """
-    return get_exoplanet_by_id(session, exoplanet_id)
+    planet = get_exoplanet_by_id(session, exoplanet_id)
+    if not planet:
+        return None
+
+    if planet.photo_url is None or planet.photo_url.startswith("/assets/"):
+        nasa_url = find_photo_url(planet.planet_name)
+        if nasa_url:
+            planet.photo_url = nasa_url
+            session.add(planet)
+            session.commit()
+            session.refresh(planet)
+
+    return planet
 
 
 def _summary(session: Session, column: Any) -> SummaryStats:
@@ -70,6 +135,12 @@ def get_exoplanet_stats_service(
         total=count_exoplanets(session),
         by_method=_to_dict(get_by_discovery_method(session)),
         by_decade=_format_by_decade(get_by_discovery_decade(session)),
+        planet_class=PlanetClassStats(
+            by_class=_to_dict(get_by_planet_class(session)),
+            average_confidence=_summary(
+                session, Exoplanet.planet_class_confidence
+            ).average,
+        ),
         composition=CompositionStats(
             by_composition=_to_dict(get_by_composition(session)),
             average_confidence=_summary(

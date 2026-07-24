@@ -54,10 +54,13 @@ class UpsertLoadStrategy(LoadStrategy):
                     "distance_from_earth": stmt.excluded.distance_from_earth,
                     "system_planet_count": stmt.excluded.system_planet_count,
                     "system_star_count": stmt.excluded.system_star_count,
+                    "planet_class": stmt.excluded.planet_class,
+                    "planet_class_confidence": stmt.excluded.planet_class_confidence,
                     "composition": stmt.excluded.composition,
                     "composition_confidence": stmt.excluded.composition_confidence,
                     "habitability_score": stmt.excluded.habitability_score,
                     "habitability_confidence": stmt.excluded.habitability_confidence,
+                    "photo_url": stmt.excluded.photo_url,
                 },
             )
 

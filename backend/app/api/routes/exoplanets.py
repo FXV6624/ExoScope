@@ -5,11 +5,16 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi_cache.decorator import cache
 
 from app.api.deps import CurrentUser, SessionDep
+from app.core.enums.exoplanet import (
+    ExoplanetField,
+    ExoplanetSortField,
+    SortOrder,
+)
 from app.core.limiter import limiter
 from app.schemas.exoplanet import (
     ExoplanetFilters,
     ExoplanetPublic,
-    ExoplanetsPublic,
+    ExoplanetsQueryResponse,
     ExoplanetStats,
 )
 from app.services.exoplanets import (
@@ -21,21 +26,59 @@ from app.services.exoplanets import (
 router = APIRouter(prefix="/exoplanets", tags=["exoplanets"])
 
 
-@router.get("/", response_model=ExoplanetsPublic)
+@router.get("/", response_model=ExoplanetsQueryResponse)
 @limiter.limit("60/minute")
 @cache(expire=300)
 def read_exoplanets(
     request: Request,  # noqa: ARG001
     session: SessionDep,
     _current_user: CurrentUser,
-    skip: int = 0,
-    limit: int = 50,
+    skip: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=500)] = 50,
+    sort_by: ExoplanetSortField = ExoplanetSortField.PLANET_NAME,
+    order: SortOrder = SortOrder.asc,
     filters: ExoplanetFilters = Depends(),
 ) -> Any:
     """
-    Retrieve a list of exoplanets with optional filters.
+    Retrieve a standard list of exoplanets with full models.
     """
-    return read_exoplanets_service(session, filters, skip, limit)
+    return read_exoplanets_service(
+        session,
+        filters,
+        skip,
+        limit,
+        sort_by,
+        order,
+    )
+
+
+@router.get("/fields", response_model=ExoplanetsQueryResponse)
+@limiter.limit("60/minute")
+@cache(expire=300)
+def read_exoplanets_fields(
+    request: Request,  # noqa: ARG001
+    session: SessionDep,
+    _current_user: CurrentUser,
+    fields: Annotated[list[ExoplanetField], Query()],
+    skip: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=500)] = 50,
+    sort_by: ExoplanetSortField = ExoplanetSortField.PLANET_NAME,
+    order: SortOrder = SortOrder.asc,
+    filters: ExoplanetFilters = Depends(),
+) -> Any:
+    """
+    Retrieve exoplanets selecting only the requested fields.
+    Useful for lightweight clients and large datasets.
+    """
+    return read_exoplanets_service(
+        session,
+        filters,
+        skip,
+        limit,
+        sort_by,
+        order,
+        fields,
+    )
 
 
 @router.get("/stats", response_model=ExoplanetStats)

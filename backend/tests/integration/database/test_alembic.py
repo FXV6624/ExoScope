@@ -68,6 +68,8 @@ class TestAlembicMigrations:
             "distance_from_earth",
             "system_planet_count",
             "system_star_count",
+            "planet_class",
+            "planet_class_confidence",
             "composition",
             "composition_confidence",
             "habitability_score",

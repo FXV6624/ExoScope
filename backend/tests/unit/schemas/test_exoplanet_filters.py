@@ -68,8 +68,12 @@ class TestExoplanetFilters:
             "max_planet_radius",
             "min_planet_mass",
             "max_planet_mass",
+            "planet_class",
+            "min_planet_class_confidence",
+            "max_planet_class_confidence",
             "composition",
             "min_composition_confidence",
+            "max_composition_confidence",
             "min_habitability_score",
             "max_habitability_score",
             "min_habitability_confidence",
@@ -81,5 +85,6 @@ class TestExoplanetFilters:
             "min_system_planet_count",
             "min_orbital_eccentricity",
             "max_orbital_eccentricity",
+            "has_custom_photo",
         }
         assert expected_keys == set(d.keys())

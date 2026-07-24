@@ -7,7 +7,7 @@ from sqlalchemy import Column, DateTime, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, Relationship, SQLModel, UniqueConstraint
 
-from app.core.enums.exoplanet import PlanetComposition
+from app.core.enums.exoplanet import PlanetClass, PlanetComposition
 from app.etl.report import ETLReport
 
 
@@ -74,6 +74,11 @@ class ExoplanetBase(SQLModel):
     distance_from_earth: float | None = None
     system_planet_count: int | None = None
     system_star_count: int | None = None
+    planet_class: PlanetClass | None = Field(
+        default=None,
+        sa_column=Column(String, nullable=True),
+    )
+    planet_class_confidence: float | None = None
     composition: PlanetComposition | None = Field(
         default=None,
         sa_column=Column(String, nullable=True),
@@ -81,6 +86,7 @@ class ExoplanetBase(SQLModel):
     composition_confidence: float | None = None
     habitability_score: float | None = None
     habitability_confidence: float | None = None
+    photo_url: str | None = None
 
 
 class Exoplanet(ExoplanetBase, table=True):

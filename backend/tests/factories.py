@@ -18,96 +18,6 @@ from app.schemas.exoplanet import ExoplanetFilters, ExoplanetRaw
 from app.schemas.item import ItemCreate
 from app.schemas.user import UserCreate
 
-# ---------------------------------------------------------------------------
-# ExoplanetRaw
-# ---------------------------------------------------------------------------
-
-
-def make_exoplanet_raw(
-    pl_name: str = "Kepler-22b",
-    hostname: str | None = "Kepler-22",
-    discoverymethod: str | None = "Transit",
-    disc_year: int | None = 2011,
-    pl_orbper: float | None = 289.8,
-    pl_rade: float | None = 2.4,
-    pl_masse: float | None = None,
-    sy_dist: float | None = 190.0,
-) -> ExoplanetRaw:
-    return ExoplanetRaw(
-        pl_name=pl_name,
-        hostname=hostname,
-        discoverymethod=discoverymethod,
-        disc_year=disc_year,
-        pl_orbper=pl_orbper,
-        pl_rade=pl_rade,
-        pl_masse=pl_masse,
-        sy_dist=sy_dist,
-    )
-
-
-# ---------------------------------------------------------------------------
-# ExoplanetBase / Exoplanet (modelo DB)
-# ---------------------------------------------------------------------------
-
-
-def make_exoplanet_base(
-    planet_name: str = "Kepler-22b",
-    host_star: str | None = "Kepler-22",
-    discovery_method: str | None = "Transit",
-    discovery_year: int | None = 2011,
-    orbital_period: float | None = 289.8,
-    planet_radius: float | None = 2.4,
-    planet_mass: float | None = None,
-    distance_from_earth: float | None = 190.0,
-) -> ExoplanetBase:
-    return ExoplanetBase(
-        planet_name=planet_name,
-        host_star=host_star,
-        discovery_method=discovery_method,
-        discovery_year=discovery_year,
-        orbital_period=orbital_period,
-        planet_radius=planet_radius,
-        planet_mass=planet_mass,
-        distance_from_earth=distance_from_earth,
-    )
-
-
-def make_exoplanet_model(
-    planet_name: str = "Kepler-22b",
-    host_star: str | None = "Kepler-22",
-    discovery_method: str | None = "Transit",
-    discovery_year: int | None = 2011,
-    orbital_period: float | None = 289.8,
-    planet_radius: float | None = 2.4,
-    planet_mass: float | None = None,
-    distance_from_earth: float | None = 190.0,
-) -> Exoplanet:
-    return Exoplanet(
-        id=uuid.uuid4(),
-        planet_name=planet_name,
-        host_star=host_star,
-        discovery_method=discovery_method,
-        discovery_year=discovery_year,
-        orbital_period=orbital_period,
-        planet_radius=planet_radius,
-        planet_mass=planet_mass,
-        distance_from_earth=distance_from_earth,
-    )
-
-
-# ---------------------------------------------------------------------------
-# ExoplanetFilters
-# ---------------------------------------------------------------------------
-
-
-def make_exoplanet_filters(**kwargs) -> ExoplanetFilters:
-    return ExoplanetFilters(**kwargs)
-
-
-# ---------------------------------------------------------------------------
-# User / UserCreate
-# ---------------------------------------------------------------------------
-
 
 def make_user_create(
     email: str = "test@example.com",
@@ -140,11 +50,6 @@ def make_user_model(
     )
 
 
-# ---------------------------------------------------------------------------
-# Item / ItemCreate
-# ---------------------------------------------------------------------------
-
-
 def make_item_create(
     title: str = "Test Item",
     description: str | None = "A test item",
@@ -165,9 +70,79 @@ def make_item_model(
     )
 
 
-# ---------------------------------------------------------------------------
-# LoadResult
-# ---------------------------------------------------------------------------
+def make_exoplanet_raw(
+    pl_name: str = "Kepler-22b",
+    hostname: str | None = "Kepler-22",
+    discoverymethod: str | None = "Transit",
+    disc_year: int | None = 2011,
+    pl_orbper: float | None = 289.8,
+    pl_rade: float | None = 2.4,
+    pl_masse: float | None = None,
+    sy_dist: float | None = 190.0,
+) -> ExoplanetRaw:
+    return ExoplanetRaw(
+        pl_name=pl_name,
+        hostname=hostname,
+        discoverymethod=discoverymethod,
+        disc_year=disc_year,
+        pl_orbper=pl_orbper,
+        pl_rade=pl_rade,
+        pl_masse=pl_masse,
+        sy_dist=sy_dist,
+    )
+
+
+def make_exoplanet_base(
+    planet_name: str = "Kepler-22b",
+    host_star: str | None = "Kepler-22",
+    discovery_method: str | None = "Transit",
+    discovery_year: int | None = 2011,
+    orbital_period: float | None = 289.8,
+    planet_radius: float | None = 2.4,
+    planet_mass: float | None = None,
+    distance_from_earth: float | None = 190.0,
+    **kwargs,
+) -> ExoplanetBase:
+    return ExoplanetBase(
+        planet_name=planet_name,
+        host_star=host_star,
+        discovery_method=discovery_method,
+        discovery_year=discovery_year,
+        orbital_period=orbital_period,
+        planet_radius=planet_radius,
+        planet_mass=planet_mass,
+        distance_from_earth=distance_from_earth,
+        **kwargs,
+    )
+
+
+def make_exoplanet_model(
+    planet_name: str = "Kepler-22b",
+    host_star: str | None = "Kepler-22",
+    discovery_method: str | None = "Transit",
+    discovery_year: int | None = 2011,
+    orbital_period: float | None = 289.8,
+    planet_radius: float | None = 2.4,
+    planet_mass: float | None = None,
+    distance_from_earth: float | None = 190.0,
+    **kwargs,
+) -> Exoplanet:
+    return Exoplanet(
+        id=kwargs.pop("id", uuid.uuid4()),
+        planet_name=planet_name,
+        host_star=host_star,
+        discovery_method=discovery_method,
+        discovery_year=discovery_year,
+        orbital_period=orbital_period,
+        planet_radius=planet_radius,
+        planet_mass=planet_mass,
+        distance_from_earth=distance_from_earth,
+        **kwargs,
+    )
+
+
+def make_exoplanet_filters(**kwargs) -> ExoplanetFilters:
+    return ExoplanetFilters(**kwargs)
 
 
 def make_load_result(
@@ -182,11 +157,6 @@ def make_load_result(
         updated=updated,
         skipped=skipped,
     )
-
-
-# ---------------------------------------------------------------------------
-# ETLMetrics / ETLReport
-# ---------------------------------------------------------------------------
 
 
 def make_etl_metrics(
@@ -221,11 +191,6 @@ def make_etl_report(
         extracted=extracted, transformed=transformed, errors=errors
     )
     return ETLReport.from_metrics(metrics)
-
-
-# ---------------------------------------------------------------------------
-# ETLConfig
-# ---------------------------------------------------------------------------
 
 
 def make_etl_config(

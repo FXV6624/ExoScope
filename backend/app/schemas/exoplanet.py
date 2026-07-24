@@ -1,9 +1,15 @@
 import uuid
+from typing import Any
 
 from pydantic import BaseModel
-from sqlmodel import SQLModel
 
-from app.core.enums.exoplanet import PlanetComposition
+from app.core.enums.exoplanet import (
+    ExoplanetField,
+    ExoplanetSortField,
+    PlanetClass,
+    PlanetComposition,
+    SortOrder,
+)
 from app.models import ExoplanetBase
 
 
@@ -34,11 +40,6 @@ class ExoplanetPublic(ExoplanetBase):
     id: uuid.UUID
 
 
-class ExoplanetsPublic(SQLModel):
-    data: list[ExoplanetPublic]
-    count: int
-
-
 class ExoplanetFilters(BaseModel):
     planet_name: str | None = None
     host_star: str | None = None
@@ -52,8 +53,12 @@ class ExoplanetFilters(BaseModel):
     max_planet_radius: float | None = None
     min_planet_mass: float | None = None
     max_planet_mass: float | None = None
+    planet_class: PlanetClass | None = None
+    min_planet_class_confidence: float | None = None
+    max_planet_class_confidence: float | None = None
     composition: PlanetComposition | None = None
     min_composition_confidence: float | None = None
+    max_composition_confidence: float | None = None
     min_habitability_score: float | None = None
     max_habitability_score: float | None = None
     min_habitability_confidence: float | None = None
@@ -65,6 +70,14 @@ class ExoplanetFilters(BaseModel):
     min_system_planet_count: int | None = None
     min_orbital_eccentricity: float | None = None
     max_orbital_eccentricity: float | None = None
+    has_custom_photo: bool | None = None
+    sort_by: ExoplanetSortField | None = None
+    order: SortOrder = SortOrder.asc
+
+
+class PlanetClassResult(BaseModel):
+    planet_class: PlanetClass
+    confidence: float
 
 
 class CompositionResult(BaseModel):
@@ -86,6 +99,11 @@ class SummaryStats(BaseModel):
 class HabitabilityStats(SummaryStats):
     average_confidence: float | None = None
     potentially_habitable: int = 0
+
+
+class PlanetClassStats(BaseModel):
+    by_class: dict[PlanetClass, int]
+    average_confidence: float | None = None
 
 
 class CompositionStats(BaseModel):
@@ -113,6 +131,8 @@ class CompletenessStats(BaseModel):
     distance_from_earth: float
     system_planet_count: float
     system_star_count: float
+    planet_class: float
+    planet_class_confidence: float
     composition: float
     composition_confidence: float
     habitability_score: float
@@ -123,6 +143,7 @@ class ExoplanetStats(BaseModel):
     total: int
     by_method: dict[str, int]
     by_decade: dict[str, int]
+    planet_class: PlanetClassStats
     composition: CompositionStats
     habitability: HabitabilityStats
     radius: SummaryStats
@@ -132,3 +153,19 @@ class ExoplanetStats(BaseModel):
     orbital_period: SummaryStats
     distance: SummaryStats
     completeness: CompletenessStats
+
+
+class ExoplanetQueryMetadata(BaseModel):
+    count: int
+    returned: int
+    skip: int
+    limit: int
+    sort_by: ExoplanetSortField
+    order: SortOrder
+    fields: list[ExoplanetField] | None = None
+    filters: ExoplanetFilters
+
+
+class ExoplanetsQueryResponse(BaseModel):
+    data: list[Any]
+    meta: ExoplanetQueryMetadata

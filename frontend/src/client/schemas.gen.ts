@@ -135,6 +135,14 @@ export const CompletenessStatsSchema = {
             type: 'number',
             title: 'System Star Count'
         },
+        planet_class: {
+            type: 'number',
+            title: 'Planet Class'
+        },
+        planet_class_confidence: {
+            type: 'number',
+            title: 'Planet Class Confidence'
+        },
         composition: {
             type: 'number',
             title: 'Composition'
@@ -153,7 +161,7 @@ export const CompletenessStatsSchema = {
         }
     },
     type: 'object',
-    required: ['host_star', 'discovery_year', 'discovery_method', 'planet_radius', 'planet_mass', 'planet_density', 'equilibrium_temperature', 'incident_flux', 'orbital_period', 'semi_major_axis', 'orbital_eccentricity', 'stellar_effective_temperature', 'stellar_radius', 'stellar_mass', 'stellar_luminosity', 'stellar_age', 'distance_from_earth', 'system_planet_count', 'system_star_count', 'composition', 'composition_confidence', 'habitability_score', 'habitability_confidence'],
+    required: ['host_star', 'discovery_year', 'discovery_method', 'planet_radius', 'planet_mass', 'planet_density', 'equilibrium_temperature', 'incident_flux', 'orbital_period', 'semi_major_axis', 'orbital_eccentricity', 'stellar_effective_temperature', 'stellar_radius', 'stellar_mass', 'stellar_luminosity', 'stellar_age', 'distance_from_earth', 'system_planet_count', 'system_star_count', 'planet_class', 'planet_class_confidence', 'composition', 'composition_confidence', 'habitability_score', 'habitability_confidence'],
     title: 'CompletenessStats'
 } as const;
 
@@ -218,6 +226,361 @@ export const ETLConfigSchema = {
     },
     type: 'object',
     title: 'ETLConfig'
+} as const;
+
+export const ExoplanetFieldSchema = {
+    type: 'string',
+    enum: ['planet_name', 'host_star', 'discovery_year', 'discovery_method', 'planet_radius', 'planet_mass', 'planet_density', 'equilibrium_temperature', 'incident_flux', 'orbital_period', 'semi_major_axis', 'orbital_eccentricity', 'stellar_effective_temperature', 'stellar_radius', 'stellar_mass', 'stellar_luminosity', 'stellar_age', 'distance_from_earth', 'system_planet_count', 'system_star_count', 'planet_class', 'planet_class_confidence', 'composition', 'composition_confidence', 'habitability_score', 'habitability_confidence', 'photo_url'],
+    title: 'ExoplanetField'
+} as const;
+
+export const ExoplanetFiltersSchema = {
+    properties: {
+        planet_name: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Planet Name'
+        },
+        host_star: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Host Star'
+        },
+        discovery_method: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Discovery Method'
+        },
+        discovery_year: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Discovery Year'
+        },
+        min_discovery_year: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Discovery Year'
+        },
+        max_discovery_year: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Discovery Year'
+        },
+        min_orbital_period: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Orbital Period'
+        },
+        max_orbital_period: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Orbital Period'
+        },
+        min_planet_radius: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Planet Radius'
+        },
+        max_planet_radius: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Planet Radius'
+        },
+        min_planet_mass: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Planet Mass'
+        },
+        max_planet_mass: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Planet Mass'
+        },
+        planet_class: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/PlanetClass'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        min_planet_class_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Planet Class Confidence'
+        },
+        max_planet_class_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Planet Class Confidence'
+        },
+        composition: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/PlanetComposition'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        min_composition_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Composition Confidence'
+        },
+        max_composition_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Composition Confidence'
+        },
+        min_habitability_score: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Habitability Score'
+        },
+        max_habitability_score: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Habitability Score'
+        },
+        min_habitability_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Habitability Confidence'
+        },
+        min_distance_from_earth: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Distance From Earth'
+        },
+        max_distance_from_earth: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Distance From Earth'
+        },
+        min_equilibrium_temperature: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Equilibrium Temperature'
+        },
+        max_equilibrium_temperature: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Equilibrium Temperature'
+        },
+        system_planet_count: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'System Planet Count'
+        },
+        min_system_planet_count: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min System Planet Count'
+        },
+        min_orbital_eccentricity: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Min Orbital Eccentricity'
+        },
+        max_orbital_eccentricity: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Orbital Eccentricity'
+        },
+        has_custom_photo: {
+            anyOf: [
+                {
+                    type: 'boolean'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Has Custom Photo'
+        },
+        sort_by: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/ExoplanetSortField'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        order: {
+            '$ref': '#/components/schemas/SortOrder',
+            default: 'asc'
+        }
+    },
+    type: 'object',
+    title: 'ExoplanetFilters'
 } as const;
 
 export const ExoplanetPublicSchema = {
@@ -435,6 +798,27 @@ export const ExoplanetPublicSchema = {
             ],
             title: 'System Star Count'
         },
+        planet_class: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/PlanetClass'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        },
+        planet_class_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Planet Class Confidence'
+        },
         composition: {
             anyOf: [
                 {
@@ -478,6 +862,17 @@ export const ExoplanetPublicSchema = {
             ],
             title: 'Habitability Confidence'
         },
+        photo_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Photo Url'
+        },
         id: {
             type: 'string',
             format: 'uuid',
@@ -487,6 +882,59 @@ export const ExoplanetPublicSchema = {
     type: 'object',
     required: ['planet_name', 'id'],
     title: 'ExoplanetPublic'
+} as const;
+
+export const ExoplanetQueryMetadataSchema = {
+    properties: {
+        count: {
+            type: 'integer',
+            title: 'Count'
+        },
+        returned: {
+            type: 'integer',
+            title: 'Returned'
+        },
+        skip: {
+            type: 'integer',
+            title: 'Skip'
+        },
+        limit: {
+            type: 'integer',
+            title: 'Limit'
+        },
+        sort_by: {
+            '$ref': '#/components/schemas/ExoplanetSortField'
+        },
+        order: {
+            '$ref': '#/components/schemas/SortOrder'
+        },
+        fields: {
+            anyOf: [
+                {
+                    items: {
+                        '$ref': '#/components/schemas/ExoplanetField'
+                    },
+                    type: 'array'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Fields'
+        },
+        filters: {
+            '$ref': '#/components/schemas/ExoplanetFilters'
+        }
+    },
+    type: 'object',
+    required: ['count', 'returned', 'skip', 'limit', 'sort_by', 'order', 'filters'],
+    title: 'ExoplanetQueryMetadata'
+} as const;
+
+export const ExoplanetSortFieldSchema = {
+    type: 'string',
+    enum: ['planet_name', 'host_star', 'discovery_year', 'discovery_method', 'planet_radius', 'planet_mass', 'planet_density', 'equilibrium_temperature', 'incident_flux', 'orbital_period', 'semi_major_axis', 'orbital_eccentricity', 'stellar_effective_temperature', 'stellar_radius', 'stellar_mass', 'stellar_luminosity', 'stellar_age', 'distance_from_earth', 'system_planet_count', 'system_star_count', 'planet_class', 'planet_class_confidence', 'composition', 'composition_confidence', 'habitability_score', 'habitability_confidence'],
+    title: 'ExoplanetSortField'
 } as const;
 
 export const ExoplanetStatsSchema = {
@@ -508,6 +956,9 @@ export const ExoplanetStatsSchema = {
             },
             type: 'object',
             title: 'By Decade'
+        },
+        planet_class: {
+            '$ref': '#/components/schemas/PlanetClassStats'
         },
         composition: {
             '$ref': '#/components/schemas/CompositionStats'
@@ -538,27 +989,24 @@ export const ExoplanetStatsSchema = {
         }
     },
     type: 'object',
-    required: ['total', 'by_method', 'by_decade', 'composition', 'habitability', 'radius', 'mass', 'density', 'equilibrium_temperature', 'orbital_period', 'distance', 'completeness'],
+    required: ['total', 'by_method', 'by_decade', 'planet_class', 'composition', 'habitability', 'radius', 'mass', 'density', 'equilibrium_temperature', 'orbital_period', 'distance', 'completeness'],
     title: 'ExoplanetStats'
 } as const;
 
-export const ExoplanetsPublicSchema = {
+export const ExoplanetsQueryResponseSchema = {
     properties: {
         data: {
-            items: {
-                '$ref': '#/components/schemas/ExoplanetPublic'
-            },
+            items: {},
             type: 'array',
             title: 'Data'
         },
-        count: {
-            type: 'integer',
-            title: 'Count'
+        meta: {
+            '$ref': '#/components/schemas/ExoplanetQueryMetadata'
         }
     },
     type: 'object',
-    required: ['data', 'count'],
-    title: 'ExoplanetsPublic'
+    required: ['data', 'meta'],
+    title: 'ExoplanetsQueryResponse'
 } as const;
 
 export const ExportFormatSchema = {
@@ -798,9 +1246,44 @@ export const NewPasswordSchema = {
     title: 'NewPassword'
 } as const;
 
+export const PlanetClassSchema = {
+    type: 'string',
+    enum: ['Terrestrial', 'Super Earth', 'Sub-Neptune', 'Neptune', 'Ice Giant', 'Gas Giant', 'Unknown'],
+    title: 'PlanetClass'
+} as const;
+
+export const PlanetClassStatsSchema = {
+    properties: {
+        by_class: {
+            additionalProperties: {
+                type: 'integer'
+            },
+            propertyNames: {
+                '$ref': '#/components/schemas/PlanetClass'
+            },
+            type: 'object',
+            title: 'By Class'
+        },
+        average_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Average Confidence'
+        }
+    },
+    type: 'object',
+    required: ['by_class'],
+    title: 'PlanetClassStats'
+} as const;
+
 export const PlanetCompositionSchema = {
     type: 'string',
-    enum: ['Rocky', 'Super Earth', 'Mini Neptune', 'Ice Giant', 'Gas Giant', 'Unknown'],
+    enum: ['Rocky', 'Rocky-Iron', 'Water World', 'Ice', 'Hydrogen-Helium', 'Unknown'],
     title: 'PlanetComposition'
 } as const;
 
@@ -827,6 +1310,12 @@ export const PrivateUserCreateSchema = {
     type: 'object',
     required: ['email', 'password', 'full_name'],
     title: 'PrivateUserCreate'
+} as const;
+
+export const SortOrderSchema = {
+    type: 'string',
+    enum: ['asc', 'desc'],
+    title: 'SortOrder'
 } as const;
 
 export const SummaryStatsSchema = {

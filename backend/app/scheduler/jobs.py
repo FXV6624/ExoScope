@@ -29,6 +29,7 @@ def run_exoplanet_etl_job() -> None:
 
         job = scheduler.get_job("exoplanet_etl")
 
-        if job and job.next_run_time:
-            scheduler_prometheus_metrics.update_next_run(job.next_run_time.timestamp())
+        next_run = getattr(job, "next_run_time", None)
+        if next_run:
+            scheduler_prometheus_metrics.update_next_run(next_run.timestamp())
         logger.info("Scheduled ETL completed successfully")

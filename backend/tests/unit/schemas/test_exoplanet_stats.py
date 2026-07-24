@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from app.core.enums.exoplanet import PlanetComposition
+from app.core.enums.exoplanet import PlanetClass, PlanetComposition
 from app.schemas.exoplanet import ExoplanetStats
 
 
@@ -12,6 +12,10 @@ def get_mock_stats():
         "total": 5000,
         "by_method": {"Transit": 3000, "Radial Velocity": 1500, "Direct Imaging": 500},
         "by_decade": {"1990": 10, "2000": 500, "2010": 4490},
+        "planet_class": {
+            "by_class": {PlanetClass.TERRESTRIAL: 50},
+            "average_confidence": 0.85,
+        },
         "composition": {
             "by_composition": {PlanetComposition.ROCKY: 100},
             "average_confidence": 0.9,
@@ -53,6 +57,8 @@ def get_mock_stats():
             "distance_from_earth": 90.0,
             "system_planet_count": 90.0,
             "system_star_count": 90.0,
+            "planet_class": 90.0,
+            "planet_class_confidence": 90.0,
             "composition": 90.0,
             "composition_confidence": 90.0,
             "habitability_score": 90.0,

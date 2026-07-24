@@ -47,6 +47,7 @@ class TestReadExoplanetByIdService:
     def test_returns_exoplanet_when_found(self):
         session = MagicMock()
         planet = _make_exoplanet()
+        planet.photo_url = "https://images.nasa.gov/k22b.jpg"
         with patch(
             "app.services.exoplanets.get_exoplanet_by_id", return_value=planet
         ) as mock_get:
@@ -60,12 +61,31 @@ class TestReadExoplanetByIdService:
             result = exo_service.read_exoplanet_by_id_service(session, uuid.uuid4())
             assert result is None
 
+    def test_on_demand_photo_enrichment_updates_db(self):
+        session = MagicMock()
+        planet = _make_exoplanet()
+        planet.photo_url = "/assets/images/planets/rocky.png"
+        planet.composition = "Rocky"
+
+        with (
+            patch("app.services.exoplanets.get_exoplanet_by_id", return_value=planet),
+            patch(
+                "app.services.exoplanets.find_photo_url",
+                return_value="https://images.nasa.gov/real.jpg",
+            ),
+        ):
+            result = exo_service.read_exoplanet_by_id_service(session, planet.id)
+            assert result.photo_url == "https://images.nasa.gov/real.jpg"
+            session.add.assert_called_once_with(planet)
+            session.commit.assert_called_once()
+
 
 class TestGetExoplanetStatsService:
     def test_aggregates_stats_correctly(self):
         session = MagicMock()
         by_method_rows = [("Transit", 3000), ("Radial Velocity", 1500)]
         by_decade_rows = [(1990, 10), (2000, 500), (2010, 4490)]
+        by_class_rows = [("Terrestrial", 50)]
         by_composition_rows = [("Rocky", 100)]
         habitability_stats = (50.0, 0.0, 100.0, 0.8, 10)
         summary_stats = (1.5, 0.5, 5.0)
@@ -92,6 +112,8 @@ class TestGetExoplanetStatsService:
             "distance_from_earth": 90,
             "system_planet_count": 90,
             "system_star_count": 90,
+            "planet_class": 90,
+            "planet_class_confidence": 90,
             "composition": 90,
             "composition_confidence": 90,
             "habitability_score": 90,
@@ -116,6 +138,10 @@ class TestGetExoplanetStatsService:
                 "app.services.exoplanets.get_summary_stats", return_value=summary_stats
             ),
             patch(
+                "app.services.exoplanets.get_by_planet_class",
+                return_value=by_class_rows,
+            ),
+            patch(
                 "app.services.exoplanets.get_by_composition",
                 return_value=by_composition_rows,
             ),
@@ -128,6 +154,7 @@ class TestGetExoplanetStatsService:
             assert stats.total == 5000
             assert stats.by_method["Transit"] == 3000
             assert stats.by_decade["2010"] == 4490
+            assert stats.planet_class.by_class["Terrestrial"] == 50
             assert stats.composition.by_composition["Rocky"] == 100
 
     def test_empty_stats(self):
@@ -149,6 +176,7 @@ class TestGetExoplanetStatsService:
             patch(
                 "app.services.exoplanets.get_summary_stats", return_value=summary_stats
             ),
+            patch("app.services.exoplanets.get_by_planet_class", return_value=[]),
             patch("app.services.exoplanets.get_by_composition", return_value=[]),
             patch(
                 "app.services.exoplanets.get_completeness",
