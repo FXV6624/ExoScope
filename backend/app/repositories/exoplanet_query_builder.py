@@ -1,12 +1,13 @@
 from typing import Any
 
 from sqlmodel import col, or_, select
+from sqlmodel.sql.expression import SelectOfScalar
 
 from app.models import Exoplanet
 from app.schemas.exoplanet import ExoplanetFilters
 
 
-def build_exoplanet_query(filters: ExoplanetFilters) -> Any:
+def build_exoplanet_query(filters: ExoplanetFilters) -> SelectOfScalar[Exoplanet]:
     """
     Build SQLModel query dynamically from filter schema.
     Supports:

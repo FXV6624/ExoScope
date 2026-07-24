@@ -4,6 +4,7 @@ from typing import Any, TypeVar
 
 from sqlmodel import Session
 
+from app.core.enums.exoplanet import ExoplanetField, ExoplanetSortField, SortOrder
 from app.models import Exoplanet
 from app.repositories.exoplanet_stats import (
     get_by_composition,
@@ -23,6 +24,8 @@ from app.schemas.exoplanet import (
     CompletenessStats,
     CompositionStats,
     ExoplanetFilters,
+    ExoplanetQueryMetadata,
+    ExoplanetsQueryResponse,
     ExoplanetStats,
     HabitabilityStats,
     PlanetClassStats,
@@ -32,13 +35,58 @@ from app.services.planet_photo import find_photo_url
 
 
 def read_exoplanets_service(
-    session: Session, filters: ExoplanetFilters, skip: int, limit: int
-) -> dict[str, Any]:
+    session: Session,
+    filters: ExoplanetFilters,
+    skip: int,
+    limit: int,
+    sort_by: ExoplanetSortField,
+    order: SortOrder,
+    fields: list[ExoplanetField] | None = None,
+) -> ExoplanetsQueryResponse:
     """
     Orchestrates repository calls for filtered + paginated exoplanets.
     """
-    data, count = get_exoplanets_with_filters(session, filters, skip, limit)
-    return {"data": data, "count": count}
+    raw_data, count = get_exoplanets_with_filters(
+        session,
+        filters,
+        skip,
+        limit,
+        sort_by,
+        order,
+        fields,
+    )
+
+    data: list[Any]
+    if fields is not None:
+        data = _serialize_selected_fields(raw_data, fields)
+    else:
+        data = list(raw_data)
+
+    return ExoplanetsQueryResponse(
+        data=data,
+        meta=ExoplanetQueryMetadata(
+            count=count,
+            returned=len(data),
+            skip=skip,
+            limit=limit,
+            sort_by=sort_by,
+            order=order,
+            fields=fields,
+            filters=filters,
+        ),
+    )
+
+
+def _serialize_selected_fields(
+    rows: Sequence[Any],
+    fields: list[ExoplanetField],
+) -> list[dict[str, Any]]:
+    """
+    Convert ORM model objects into dictionaries with only the requested fields.
+    """
+    return [
+        {field.value: getattr(row, field.value) for field in fields} for row in rows
+    ]
 
 
 def read_exoplanet_by_id_service(

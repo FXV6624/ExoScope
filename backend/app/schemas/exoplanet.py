@@ -1,9 +1,15 @@
 import uuid
+from typing import Any
 
 from pydantic import BaseModel
-from sqlmodel import SQLModel
 
-from app.core.enums.exoplanet import PlanetClass, PlanetComposition
+from app.core.enums.exoplanet import (
+    ExoplanetField,
+    ExoplanetSortField,
+    PlanetClass,
+    PlanetComposition,
+    SortOrder,
+)
 from app.models import ExoplanetBase
 
 
@@ -32,11 +38,6 @@ class ExoplanetRaw(BaseModel):
 
 class ExoplanetPublic(ExoplanetBase):
     id: uuid.UUID
-
-
-class ExoplanetsPublic(SQLModel):
-    data: list[ExoplanetPublic]
-    count: int
 
 
 class ExoplanetFilters(BaseModel):
@@ -70,6 +71,8 @@ class ExoplanetFilters(BaseModel):
     min_orbital_eccentricity: float | None = None
     max_orbital_eccentricity: float | None = None
     has_custom_photo: bool | None = None
+    sort_by: ExoplanetSortField | None = None
+    order: SortOrder = SortOrder.asc
 
 
 class PlanetClassResult(BaseModel):
@@ -150,3 +153,19 @@ class ExoplanetStats(BaseModel):
     orbital_period: SummaryStats
     distance: SummaryStats
     completeness: CompletenessStats
+
+
+class ExoplanetQueryMetadata(BaseModel):
+    count: int
+    returned: int
+    skip: int
+    limit: int
+    sort_by: ExoplanetSortField
+    order: SortOrder
+    fields: list[ExoplanetField] | None = None
+    filters: ExoplanetFilters
+
+
+class ExoplanetsQueryResponse(BaseModel):
+    data: list[Any]
+    meta: ExoplanetQueryMetadata
