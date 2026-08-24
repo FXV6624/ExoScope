@@ -65,8 +65,8 @@ jobs:
         with:
           limit-access-to-actor: true
 
-      - name: Build Docker containers
-        run: docker compose build
+      - name: Build Docker containers for Playwright
+        run: docker compose build backend playwright
 
       - name: Clean environment
         run: docker compose down -v --remove-orphans

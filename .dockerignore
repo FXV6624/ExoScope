@@ -1,0 +1,41 @@
+# Version control
+.git
+.gitignore
+
+# Virtual environments
+.venv
+backend/.venv
+env/
+venv/
+
+# Node / Frontend
+node_modules
+frontend/node_modules
+frontend/dist
+frontend/playwright-report
+frontend/blob-report
+frontend/test-results
+
+# Python cache & tests
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+backend/htmlcov
+backend/.coverage
+
+# Monitoring & Logs
+monitoring/grafana-data
+monitoring/prometheus-data
+logs
+backend/logs
+
+# Documentation & IDE
+.vscode
+.idea
+*.md
