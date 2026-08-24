@@ -16,6 +16,10 @@ export default defineConfig({
       usePolling: true,
     },
   },
+  preview: {
+    port: 5173,
+    host: true,
+  },
   plugins: [
     tanstackRouter({
       target: "react",
