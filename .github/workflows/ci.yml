@@ -37,12 +37,13 @@ jobs:
           docker compose exec -T backend coverage report
           docker compose exec -T backend coverage html
 
-      - name: Upload Coverage report
+      - name: Upload Coverage HTML
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: backend-coverage
-          path: backend/htmlcov/
+          path: backend/htmlcov
+          retention-days: 30
 
       - name: Stop containers
         if: always()
