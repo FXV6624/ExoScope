@@ -78,6 +78,12 @@ jobs:
       - name: Start Backend Services
         run: docker compose up -d backend db redis mailcatcher proxy --wait
 
+      - name: Build Frontend
+        run: bun run build
+        working-directory: frontend
+        env:
+          VITE_API_URL: http://localhost:8000
+
       - name: Inspect backend logs on failure
         if: failure()
         run: |
