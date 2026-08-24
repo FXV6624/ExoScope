@@ -82,7 +82,7 @@ jobs:
         working-directory: frontend
 
       - name: Generate Frontend Client
-        run: bsh scripts/generate-client.sh
+        run: bash scripts/generate-client.sh
 
       - name: Build Docker containers
         run: docker compose build
