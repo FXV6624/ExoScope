@@ -3,6 +3,7 @@
 import uuid
 from unittest.mock import MagicMock, patch
 
+from app.core.enums.exoplanet import ExoplanetSortField, SortOrder
 from app.models import Exoplanet
 from app.schemas.exoplanet import ExoplanetFilters
 from app.services import exoplanets as exo_service
@@ -28,9 +29,17 @@ class TestReadExoplanetsService:
             result = exo_service.read_exoplanets_service(
                 session, filters, skip=0, limit=50
             )
-            mock_get.assert_called_once_with(session, filters, 0, 50)
-            assert result["count"] == 2
-            assert len(result["data"]) == 2
+            mock_get.assert_called_once_with(
+                session,
+                filters,
+                0,
+                50,
+                ExoplanetSortField.PLANET_NAME,
+                SortOrder.asc,
+                None,
+            )
+            assert result.meta.count == 2
+            assert len(result.data) == 2
 
     def test_empty_result(self):
         session = MagicMock()
@@ -39,8 +48,8 @@ class TestReadExoplanetsService:
             "app.services.exoplanets.get_exoplanets_with_filters", return_value=([], 0)
         ):
             result = exo_service.read_exoplanets_service(session, filters, 0, 10)
-            assert result["count"] == 0
-            assert result["data"] == []
+            assert result.meta.count == 0
+            assert result.data == []
 
 
 class TestReadExoplanetByIdService:

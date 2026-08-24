@@ -13,9 +13,8 @@ from app.etl.enums import LoadMode
 from app.etl.metrics import ETLMetrics
 from app.etl.report import ETLReport
 from app.etl.schemas import LoadResult
-from app.models import Exoplanet, ExoplanetBase, Item, User
+from app.models import Exoplanet, ExoplanetBase, User
 from app.schemas.exoplanet import ExoplanetFilters, ExoplanetRaw
-from app.schemas.item import ItemCreate
 from app.schemas.user import UserCreate
 
 
@@ -47,26 +46,6 @@ def make_user_model(
         full_name=full_name,
         is_superuser=is_superuser,
         is_active=is_active,
-    )
-
-
-def make_item_create(
-    title: str = "Test Item",
-    description: str | None = "A test item",
-) -> ItemCreate:
-    return ItemCreate(title=title, description=description)
-
-
-def make_item_model(
-    title: str = "Test Item",
-    description: str | None = "A test item",
-    owner_id: uuid.UUID | None = None,
-) -> Item:
-    return Item(
-        id=uuid.uuid4(),
-        title=title,
-        description=description,
-        owner_id=owner_id or uuid.uuid4(),
     )
 
 

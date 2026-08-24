@@ -11,7 +11,7 @@ from datetime import timedelta
 from sqlmodel import Session
 
 from app.core.security import create_access_token, get_password_hash
-from app.models import Exoplanet, Item, User
+from app.models import Exoplanet, User
 from app.repositories.users import create_user
 from app.schemas.user import UserCreate
 
@@ -88,24 +88,6 @@ def create_test_exoplanet(
     session.commit()
     session.refresh(planet)
     return planet
-
-
-def create_test_item(
-    session: Session,
-    owner: User,
-    title: str = "Test Item",
-    description: str | None = "Description",
-) -> Item:
-    """Crea y persiste un item de test en la BD."""
-    item = Item(
-        title=title,
-        description=description,
-        owner_id=owner.id,
-    )
-    session.add(item)
-    session.commit()
-    session.refresh(item)
-    return item
 
 
 # ---------------------------------------------------------------------------

@@ -2,7 +2,7 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import col, delete, func, select
+from sqlmodel import col, func, select
 
 from app.api.deps import (
     CurrentUser,
@@ -11,7 +11,7 @@ from app.api.deps import (
 )
 from app.core.config import settings
 from app.core.security import get_password_hash, verify_password
-from app.models import Item, User
+from app.models import User
 from app.schemas.auth import Message
 from app.schemas.user import (
     UpdatePassword,
@@ -54,7 +54,10 @@ def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
 )
 def create_user(session: SessionDep, user_in: UserCreate) -> Any:
     if user_service.get_user(session, user_in.email):
-        raise HTTPException(status_code=400, detail="User already exists")
+        raise HTTPException(
+            status_code=400,
+            detail="The user with this email already exists in the system",
+        )
 
     hashed = get_password_hash(user_in.password)
 
@@ -114,7 +117,10 @@ def update_password_me(
         raise HTTPException(status_code=400, detail="Incorrect password")
 
     if body.current_password == body.new_password:
-        raise HTTPException(status_code=400, detail="Same password")
+        raise HTTPException(
+            status_code=400,
+            detail="New password cannot be the same as the current one",
+        )
 
     user_service.update_password(session, current_user, body.new_password)
 
@@ -140,7 +146,10 @@ def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
 @router.post("/signup", response_model=UserPublic)
 def register_user(session: SessionDep, user_in: UserRegister) -> Any:
     if user_service.get_user(session, user_in.email):
-        raise HTTPException(status_code=400, detail="User exists")
+        raise HTTPException(
+            status_code=400,
+            detail="The user with this email already exists in the system",
+        )
 
     user_create = UserCreate.model_validate(user_in)
 
@@ -214,8 +223,6 @@ def delete_user(
 
     if user == current_user:
         raise HTTPException(status_code=403)
-
-    session.exec(delete(Item).where(col(Item.owner_id) == user_id))
 
     session.delete(user)
     session.commit()
