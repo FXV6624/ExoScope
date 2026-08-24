@@ -37,10 +37,10 @@ from app.services.planet_photo import find_photo_url
 def read_exoplanets_service(
     session: Session,
     filters: ExoplanetFilters,
-    skip: int,
-    limit: int,
-    sort_by: ExoplanetSortField,
-    order: SortOrder,
+    skip: int = 0,
+    limit: int = 50,
+    sort_by: ExoplanetSortField = ExoplanetSortField.PLANET_NAME,
+    order: SortOrder = SortOrder.asc,
     fields: list[ExoplanetField] | None = None,
 ) -> ExoplanetsQueryResponse:
     """

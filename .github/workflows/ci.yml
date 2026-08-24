@@ -10,6 +10,10 @@ on:
       - develop
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -18,8 +22,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build images
-        run: docker compose build
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        run: docker compose build backend
 
       - name: Start services and wait for healthcheck
         run: docker compose up -d backend db redis proxy --wait
@@ -31,8 +38,19 @@ jobs:
           docker compose logs backend
           docker compose logs prestart
 
-      - name: Run Backend tests
-        run: docker compose exec -T backend pytest
+      - name: Run Backend tests with Coverage
+        run: |
+          docker compose exec -T backend coverage run -m pytest
+          docker compose exec -T backend coverage report
+          docker compose exec -T backend coverage html
+
+      - name: Upload Coverage HTML
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/htmlcov
+          retention-days: 30
 
       - name: Stop containers
         if: always()

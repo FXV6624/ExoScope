@@ -15,10 +15,10 @@ from app.schemas.exoplanet import ExoplanetFilters
 def get_exoplanets_with_filters(
     session: Session,
     filters: ExoplanetFilters,
-    skip: int,
-    limit: int,
-    sort_by: ExoplanetSortField,
-    order: SortOrder,
+    skip: int = 0,
+    limit: int = 100,
+    sort_by: ExoplanetSortField = ExoplanetSortField.PLANET_NAME,
+    order: SortOrder = SortOrder.asc,
     fields: list[ExoplanetField] | None = None,
 ) -> tuple[list[Exoplanet], int]:
     """
@@ -42,10 +42,10 @@ def get_exoplanets_with_filters(
 def get_exoplanets(
     session: Session,
     query: SelectOfScalar[Any],
-    skip: int,
-    limit: int,
-    sort_by: ExoplanetSortField,
-    order: SortOrder,
+    skip: int = 0,
+    limit: int = 100,
+    sort_by: ExoplanetSortField = ExoplanetSortField.PLANET_NAME,
+    order: SortOrder = SortOrder.asc,
     fields: list[ExoplanetField] | None = None,
 ) -> list[Exoplanet]:
     """

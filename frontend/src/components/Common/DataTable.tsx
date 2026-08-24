@@ -1,4 +1,3 @@
-import { useNavigate } from "@tanstack/react-router"
 import {
   type ColumnDef,
   flexRender,
@@ -50,7 +49,6 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [globalFilter, setGlobalFilter] = useState("")
-  const _navigate = useNavigate()
 
   const table = useReactTable({
     data,

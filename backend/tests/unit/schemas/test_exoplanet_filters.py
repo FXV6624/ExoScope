@@ -86,5 +86,7 @@ class TestExoplanetFilters:
             "min_orbital_eccentricity",
             "max_orbital_eccentricity",
             "has_custom_photo",
+            "sort_by",
+            "order",
         }
         assert expected_keys == set(d.keys())

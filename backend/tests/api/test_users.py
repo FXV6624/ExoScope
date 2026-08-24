@@ -8,7 +8,7 @@ from sqlmodel import Session, delete
 
 from app.core.config import settings
 from app.core.security import get_password_hash
-from app.models import Item, User
+from app.models import User
 from app.repositories.users import create_user
 from app.schemas.user import UserCreate
 
@@ -37,7 +37,6 @@ def test_user(db: Session):
     password = "testpassword123"
     user = _create_test_user(db, email, password)
     yield user, password
-    db.execute(delete(Item).where(Item.owner_id == user.id))
     db.execute(delete(User).where(User.id == user.id))
     db.commit()
 

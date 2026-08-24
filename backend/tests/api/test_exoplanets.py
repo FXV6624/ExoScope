@@ -45,7 +45,7 @@ class TestGetExoplanets:
         response = client.get(f"{API}/exoplanets/", headers=superuser_token_headers)
         assert response.status_code == 200
         data = response.json()
-        assert data["count"] == 2
+        assert data["meta"]["count"] == 2
         assert len(data["data"]) == 2
 
     def test_exoplanets_filters(
@@ -59,7 +59,7 @@ class TestGetExoplanets:
         )
         assert response.status_code == 200
         data = response.json()
-        assert data["count"] == 1
+        assert data["meta"]["count"] == 1
         assert data["data"][0]["planet_name"] == "Target"
 
 

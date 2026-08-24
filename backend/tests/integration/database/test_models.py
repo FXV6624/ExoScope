@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, delete, select
 
 from app.core.security import get_password_hash
-from app.models import ETLRun, Exoplanet, Item, User
+from app.models import ETLRun, Exoplanet, User
 from app.repositories.users import create_user
 from app.schemas.user import UserCreate
 
@@ -16,7 +16,6 @@ from app.schemas.user import UserCreate
 def clean_db(db: Session):
     yield
     db.rollback()
-    db.execute(delete(Item))
     db.execute(delete(Exoplanet))
     db.execute(delete(ETLRun))
     db.execute(delete(User).where(User.email.like("%@modeltest.com")))
@@ -52,42 +51,6 @@ class TestUserModel:
             session=db, user_create=uc, hashed_password=get_password_hash(uc.password)
         )
         assert user.created_at is not None
-
-    def test_user_items_relationship(self, db: Session):
-        uc = UserCreate(email="items@modeltest.com", password="password12345")
-        user = create_user(
-            session=db, user_create=uc, hashed_password=get_password_hash(uc.password)
-        )
-        item = Item(title="Test Item", owner_id=user.id)
-        db.add(item)
-        db.commit()
-        db.refresh(user)
-        assert len(user.items) == 1
-        assert user.items[0].title == "Test Item"
-
-
-class TestItemModel:
-    def test_item_gets_uuid_on_creation(self, db: Session):
-        uc = UserCreate(email="itemuuid@modeltest.com", password="password12345")
-        user = create_user(
-            session=db, user_create=uc, hashed_password=get_password_hash(uc.password)
-        )
-        item = Item(title="UUID Test", owner_id=user.id)
-        db.add(item)
-        db.commit()
-        db.refresh(item)
-        assert isinstance(item.id, uuid.UUID)
-
-    def test_item_has_created_at(self, db: Session):
-        uc = UserCreate(email="itemcreated@modeltest.com", password="password12345")
-        user = create_user(
-            session=db, user_create=uc, hashed_password=get_password_hash(uc.password)
-        )
-        item = Item(title="Created Test", owner_id=user.id)
-        db.add(item)
-        db.commit()
-        db.refresh(item)
-        assert item.created_at is not None
 
 
 class TestExoplanetModel:
