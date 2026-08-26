@@ -20,7 +20,6 @@ def find_photo_url(planet_name: str) -> str | None:
     Search NASA Images API for a specific exoplanet photo URL.
     Returns the image URL if found, or None if no image is found or on network error.
     """
-
     search_query = normalize_planet_name(planet_name)
     url = "https://images-api.nasa.gov/search"
 

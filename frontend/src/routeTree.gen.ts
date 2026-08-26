@@ -16,9 +16,13 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
+import { Route as LayoutProfileRouteImport } from './routes/_layout/profile'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
 import { Route as LayoutExoplanetsIndexRouteImport } from './routes/_layout/exoplanets.index'
+import { Route as LayoutAdminIndexRouteImport } from './routes/_layout/admin.index'
 import { Route as LayoutExoplanetsIdRouteImport } from './routes/_layout/exoplanets.$id'
+import { Route as LayoutAdminUsersRouteImport } from './routes/_layout/admin.users'
+import { Route as LayoutAdminEtlRouteImport } from './routes/_layout/admin.etl'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -54,6 +58,11 @@ const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutProfileRoute = LayoutProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => LayoutRoute,
+} as any)
 const LayoutAdminRoute = LayoutAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -64,10 +73,25 @@ const LayoutExoplanetsIndexRoute = LayoutExoplanetsIndexRouteImport.update({
   path: '/exoplanets/',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutAdminIndexRoute = LayoutAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LayoutAdminRoute,
+} as any)
 const LayoutExoplanetsIdRoute = LayoutExoplanetsIdRouteImport.update({
   id: '/exoplanets/$id',
   path: '/exoplanets/$id',
   getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutAdminUsersRoute = LayoutAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => LayoutAdminRoute,
+} as any)
+const LayoutAdminEtlRoute = LayoutAdminEtlRouteImport.update({
+  id: '/etl',
+  path: '/etl',
+  getParentRoute: () => LayoutAdminRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -76,9 +100,13 @@ export interface FileRoutesByFullPath {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof LayoutAdminRoute
+  '/admin': typeof LayoutAdminRouteWithChildren
+  '/profile': typeof LayoutProfileRoute
   '/settings': typeof LayoutSettingsRoute
+  '/admin/etl': typeof LayoutAdminEtlRoute
+  '/admin/users': typeof LayoutAdminUsersRoute
   '/exoplanets/$id': typeof LayoutExoplanetsIdRoute
+  '/admin/': typeof LayoutAdminIndexRoute
   '/exoplanets/': typeof LayoutExoplanetsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -86,10 +114,13 @@ export interface FileRoutesByTo {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/admin': typeof LayoutAdminRoute
+  '/profile': typeof LayoutProfileRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
+  '/admin/etl': typeof LayoutAdminEtlRoute
+  '/admin/users': typeof LayoutAdminUsersRoute
   '/exoplanets/$id': typeof LayoutExoplanetsIdRoute
+  '/admin': typeof LayoutAdminIndexRoute
   '/exoplanets': typeof LayoutExoplanetsIndexRoute
 }
 export interface FileRoutesById {
@@ -99,10 +130,14 @@ export interface FileRoutesById {
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
-  '/_layout/admin': typeof LayoutAdminRoute
+  '/_layout/admin': typeof LayoutAdminRouteWithChildren
+  '/_layout/profile': typeof LayoutProfileRoute
   '/_layout/settings': typeof LayoutSettingsRoute
   '/_layout/': typeof LayoutIndexRoute
+  '/_layout/admin/etl': typeof LayoutAdminEtlRoute
+  '/_layout/admin/users': typeof LayoutAdminUsersRoute
   '/_layout/exoplanets/$id': typeof LayoutExoplanetsIdRoute
+  '/_layout/admin/': typeof LayoutAdminIndexRoute
   '/_layout/exoplanets/': typeof LayoutExoplanetsIndexRoute
 }
 export interface FileRouteTypes {
@@ -114,8 +149,12 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/admin'
+    | '/profile'
     | '/settings'
+    | '/admin/etl'
+    | '/admin/users'
     | '/exoplanets/$id'
+    | '/admin/'
     | '/exoplanets/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -123,10 +162,13 @@ export interface FileRouteTypes {
     | '/recover-password'
     | '/reset-password'
     | '/signup'
-    | '/admin'
+    | '/profile'
     | '/settings'
     | '/'
+    | '/admin/etl'
+    | '/admin/users'
     | '/exoplanets/$id'
+    | '/admin'
     | '/exoplanets'
   id:
     | '__root__'
@@ -136,9 +178,13 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/_layout/admin'
+    | '/_layout/profile'
     | '/_layout/settings'
     | '/_layout/'
+    | '/_layout/admin/etl'
+    | '/_layout/admin/users'
     | '/_layout/exoplanets/$id'
+    | '/_layout/admin/'
     | '/_layout/exoplanets/'
   fileRoutesById: FileRoutesById
 }
@@ -201,6 +247,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/profile': {
+      id: '/_layout/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof LayoutProfileRouteImport
+      parentRoute: typeof LayoutRoute
+    }
     '/_layout/admin': {
       id: '/_layout/admin'
       path: '/admin'
@@ -215,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutExoplanetsIndexRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/admin/': {
+      id: '/_layout/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof LayoutAdminIndexRouteImport
+      parentRoute: typeof LayoutAdminRoute
+    }
     '/_layout/exoplanets/$id': {
       id: '/_layout/exoplanets/$id'
       path: '/exoplanets/$id'
@@ -222,11 +282,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutExoplanetsIdRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/admin/users': {
+      id: '/_layout/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof LayoutAdminUsersRouteImport
+      parentRoute: typeof LayoutAdminRoute
+    }
+    '/_layout/admin/etl': {
+      id: '/_layout/admin/etl'
+      path: '/etl'
+      fullPath: '/admin/etl'
+      preLoaderRoute: typeof LayoutAdminEtlRouteImport
+      parentRoute: typeof LayoutAdminRoute
+    }
   }
 }
 
+interface LayoutAdminRouteChildren {
+  LayoutAdminEtlRoute: typeof LayoutAdminEtlRoute
+  LayoutAdminUsersRoute: typeof LayoutAdminUsersRoute
+  LayoutAdminIndexRoute: typeof LayoutAdminIndexRoute
+}
+
+const LayoutAdminRouteChildren: LayoutAdminRouteChildren = {
+  LayoutAdminEtlRoute: LayoutAdminEtlRoute,
+  LayoutAdminUsersRoute: LayoutAdminUsersRoute,
+  LayoutAdminIndexRoute: LayoutAdminIndexRoute,
+}
+
+const LayoutAdminRouteWithChildren = LayoutAdminRoute._addFileChildren(
+  LayoutAdminRouteChildren,
+)
+
 interface LayoutRouteChildren {
-  LayoutAdminRoute: typeof LayoutAdminRoute
+  LayoutAdminRoute: typeof LayoutAdminRouteWithChildren
+  LayoutProfileRoute: typeof LayoutProfileRoute
   LayoutSettingsRoute: typeof LayoutSettingsRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
   LayoutExoplanetsIdRoute: typeof LayoutExoplanetsIdRoute
@@ -234,7 +325,8 @@ interface LayoutRouteChildren {
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutAdminRoute: LayoutAdminRoute,
+  LayoutAdminRoute: LayoutAdminRouteWithChildren,
+  LayoutProfileRoute: LayoutProfileRoute,
   LayoutSettingsRoute: LayoutSettingsRoute,
   LayoutIndexRoute: LayoutIndexRoute,
   LayoutExoplanetsIdRoute: LayoutExoplanetsIdRoute,

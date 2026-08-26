@@ -2,9 +2,9 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 import sentry_sdk
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
-from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from starlette.middleware.cors import CORSMiddleware
@@ -54,10 +54,20 @@ setup_http_logging(app)
 
 app.state.limiter = limiter
 
-app.add_exception_handler(
-    RateLimitExceeded,
-    _rate_limit_exceeded_handler,  # type: ignore
-)
+
+def rate_limit_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
+    response = JSONResponse(
+        status_code=429,
+        content={"detail": f"Rate limit exceeded: {exc.detail}"},
+    )
+    if hasattr(request.state, "view_rate_limit"):
+        response = request.app.state.limiter._inject_headers(
+            response, request.state.view_rate_limit
+        )
+    return response
+
+
+app.add_exception_handler(RateLimitExceeded, rate_limit_handler)  # type: ignore
 
 app.add_middleware(SlowAPIMiddleware)
 

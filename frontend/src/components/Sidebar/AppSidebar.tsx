@@ -1,4 +1,10 @@
-import { Earth, Home, Users } from "lucide-react"
+import {
+  ChevronRight,
+  Database,
+  LayoutDashboard,
+  Telescope,
+} from "lucide-react"
+import { useState } from "react"
 
 import { SidebarAppearance } from "@/components/Common/Appearance"
 import { Logo } from "@/components/Common/Logo"
@@ -9,29 +15,39 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import useAuth from "@/hooks/useAuth"
-import { type Item, Main } from "./Main"
+import { NavGroup } from "./NavGroup"
+import { NavItem } from "./NavItem"
 import { User } from "./User"
-
-const baseItems: Item[] = [
-  { icon: Home, title: "Dashboard", path: "/" },
-  { icon: Earth, title: "Exoplanets", path: "/exoplanets" },
-]
 
 export function AppSidebar() {
   const { user: currentUser } = useAuth()
-
-  const items = currentUser?.is_superuser
-    ? [...baseItems, { icon: Users, title: "Admin", path: "/admin" }]
-    : baseItems
+  const [adminOpen, setAdminOpen] = useState(true)
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="px-4 py-6 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <Logo variant="responsive" />
       </SidebarHeader>
-      <SidebarContent>
-        <Main items={items} />
+
+      <SidebarContent className="gap-0">
+        <NavItem icon={LayoutDashboard} title="Dashboard" path="/" exact />
+        <NavItem icon={Telescope} title="Exoplanets" path="/exoplanets" />
+
+        {currentUser?.is_superuser && (
+          <NavGroup
+            icon={Database}
+            title="Admin"
+            open={adminOpen}
+            onToggle={() => setAdminOpen((o) => !o)}
+            chevron={ChevronRight}
+            items={[
+              { title: "ETL", path: "/admin/etl" },
+              { title: "Users", path: "/admin/users" },
+            ]}
+          />
+        )}
       </SidebarContent>
+
       <SidebarFooter>
         <SidebarAppearance />
         <User user={currentUser} />

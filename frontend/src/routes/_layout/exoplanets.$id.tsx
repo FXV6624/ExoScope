@@ -2,13 +2,39 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { Suspense } from "react"
 
-import { ExoplanetsService } from "@/client"
+import { type ExoplanetPublic, ExoplanetsService } from "@/client"
 import { ExoplanetProfile } from "@/components/Exoplanets/ExoplanetProfile"
 import { SpaceBackground } from "@/components/Exoplanets/SpaceBackground"
 
-const getExoplanetQueryOptions = (id: string) => ({
-  queryFn: () => ExoplanetsService.readExoplanetById({ exoplanetId: id }),
-  queryKey: ["exoplanet", id],
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+// ── Query: always resolve and load via readExoplanetById to trigger photo enrichment
+const getExoplanetQueryOptions = (idParam: string) => ({
+  queryFn: async (): Promise<ExoplanetPublic> => {
+    const decoded = decodeURIComponent(idParam).trim()
+
+    let planetId = decoded
+    if (!UUID_REGEX.test(decoded)) {
+      // If a planet name was passed, find its UUID via list endpoint
+      const listResponse = await ExoplanetsService.readExoplanets({
+        planetName: decoded,
+        limit: 1,
+      })
+      const match = listResponse?.data?.[0] as ExoplanetPublic | undefined
+      if (!match) {
+        throw new Error(`Exoplanet "${decoded}" not found`)
+      }
+      planetId = match.id
+    }
+
+    // Call readExoplanetById (triggers backend on-demand NASA photo lookup & DB commit)
+    const detailedPlanet = await ExoplanetsService.readExoplanetById({
+      exoplanetId: planetId,
+    })
+    return detailedPlanet
+  },
+  queryKey: ["exoplanet", "detail", idParam],
 })
 
 export const Route = createFileRoute("/_layout/exoplanets/$id")({
@@ -33,7 +59,7 @@ function ExoplanetDetailPage() {
   const router = useRouter()
 
   return (
-    <div className="-m-6 h-[calc(100%+3rem)] overflow-y-auto md:-m-8 md:h-[calc(100%+4rem)]">
+    <div className="relative flex min-h-full flex-col">
       <SpaceBackground />
       <ExoplanetProfile exoplanet={data} onBack={() => router.history.back()} />
     </div>

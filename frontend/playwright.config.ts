@@ -86,9 +86,11 @@ export default defineConfig({
   webServer: {
     command: process.env.CI
       ? 'bun run preview --host 0.0.0.0 --port 5173'
-      : 'bun run dev',
+      : process.platform === 'win32'
+        ? 'npm run dev'
+        : 'bun run dev',
     url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 120000,
   },
 });

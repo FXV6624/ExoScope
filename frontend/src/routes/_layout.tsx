@@ -24,13 +24,13 @@ function Layout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="flex h-screen flex-col overflow-hidden">
-        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b px-4">
+      <SidebarInset className="flex min-h-screen flex-col min-w-0 w-full max-w-full overflow-x-hidden">
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background/80 backdrop-blur-sm px-4">
           <SidebarTrigger className="-ml-1 text-muted-foreground" />
         </header>
-        <main className="flex min-h-0 flex-1 flex-col overflow-hidden p-6 md:p-8">
+        <div className="flex min-h-0 flex-1 flex-col min-w-0 w-full overflow-y-auto p-6 md:p-8">
           <Outlet />
-        </main>
+        </div>
         <Footer />
       </SidebarInset>
     </SidebarProvider>

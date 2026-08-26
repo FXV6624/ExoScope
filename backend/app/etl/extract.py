@@ -41,7 +41,7 @@ def extract(limit: int | None = None) -> list[ExoplanetRaw]:
     query = f"{select_clause} FROM pscomppars ORDER BY disc_year DESC, pl_name"
 
     params = {"query": query, "format": "json"}
-    response = requests.get(URL, params=params)
+    response = requests.get(URL, params=params, timeout=60.0)
     response.raise_for_status()
     data = response.json()
 

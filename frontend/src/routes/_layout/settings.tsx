@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_layout/settings")({
   head: () => ({
     meta: [
       {
-        title: "Settings - FastAPI Template",
+        title: "User Settings - FastAPI Template",
       },
     ],
   }),
@@ -25,36 +25,34 @@ export const Route = createFileRoute("/_layout/settings")({
 
 function UserSettings() {
   const { user: currentUser } = useAuth()
-  const finalTabs = currentUser?.is_superuser
-    ? tabsConfig.slice(0, 3)
-    : tabsConfig
 
-  if (!currentUser) {
-    return null
-  }
+  if (!currentUser) return null
 
   return (
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">User Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your account settings and preferences
+        <p className="text-muted-foreground text-sm">
+          Manage your account settings and preferences.
         </p>
       </div>
 
-      <Tabs defaultValue="my-profile">
-        <TabsList>
-          {finalTabs.map((tab) => (
+      <Tabs defaultValue="my-profile" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 max-w-md">
+          {tabsConfig.map((tab) => (
             <TabsTrigger key={tab.value} value={tab.value}>
               {tab.title}
             </TabsTrigger>
           ))}
         </TabsList>
-        {finalTabs.map((tab) => (
-          <TabsContent key={tab.value} value={tab.value}>
-            <tab.component />
-          </TabsContent>
-        ))}
+        {tabsConfig.map((tab) => {
+          const Component = tab.component
+          return (
+            <TabsContent key={tab.value} value={tab.value} className="mt-6">
+              <Component />
+            </TabsContent>
+          )
+        })}
       </Tabs>
     </div>
   )
