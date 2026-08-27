@@ -20,7 +20,7 @@ MEDIA_TYPES = {
 
 
 @router.get("/export")
-@limiter.limit("10/minute")
+@limiter.limit("1/minute")
 def export_exoplanets_endpoint(
     request: Request,  # noqa: ARG001
     session: SessionDep,
