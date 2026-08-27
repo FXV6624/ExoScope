@@ -16,7 +16,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import useAuth from "@/hooks/useAuth"
+import { Skeleton } from "@/components/ui/skeleton"
+import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 import { getInitials } from "@/utils"
 
 interface UserInfoProps {
@@ -43,6 +44,23 @@ function UserInfo({ fullName, email }: UserInfoProps) {
 export function User({ user }: { user: any }) {
   const { logout } = useAuth()
   const { isMobile, setOpenMobile } = useSidebar()
+
+  // Show skeleton while the user data is still loading (token exists but query hasn't resolved yet)
+  if (!user && isLoggedIn()) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <div className="flex items-center gap-2.5 px-2 py-1.5">
+            <Skeleton className="size-8 rounded-full" />
+            <div className="flex flex-col gap-1 min-w-0 flex-1">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-2.5 w-32" />
+            </div>
+          </div>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
+  }
 
   if (!user) return null
 
@@ -79,10 +97,10 @@ export function User({ user }: { user: any }) {
               <UserInfo fullName={user?.full_name} email={user?.email} />
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <RouterLink to="/settings" onClick={handleMenuClick}>
+            <RouterLink to="/profile" onClick={handleMenuClick}>
               <DropdownMenuItem>
                 <Settings />
-                User Settings
+                Profile
               </DropdownMenuItem>
             </RouterLink>
             <DropdownMenuItem onClick={handleLogout}>

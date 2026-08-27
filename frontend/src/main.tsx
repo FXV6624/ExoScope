@@ -18,6 +18,15 @@ OpenAPI.TOKEN = async () => {
   return localStorage.getItem("access_token") || ""
 }
 
+// Apply a 10-minute timeout specifically for ETL pipeline requests,
+// which can take several minutes when processing the full NASA dataset.
+OpenAPI.interceptors.request.use((config) => {
+  if (config.url?.includes("/etl/run")) {
+    config.timeout = 10 * 60 * 1000 // 10 minutes in ms
+  }
+  return config
+})
+
 const handleApiError = (error: Error) => {
   if (error instanceof ApiError && [401, 403].includes(error.status)) {
     localStorage.removeItem("access_token")
