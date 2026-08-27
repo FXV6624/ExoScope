@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import StreamingResponse
 
-from app.api.deps import CurrentUser, SessionDep
+from app.api.deps import SessionDep
 from app.core.limiter import limiter
 from app.exports.schemas import ExportFormat, ExportRequest
 from app.schemas.exoplanet import ExoplanetFilters
@@ -24,7 +24,6 @@ MEDIA_TYPES = {
 def export_exoplanets_endpoint(
     request: Request,  # noqa: ARG001
     session: SessionDep,
-    _current_user: CurrentUser,
     format: ExportFormat = ExportFormat.CSV,
     filename: str = "exoplanets",
     fields: Annotated[list[str] | None, Query()] = None,

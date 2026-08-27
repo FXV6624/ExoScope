@@ -32,10 +32,6 @@ def _insert_planet(db: Session, name: str, method: str = "Transit", year: int = 
 
 
 class TestGetExoplanets:
-    def test_get_all_exoplanets_requires_auth(self, client: TestClient):
-        response = client.get(f"{API}/exoplanets/")
-        assert response.status_code == 401
-
     def test_get_all_exoplanets_returns_list(
         self, client: TestClient, superuser_token_headers: dict, db: Session
     ):
@@ -64,10 +60,6 @@ class TestGetExoplanets:
 
 
 class TestGetExoplanetStats:
-    def test_get_stats_requires_auth(self, client: TestClient):
-        response = client.get(f"{API}/exoplanets/stats")
-        assert response.status_code == 401
-
     def test_get_stats_returns_aggregated_data(
         self, client: TestClient, superuser_token_headers: dict, db: Session
     ):
