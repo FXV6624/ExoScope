@@ -98,34 +98,45 @@ function SectionCard({
   )
 }
 
+type StageStatus = "pending" | "running" | "success" | "error"
+
 function PipelineStage({
   label,
   duration,
-  done,
+  status,
 }: {
   label: string
   duration?: number
-  done: boolean | null
+  status: StageStatus
 }) {
+  const dot =
+    status === "pending" ? (
+      <div
+        className="h-4 w-4 rounded-full shrink-0"
+        style={{ background: "rgba(255,255,255,0.08)" }}
+      />
+    ) : status === "running" ? (
+      <Loader2 size={16} className="animate-spin text-cyan-400 shrink-0" />
+    ) : status === "success" ? (
+      <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+    ) : (
+      <AlertCircle size={16} className="text-red-400 shrink-0" />
+    )
+
+  const labelColor =
+    status === "pending"
+      ? "#64748b"
+      : status === "running"
+        ? "#22d3ee"
+        : status === "success"
+          ? "#f1f5f9"
+          : "#f87171"
+
   return (
     <div className="flex items-center justify-between py-2.5 border-b border-white/5 last:border-none">
       <div className="flex items-center gap-3">
-        {done == null ? (
-          <div
-            className="h-4 w-4 rounded-full"
-            style={{ background: "rgba(255,255,255,0.08)" }}
-          />
-        ) : done ? (
-          <CheckCircle2 size={16} className="text-emerald-400" />
-        ) : (
-          <AlertCircle size={16} className="text-red-400" />
-        )}
-        <span
-          className="text-sm"
-          style={{
-            color: done == null ? "#64748b" : done ? "#f1f5f9" : "#f87171",
-          }}
-        >
+        {dot}
+        <span className="text-sm" style={{ color: labelColor }}>
           {label}
         </span>
       </div>
@@ -215,6 +226,73 @@ function AdminETLPage() {
   })
 
   const isRunning = mutation.isPending
+
+  // Derive per-stage status from the last report using timing fields + errors.
+  // Using _time > 0 to know if a stage actually ran (avoids false negatives on
+  // legitimate empty extractions where extracted/transformed = 0 by design).
+  const stageStatuses: {
+    preflight: StageStatus
+    extract: StageStatus
+    transform: StageStatus
+    load: StageStatus
+  } = (() => {
+    if (isRunning) {
+      return {
+        preflight: "running",
+        extract: "pending",
+        transform: "pending",
+        load: "pending",
+      }
+    }
+    if (!lastReport) {
+      return {
+        preflight: "pending",
+        extract: "pending",
+        transform: "pending",
+        load: "pending",
+      }
+    }
+
+    const hasErrors = lastReport.errors.length > 0
+    const extractRan = lastReport.extract_time > 0
+    const transformRan = lastReport.transform_time > 0
+    const loadRan = lastReport.load_time > 0
+
+    // Pre-flight: failed if there are errors but extract never even started
+    const preflight: StageStatus = !extractRan ? "error" : "success"
+
+    // Extract: ran and failed → error; ran and no errors → success; never ran → pending
+    const extract: StageStatus =
+      preflight === "error"
+        ? "pending"
+        : !extractRan
+          ? "pending"
+          : hasErrors && !transformRan
+            ? "error"
+            : "success"
+
+    // Transform: ran and failed → error; ran ok → success; never ran → pending
+    const transform: StageStatus =
+      extract === "pending" || extract === "error"
+        ? "pending"
+        : !transformRan
+          ? "pending"
+          : hasErrors && !loadRan
+            ? "error"
+            : "success"
+
+    // Load: ran and failed → error; ran ok → success; never ran → pending
+    const load: StageStatus =
+      transform === "pending" || transform === "error"
+        ? "pending"
+        : !loadRan
+          ? "pending"
+          : hasErrors
+            ? "error"
+            : "success"
+
+    return { preflight, extract, transform, load }
+  })()
 
   return (
     <div className="relative flex min-h-full flex-col gap-6">
@@ -365,27 +443,23 @@ function AdminETLPage() {
           {/* Pipeline stages */}
           <SectionCard title="Pipeline Stages" icon={RefreshCw}>
             <PipelineStage
+              label="Pre-flight Checks"
+              status={stageStatuses.preflight}
+            />
+            <PipelineStage
               label="Extract"
               duration={lastReport?.extract_time}
-              done={
-                lastReport
-                  ? lastReport.extracted > 0 && lastReport.success
-                  : null
-              }
+              status={stageStatuses.extract}
             />
             <PipelineStage
               label="Transform & Enrich"
               duration={lastReport?.transform_time}
-              done={
-                lastReport
-                  ? lastReport.transformed > 0 && lastReport.success
-                  : null
-              }
+              status={stageStatuses.transform}
             />
             <PipelineStage
               label="Load"
               duration={lastReport?.load_time}
-              done={lastReport ? lastReport.success : null}
+              status={stageStatuses.load}
             />
           </SectionCard>
 

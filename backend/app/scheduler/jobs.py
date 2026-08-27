@@ -19,6 +19,7 @@ def run_exoplanet_etl_job() -> None:
     try:
         with Session(engine) as session:
             run_etl(session, config)
+        logger.info("Scheduled ETL completed successfully")
     except Exception:
         logger.exception("Scheduled ETL failed")
     finally:
@@ -32,4 +33,3 @@ def run_exoplanet_etl_job() -> None:
         next_run = getattr(job, "next_run_time", None)
         if next_run:
             scheduler_prometheus_metrics.update_next_run(next_run.timestamp())
-        logger.info("Scheduled ETL completed successfully")

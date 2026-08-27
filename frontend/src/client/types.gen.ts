@@ -203,6 +203,10 @@ export type PrivateUserCreate = {
     is_verified?: boolean;
 };
 
+export type SchedulerUpdate = {
+    interval_seconds: number;
+};
+
 export type SortOrder = 'asc' | 'desc';
 
 export type SummaryStats = {
@@ -279,6 +283,8 @@ export type EtlRunExoplanetEtlData = {
 };
 
 export type EtlRunExoplanetEtlResponse = (unknown);
+
+export type EtlReadLastEtlRunResponse = (unknown);
 
 export type ExoplanetsReadExoplanetsData = {
     composition?: (PlanetComposition | null);
@@ -444,6 +450,18 @@ export type PrivateCreateUserData = {
 };
 
 export type PrivateCreateUserResponse = (UserPublic);
+
+export type SchedulerReadSchedulerStatusResponse = (unknown);
+
+export type SchedulerUpdateSchedulerData = {
+    requestBody: SchedulerUpdate;
+};
+
+export type SchedulerUpdateSchedulerResponse = (unknown);
+
+export type SchedulerStartSchedulerRouteResponse = (unknown);
+
+export type SchedulerStopSchedulerRouteResponse = (unknown);
 
 export type UsersReadUsersData = {
     limit?: number;

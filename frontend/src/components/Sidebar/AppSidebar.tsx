@@ -2,17 +2,18 @@ import {
   ChevronRight,
   Database,
   LayoutDashboard,
+  LogIn,
   Telescope,
 } from "lucide-react"
 import { useState } from "react"
 
 import { SidebarAppearance } from "@/components/Common/Appearance"
-import { Logo } from "@/components/Common/Logo"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import useAuth from "@/hooks/useAuth"
 import { NavGroup } from "./NavGroup"
@@ -20,15 +21,11 @@ import { NavItem } from "./NavItem"
 import { User } from "./User"
 
 export function AppSidebar() {
-  const { user: currentUser } = useAuth()
+  const { user: currentUser, logout } = useAuth()
   const [adminOpen, setAdminOpen] = useState(true)
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="px-4 py-6 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
-        <Logo variant="responsive" />
-      </SidebarHeader>
-
       <SidebarContent className="gap-0">
         <NavItem icon={LayoutDashboard} title="Dashboard" path="/" exact />
         <NavItem icon={Telescope} title="Exoplanets" path="/exoplanets" />
@@ -49,6 +46,14 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
+        {!currentUser && (
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="Sign In" onClick={logout}>
+              <LogIn className="size-4 text-muted-foreground" />
+              <span>Sign In</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        )}
         <SidebarAppearance />
         <User user={currentUser} />
       </SidebarFooter>

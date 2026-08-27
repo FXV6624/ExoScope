@@ -151,9 +151,16 @@ function Dashboard() {
             <span className="text-space-subtle font-medium">{firstName}</span>{" "}
             👋🏼
           </p>
-          <p className="text-xs text-space-muted">
-            Welcome back, nice to see you again!
-          </p>
+          {firstName ? (
+            <p className="text-xs text-space-muted">
+              Welcome back, nice to see you again!
+            </p>
+          ) : (
+            <p className="text-xs text-space-muted">
+              Welcome to our Data Engineering Platform. Log in to access special
+              features!
+            </p>
+          )}
         </div>
 
         {/* Stat cards row */}
@@ -167,7 +174,6 @@ function Dashboard() {
             }
             sub="NASA Exoplanet Archive"
             icon={Globe}
-            accent
           />
           <DashStatCard
             label="Potentially Habitable"

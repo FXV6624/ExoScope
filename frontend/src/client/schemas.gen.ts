@@ -1187,6 +1187,19 @@ export const PrivateUserCreateSchema = {
     title: 'PrivateUserCreate'
 } as const;
 
+export const SchedulerUpdateSchema = {
+    properties: {
+        interval_seconds: {
+            type: 'integer',
+            exclusiveMinimum: 59,
+            title: 'Interval Seconds'
+        }
+    },
+    type: 'object',
+    required: ['interval_seconds'],
+    title: 'SchedulerUpdate'
+} as const;
+
 export const SortOrderSchema = {
     type: 'string',
     enum: ['asc', 'desc'],
