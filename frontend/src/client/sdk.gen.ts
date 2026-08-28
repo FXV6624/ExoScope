@@ -85,6 +85,7 @@ export class ExoplanetsService {
      * @param data.minHabitabilityScore
      * @param data.maxHabitabilityScore
      * @param data.minHabitabilityConfidence
+     * @param data.maxHabitabilityConfidence
      * @param data.minDistanceFromEarth
      * @param data.maxDistanceFromEarth
      * @param data.minEquilibriumTemperature
@@ -93,7 +94,7 @@ export class ExoplanetsService {
      * @param data.minSystemPlanetCount
      * @param data.minOrbitalEccentricity
      * @param data.maxOrbitalEccentricity
-     * @param data.hasCustomPhoto
+     * @param data.hasNasaPhoto
      * @returns ExoplanetsQueryResponse Successful Response
      * @throws ApiError
      */
@@ -127,6 +128,7 @@ export class ExoplanetsService {
                 min_habitability_score: data.minHabitabilityScore,
                 max_habitability_score: data.maxHabitabilityScore,
                 min_habitability_confidence: data.minHabitabilityConfidence,
+                max_habitability_confidence: data.maxHabitabilityConfidence,
                 min_distance_from_earth: data.minDistanceFromEarth,
                 max_distance_from_earth: data.maxDistanceFromEarth,
                 min_equilibrium_temperature: data.minEquilibriumTemperature,
@@ -135,7 +137,7 @@ export class ExoplanetsService {
                 min_system_planet_count: data.minSystemPlanetCount,
                 min_orbital_eccentricity: data.minOrbitalEccentricity,
                 max_orbital_eccentricity: data.maxOrbitalEccentricity,
-                has_custom_photo: data.hasCustomPhoto
+                has_nasa_photo: data.hasNasaPhoto
             },
             errors: {
                 422: 'Validation Error'
@@ -174,6 +176,7 @@ export class ExoplanetsService {
      * @param data.minHabitabilityScore
      * @param data.maxHabitabilityScore
      * @param data.minHabitabilityConfidence
+     * @param data.maxHabitabilityConfidence
      * @param data.minDistanceFromEarth
      * @param data.maxDistanceFromEarth
      * @param data.minEquilibriumTemperature
@@ -182,7 +185,7 @@ export class ExoplanetsService {
      * @param data.minSystemPlanetCount
      * @param data.minOrbitalEccentricity
      * @param data.maxOrbitalEccentricity
-     * @param data.hasCustomPhoto
+     * @param data.hasNasaPhoto
      * @returns ExoplanetsQueryResponse Successful Response
      * @throws ApiError
      */
@@ -217,6 +220,7 @@ export class ExoplanetsService {
                 min_habitability_score: data.minHabitabilityScore,
                 max_habitability_score: data.maxHabitabilityScore,
                 min_habitability_confidence: data.minHabitabilityConfidence,
+                max_habitability_confidence: data.maxHabitabilityConfidence,
                 min_distance_from_earth: data.minDistanceFromEarth,
                 max_distance_from_earth: data.maxDistanceFromEarth,
                 min_equilibrium_temperature: data.minEquilibriumTemperature,
@@ -225,7 +229,7 @@ export class ExoplanetsService {
                 min_system_planet_count: data.minSystemPlanetCount,
                 min_orbital_eccentricity: data.minOrbitalEccentricity,
                 max_orbital_eccentricity: data.maxOrbitalEccentricity,
-                has_custom_photo: data.hasCustomPhoto
+                has_nasa_photo: data.hasNasaPhoto
             },
             errors: {
                 422: 'Validation Error'
@@ -308,6 +312,7 @@ export class ExportsService {
      * @param data.minHabitabilityScore
      * @param data.maxHabitabilityScore
      * @param data.minHabitabilityConfidence
+     * @param data.maxHabitabilityConfidence
      * @param data.minDistanceFromEarth
      * @param data.maxDistanceFromEarth
      * @param data.minEquilibriumTemperature
@@ -316,7 +321,7 @@ export class ExportsService {
      * @param data.minSystemPlanetCount
      * @param data.minOrbitalEccentricity
      * @param data.maxOrbitalEccentricity
-     * @param data.hasCustomPhoto
+     * @param data.hasNasaPhoto
      * @param data.sortBy
      * @param data.order
      * @returns unknown Successful Response
@@ -352,6 +357,7 @@ export class ExportsService {
                 min_habitability_score: data.minHabitabilityScore,
                 max_habitability_score: data.maxHabitabilityScore,
                 min_habitability_confidence: data.minHabitabilityConfidence,
+                max_habitability_confidence: data.maxHabitabilityConfidence,
                 min_distance_from_earth: data.minDistanceFromEarth,
                 max_distance_from_earth: data.maxDistanceFromEarth,
                 min_equilibrium_temperature: data.minEquilibriumTemperature,
@@ -360,7 +366,7 @@ export class ExportsService {
                 min_system_planet_count: data.minSystemPlanetCount,
                 min_orbital_eccentricity: data.minOrbitalEccentricity,
                 max_orbital_eccentricity: data.maxOrbitalEccentricity,
-                has_custom_photo: data.hasCustomPhoto,
+                has_nasa_photo: data.hasNasaPhoto,
                 sort_by: data.sortBy,
                 order: data.order
             },

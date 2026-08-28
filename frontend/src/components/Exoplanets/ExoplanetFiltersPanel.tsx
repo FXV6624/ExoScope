@@ -137,6 +137,68 @@ function NumberRangeInput({
   )
 }
 
+function ConfidenceRangeInput({
+  label,
+  minValue,
+  maxValue,
+  minPlaceholder = "Min",
+  maxPlaceholder = "Max",
+  onMinChange,
+  onMaxChange,
+}: {
+  label: string
+  minValue: number | null | undefined
+  maxValue: number | null | undefined
+  minPlaceholder?: string
+  maxPlaceholder?: string
+  onMinChange: (v: number | null) => void
+  onMaxChange: (v: number | null) => void
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-xs text-space-muted">{label}</span>
+
+      <div className="flex items-center gap-2">
+        <input
+          type="number"
+          step={0.1}
+          min={0}
+          max={1}
+          placeholder={minPlaceholder}
+          value={minValue ?? ""}
+          onChange={(e) =>
+            onMinChange(e.target.value !== "" ? Number(e.target.value) : null)
+          }
+          className="w-full rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none placeholder:text-slate-600"
+          style={{
+            background: "rgba(15,25,50,0.8)",
+            border: "1px solid rgba(255,255,255,0.1)",
+          }}
+        />
+
+        <span className="text-space-muted">–</span>
+
+        <input
+          type="number"
+          step={0.1}
+          min={0}
+          max={1}
+          placeholder={maxPlaceholder}
+          value={maxValue ?? ""}
+          onChange={(e) =>
+            onMaxChange(e.target.value !== "" ? Number(e.target.value) : null)
+          }
+          className="w-full rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none placeholder:text-slate-600"
+          style={{
+            background: "rgba(15,25,50,0.8)",
+            border: "1px solid rgba(255,255,255,0.1)",
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
 export function ExoplanetFiltersPanel({
   filters,
   onFiltersChange,
@@ -438,20 +500,20 @@ export function ExoplanetFiltersPanel({
           <div className="space-y-3">
             <SectionHeader title="Photo" />
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-space-muted">Custom Photo</span>
+              <span className="text-xs text-space-muted">NASA Photo</span>
               <select
                 value={
-                  filters.has_custom_photo === null ||
-                  filters.has_custom_photo === undefined
+                  filters.has_nasa_photo === null ||
+                  filters.has_nasa_photo === undefined
                     ? ""
-                    : filters.has_custom_photo
+                    : filters.has_nasa_photo
                       ? "true"
                       : "false"
                 }
                 onChange={(e) => {
                   const val = e.target.value
                   update({
-                    has_custom_photo: val === "" ? null : val === "true",
+                    has_nasa_photo: val === "" ? null : val === "true",
                   })
                 }}
                 className="rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none"
@@ -461,8 +523,8 @@ export function ExoplanetFiltersPanel({
                 }}
               >
                 <option value="">All planets</option>
-                <option value="true">Has custom photo only</option>
-                <option value="false">No custom photo</option>
+                <option value="true">Has NASA photo </option>
+                <option value="false">No NASA photo</option>
               </select>
             </div>
           </div>
@@ -484,7 +546,7 @@ export function ExoplanetFiltersPanel({
 
             {advancedOpen && (
               <div className="pt-2 space-y-3">
-                <NumberRangeInput
+                <ConfidenceRangeInput
                   label="Planet Class Confidence (0.0 – 1.0)"
                   minValue={filters.min_planet_class_confidence}
                   maxValue={filters.max_planet_class_confidence}
@@ -497,7 +559,8 @@ export function ExoplanetFiltersPanel({
                     update({ max_planet_class_confidence: v })
                   }
                 />
-                <NumberRangeInput
+
+                <ConfidenceRangeInput
                   label="Composition Confidence (0.0 – 1.0)"
                   minValue={filters.min_composition_confidence}
                   maxValue={filters.max_composition_confidence}
@@ -506,30 +569,20 @@ export function ExoplanetFiltersPanel({
                   onMinChange={(v) => update({ min_composition_confidence: v })}
                   onMaxChange={(v) => update({ max_composition_confidence: v })}
                 />
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs text-space-muted">
-                    Min Habitability Confidence (0.0 – 1.0)
-                  </span>
-                  <input
-                    type="number"
-                    step="any"
-                    min={0}
-                    max={1}
-                    placeholder="e.g. 0.8"
-                    value={filters.min_habitability_confidence ?? ""}
-                    onChange={(e) =>
-                      update({
-                        min_habitability_confidence:
-                          e.target.value !== "" ? Number(e.target.value) : null,
-                      })
-                    }
-                    className="rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none placeholder:text-slate-600"
-                    style={{
-                      background: "rgba(15,25,50,0.8)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                    }}
-                  />
-                </div>
+
+                <ConfidenceRangeInput
+                  label="Habitability Confidence (0.0 – 1.0)"
+                  minValue={filters.min_habitability_confidence}
+                  maxValue={filters.max_habitability_confidence}
+                  minPlaceholder="0.0"
+                  maxPlaceholder="1.0"
+                  onMinChange={(v) =>
+                    update({ min_habitability_confidence: v })
+                  }
+                  onMaxChange={(v) =>
+                    update({ max_habitability_confidence: v })
+                  }
+                />
               </div>
             )}
           </div>

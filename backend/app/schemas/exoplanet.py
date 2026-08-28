@@ -62,6 +62,7 @@ class ExoplanetFilters(BaseModel):
     min_habitability_score: float | None = None
     max_habitability_score: float | None = None
     min_habitability_confidence: float | None = None
+    max_habitability_confidence: float | None = None
     min_distance_from_earth: float | None = None
     max_distance_from_earth: float | None = None
     min_equilibrium_temperature: float | None = None
@@ -70,7 +71,7 @@ class ExoplanetFilters(BaseModel):
     min_system_planet_count: int | None = None
     min_orbital_eccentricity: float | None = None
     max_orbital_eccentricity: float | None = None
-    has_custom_photo: bool | None = None
+    has_nasa_photo: bool | None = None
     sort_by: ExoplanetSortField | None = None
     order: SortOrder = SortOrder.asc
 

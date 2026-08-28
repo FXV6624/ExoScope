@@ -169,11 +169,11 @@ export function ActiveFilterChips({
   }
 
   // Photo
-  if (filters.has_custom_photo != null) {
+  if (filters.has_nasa_photo != null) {
     chips.push({
-      id: "has_custom_photo",
-      label: `Custom Photo: ${filters.has_custom_photo ? "Yes" : "No"}`,
-      keys: ["has_custom_photo"],
+      id: "has_nasa_photo",
+      label: `NASA Photo: ${filters.has_nasa_photo ? "Yes" : "No"}`,
+      keys: ["has_nasa_photo"],
     })
   }
 
@@ -202,11 +202,16 @@ export function ActiveFilterChips({
       keys: ["min_composition_confidence", "max_composition_confidence"],
     })
   }
-  if (filters.min_habitability_confidence != null) {
+  if (
+    filters.min_habitability_confidence != null ||
+    filters.max_habitability_confidence != null
+  ) {
+    const min = filters.min_habitability_confidence ?? ""
+    const max = filters.max_habitability_confidence ?? ""
     chips.push({
-      id: "min_habitability_confidence",
-      label: `Min Hab Conf: ${filters.min_habitability_confidence}`,
-      keys: ["min_habitability_confidence"],
+      id: "habitability_confidence",
+      label: `Hab Conf: ${min}–${max}`,
+      keys: ["min_habitability_confidence", "max_habitability_confidence"],
     })
   }
 

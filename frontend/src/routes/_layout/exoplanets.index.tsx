@@ -124,6 +124,8 @@ function ExoplanetsPage() {
       maxHabitabilityScore: filters.max_habitability_score ?? undefined,
       minHabitabilityConfidence:
         filters.min_habitability_confidence ?? undefined,
+      maxHabitabilityConfidence:
+        filters.max_habitability_confidence ?? undefined,
       minDistanceFromEarth: filters.min_distance_from_earth ?? undefined,
       maxDistanceFromEarth: filters.max_distance_from_earth ?? undefined,
       minEquilibriumTemperature:
@@ -134,7 +136,7 @@ function ExoplanetsPage() {
       minSystemPlanetCount: filters.min_system_planet_count ?? undefined,
       minOrbitalEccentricity: filters.min_orbital_eccentricity ?? undefined,
       maxOrbitalEccentricity: filters.max_orbital_eccentricity ?? undefined,
-      hasCustomPhoto: filters.has_custom_photo ?? undefined,
+      hasCustomPhoto: filters.has_nasa_photo ?? undefined,
     }),
     [skip, limit, sortBy, order, search, filters],
   )
@@ -286,6 +288,11 @@ function ExoplanetsPage() {
             "min_habitability_confidence",
             String(queryParams.minHabitabilityConfidence),
           )
+        if (queryParams.maxHabitabilityConfidence != null)
+          params.set(
+            "max_habitability_confidence",
+            String(queryParams.maxHabitabilityConfidence),
+          )
         if (queryParams.minDistanceFromEarth != null)
           params.set(
             "min_distance_from_earth",
@@ -327,7 +334,7 @@ function ExoplanetsPage() {
             String(queryParams.maxOrbitalEccentricity),
           )
         if (queryParams.hasCustomPhoto != null)
-          params.set("has_custom_photo", String(queryParams.hasCustomPhoto))
+          params.set("has_nasa_photo", String(queryParams.hasCustomPhoto))
 
         const token = localStorage.getItem("access_token")
         const response = await fetch(

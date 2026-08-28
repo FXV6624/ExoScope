@@ -60,7 +60,6 @@ class UpsertLoadStrategy(LoadStrategy):
                     "composition_confidence": stmt.excluded.composition_confidence,
                     "habitability_score": stmt.excluded.habitability_score,
                     "habitability_confidence": stmt.excluded.habitability_confidence,
-                    "photo_url": stmt.excluded.photo_url,
                 },
             )
 

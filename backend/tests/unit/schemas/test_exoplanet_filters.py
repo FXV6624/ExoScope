@@ -77,6 +77,7 @@ class TestExoplanetFilters:
             "min_habitability_score",
             "max_habitability_score",
             "min_habitability_confidence",
+            "max_habitability_confidence",
             "min_distance_from_earth",
             "max_distance_from_earth",
             "min_equilibrium_temperature",
@@ -85,7 +86,7 @@ class TestExoplanetFilters:
             "min_system_planet_count",
             "min_orbital_eccentricity",
             "max_orbital_eccentricity",
-            "has_custom_photo",
+            "has_nasa_photo",
             "sort_by",
             "order",
         }

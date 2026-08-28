@@ -362,9 +362,15 @@ function AdminETLPage() {
                   border: "1px solid rgba(255,255,255,0.1)",
                 }}
               >
-                <option value="upsert">UPSERT (Update or Insert)</option>
-                <option value="insert">INSERT (Append new only)</option>
-                <option value="reload">RELOAD (Full replace)</option>
+                <option value="upsert">
+                  UPSERT — Insert new records or update existing ones
+                </option>
+                <option value="insert">
+                  INSERT — Insert only new records, skip duplicates
+                </option>
+                <option value="reload">
+                  RELOAD — Delete all records and insert new data
+                </option>
               </select>
             </div>
 

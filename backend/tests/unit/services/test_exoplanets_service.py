@@ -73,7 +73,7 @@ class TestReadExoplanetByIdService:
     def test_on_demand_photo_enrichment_updates_db(self):
         session = MagicMock()
         planet = _make_exoplanet()
-        planet.photo_url = "/assets/images/planets/rocky.png"
+        planet.photo_url = "/assets/images/planets/rocky.webp"
         planet.composition = "Rocky"
 
         with (
