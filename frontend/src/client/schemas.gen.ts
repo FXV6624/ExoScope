@@ -465,6 +465,17 @@ export const ExoplanetFiltersSchema = {
             ],
             title: 'Min Habitability Confidence'
         },
+        max_habitability_confidence: {
+            anyOf: [
+                {
+                    type: 'number'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Max Habitability Confidence'
+        },
         min_distance_from_earth: {
             anyOf: [
                 {
@@ -553,7 +564,7 @@ export const ExoplanetFiltersSchema = {
             ],
             title: 'Max Orbital Eccentricity'
         },
-        has_custom_photo: {
+        has_nasa_photo: {
             anyOf: [
                 {
                     type: 'boolean'
@@ -562,7 +573,7 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Has Custom Photo'
+            title: 'Has Nasa Photo'
         },
         sort_by: {
             anyOf: [

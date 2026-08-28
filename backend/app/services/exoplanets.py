@@ -4,6 +4,7 @@ from typing import Any, TypeVar
 
 from sqlmodel import Session
 
+from app.core.cache import clear_cache_sync
 from app.core.enums.exoplanet import ExoplanetField, ExoplanetSortField, SortOrder
 from app.models import Exoplanet
 from app.repositories.exoplanet_stats import (
@@ -108,6 +109,8 @@ def read_exoplanet_by_id_service(
             session.add(planet)
             session.commit()
             session.refresh(planet)
+
+            clear_cache_sync()
 
     return planet
 

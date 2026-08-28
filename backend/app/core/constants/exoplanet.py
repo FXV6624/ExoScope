@@ -145,10 +145,10 @@ CRITERIA = (
 )
 
 DEFAULT_IMAGES: dict[PlanetComposition, str] = {
-    PlanetComposition.ROCKY: "/assets/images/planets/rocky.png",
-    PlanetComposition.ROCKY_IRON: "/assets/images/planets/rocky_iron.png",
-    PlanetComposition.WATER_WORLD: "/assets/images/planets/water_world.png",
-    PlanetComposition.ICE: "/assets/images/planets/ice.png",
-    PlanetComposition.HYDROGEN_HELIUM: "/assets/images/planets/hydrogen_helium.png",
-    PlanetComposition.UNKNOWN: "/assets/images/planets/unknown.png",
+    PlanetComposition.ROCKY: "/assets/images/planets/rocky.webp",
+    PlanetComposition.ROCKY_IRON: "/assets/images/planets/rocky_iron.webp",
+    PlanetComposition.WATER_WORLD: "/assets/images/planets/water_world.webp",
+    PlanetComposition.ICE: "/assets/images/planets/ice.webp",
+    PlanetComposition.HYDROGEN_HELIUM: "/assets/images/planets/hydrogen_helium.webp",
+    PlanetComposition.UNKNOWN: "/assets/images/planets/unknown.webp",
 }

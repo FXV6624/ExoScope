@@ -14,15 +14,15 @@ def build_exoplanet_query(filters: ExoplanetFilters) -> SelectOfScalar[Exoplanet
     - exact match (field=value)
     - partial match for strings (ILIKE)
     - range filters (min_*, max_*)
-    - boolean filter for non-default NASA photo (has_custom_photo)
+    - boolean filter for non-default NASA photo (has_nasa_photo)
     """
     query = select(Exoplanet)
     conditions: list[Any] = []
 
     active_filters = filters.model_dump(exclude_none=True)
 
-    if "has_custom_photo" in active_filters:
-        has_custom = active_filters.pop("has_custom_photo")
+    if "has_nasa_photo" in active_filters:
+        has_custom = active_filters.pop("has_nasa_photo")
         if has_custom:
             conditions.append(col(Exoplanet.photo_url).like("http%"))
         else:

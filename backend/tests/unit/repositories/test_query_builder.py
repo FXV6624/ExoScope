@@ -93,14 +93,14 @@ class TestBuildExoplanetQuery:
         assert "composition" in compiled.lower()
         assert "composition_confidence" in compiled.lower()
 
-    def test_has_custom_photo_true(self):
-        filters = ExoplanetFilters(has_custom_photo=True)
+    def test_has_nasa_photo_true(self):
+        filters = ExoplanetFilters(has_nasa_photo=True)
         query = build_exoplanet_query(filters)
         compiled = str(query.compile(compile_kwargs={"literal_binds": True}))
         assert "photo_url like 'http%'" in compiled.lower()
 
-    def test_has_custom_photo_false(self):
-        filters = ExoplanetFilters(has_custom_photo=False)
+    def test_has_nasa_photo_false(self):
+        filters = ExoplanetFilters(has_nasa_photo=False)
         query = build_exoplanet_query(filters)
         compiled = str(query.compile(compile_kwargs={"literal_binds": True}))
         assert "photo_url like '/assets/%'" in compiled.lower()

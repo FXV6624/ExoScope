@@ -13,7 +13,7 @@ export const ALL_EXOPLANET_FIELDS: FieldDefinition[] = [
   { key: "host_star", label: "Host Star", category: "General" },
   { key: "discovery_year", label: "Discovery Year", category: "General" },
   { key: "discovery_method", label: "Discovery Method", category: "General" },
-  { key: "photo_url", label: "Photo", category: "General" },
+  { key: "photo_url", label: "NASA Photo", category: "General" },
 
   // Planetary
   { key: "planet_class", label: "Planet Class", category: "Planetary" },

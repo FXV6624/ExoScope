@@ -1,8 +1,9 @@
-import asyncio
-
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from redis import Redis as SyncRedis
 from redis.asyncio import Redis
+
+from app.core.config import settings
 
 redis: Redis | None = None
 
@@ -36,4 +37,10 @@ async def clear_cache() -> None:
 
 
 def clear_cache_sync() -> None:
-    asyncio.run(clear_cache())
+    redis_sync = SyncRedis.from_url(settings.REDIS_URL)
+
+    try:
+        for key in redis_sync.scan_iter("exoplanets-cache*"):
+            redis_sync.delete(key)
+    finally:
+        redis_sync.close()

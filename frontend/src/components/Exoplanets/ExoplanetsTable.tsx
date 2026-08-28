@@ -59,7 +59,7 @@ function renderCellContent(fieldKey: ExoplanetField, val: any) {
 
   // 2. Photo Status (Indicator whether photo exists or not)
   if (fieldKey === "photo_url") {
-    const hasPhoto = Boolean(val)
+    const hasPhoto = !String(val).startsWith("/assets")
     return hasPhoto ? (
       <span
         className="rounded-md px-2 py-0.5 text-xs font-medium"
