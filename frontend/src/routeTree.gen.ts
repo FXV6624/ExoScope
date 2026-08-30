@@ -9,34 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
-import { Route as LoginRouteImport } from './routes/login'
 import { Route as LayoutRouteImport } from './routes/_layout'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
-import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
-import { Route as LayoutProfileRouteImport } from './routes/_layout/profile'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
-import { Route as LayoutExoplanetsIndexRouteImport } from './routes/_layout/exoplanets.index'
+import { Route as LayoutProfileRouteImport } from './routes/_layout/profile'
+import { Route as LayoutSettingsRouteImport } from './routes/_layout/settings'
 import { Route as LayoutAdminIndexRouteImport } from './routes/_layout/admin.index'
-import { Route as LayoutExoplanetsIdRouteImport } from './routes/_layout/exoplanets.$id'
-import { Route as LayoutAdminUsersRouteImport } from './routes/_layout/admin.users'
 import { Route as LayoutAdminEtlRouteImport } from './routes/_layout/admin.etl'
+import { Route as LayoutAdminUsersRouteImport } from './routes/_layout/admin.users'
+import { Route as LayoutExoplanetsIndexRouteImport } from './routes/_layout/exoplanets.index'
+import { Route as LayoutExoplanetsIdRouteImport } from './routes/_layout/exoplanets.$id'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RecoverPasswordRoute = RecoverPasswordRouteImport.update({
-  id: '/recover-password',
-  path: '/recover-password',
+const LayoutRoute = LayoutRouteImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -44,8 +32,14 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LayoutRoute = LayoutRouteImport.update({
-  id: '/_layout',
+const RecoverPasswordRoute = RecoverPasswordRouteImport.update({
+  id: '/recover-password',
+  path: '/recover-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LayoutIndexRoute = LayoutIndexRouteImport.update({
@@ -53,9 +47,9 @@ const LayoutIndexRoute = LayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+const LayoutAdminRoute = LayoutAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutProfileRoute = LayoutProfileRouteImport.update({
@@ -63,14 +57,9 @@ const LayoutProfileRoute = LayoutProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => LayoutRoute,
 } as any)
-const LayoutAdminRoute = LayoutAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => LayoutRoute,
-} as any)
-const LayoutExoplanetsIndexRoute = LayoutExoplanetsIndexRouteImport.update({
-  id: '/exoplanets/',
-  path: '/exoplanets/',
+const LayoutSettingsRoute = LayoutSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => LayoutRoute,
 } as any)
 const LayoutAdminIndexRoute = LayoutAdminIndexRouteImport.update({
@@ -78,20 +67,25 @@ const LayoutAdminIndexRoute = LayoutAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LayoutAdminRoute,
 } as any)
-const LayoutExoplanetsIdRoute = LayoutExoplanetsIdRouteImport.update({
-  id: '/exoplanets/$id',
-  path: '/exoplanets/$id',
-  getParentRoute: () => LayoutRoute,
+const LayoutAdminEtlRoute = LayoutAdminEtlRouteImport.update({
+  id: '/etl',
+  path: '/etl',
+  getParentRoute: () => LayoutAdminRoute,
 } as any)
 const LayoutAdminUsersRoute = LayoutAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
   getParentRoute: () => LayoutAdminRoute,
 } as any)
-const LayoutAdminEtlRoute = LayoutAdminEtlRouteImport.update({
-  id: '/etl',
-  path: '/etl',
-  getParentRoute: () => LayoutAdminRoute,
+const LayoutExoplanetsIndexRoute = LayoutExoplanetsIndexRouteImport.update({
+  id: '/exoplanets/',
+  path: '/exoplanets/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutExoplanetsIdRoute = LayoutExoplanetsIdRouteImport.update({
+  id: '/exoplanets/$id',
+  path: '/exoplanets/$id',
+  getParentRoute: () => LayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -99,7 +93,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRouteWithChildren
   '/profile': typeof LayoutProfileRoute
   '/settings': typeof LayoutSettingsRoute
@@ -113,7 +106,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/signup': typeof SignupRoute
   '/profile': typeof LayoutProfileRoute
   '/settings': typeof LayoutSettingsRoute
   '/': typeof LayoutIndexRoute
@@ -129,7 +121,6 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRouteWithChildren
   '/_layout/profile': typeof LayoutProfileRoute
   '/_layout/settings': typeof LayoutSettingsRoute
@@ -147,7 +138,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/recover-password'
     | '/reset-password'
-    | '/signup'
     | '/admin'
     | '/profile'
     | '/settings'
@@ -161,7 +151,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/recover-password'
     | '/reset-password'
-    | '/signup'
     | '/profile'
     | '/settings'
     | '/'
@@ -176,7 +165,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/recover-password'
     | '/reset-password'
-    | '/signup'
     | '/_layout/admin'
     | '/_layout/profile'
     | '/_layout/settings'
@@ -193,30 +181,15 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/recover-password': {
-      id: '/recover-password'
-      path: '/recover-password'
-      fullPath: '/recover-password'
-      preLoaderRoute: typeof RecoverPasswordRouteImport
+    '/_layout': {
+      id: '/_layout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -226,11 +199,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof LayoutRouteImport
+    '/recover-password': {
+      id: '/recover-password'
+      path: '/recover-password'
+      fullPath: '/recover-password'
+      preLoaderRoute: typeof RecoverPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_layout/': {
@@ -240,11 +220,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/settings': {
-      id: '/_layout/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof LayoutSettingsRouteImport
+    '/_layout/admin': {
+      id: '/_layout/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof LayoutAdminRouteImport
       parentRoute: typeof LayoutRoute
     }
     '/_layout/profile': {
@@ -254,18 +234,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutProfileRouteImport
       parentRoute: typeof LayoutRoute
     }
-    '/_layout/admin': {
-      id: '/_layout/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof LayoutAdminRouteImport
-      parentRoute: typeof LayoutRoute
-    }
-    '/_layout/exoplanets/': {
-      id: '/_layout/exoplanets/'
-      path: '/exoplanets'
-      fullPath: '/exoplanets/'
-      preLoaderRoute: typeof LayoutExoplanetsIndexRouteImport
+    '/_layout/settings': {
+      id: '/_layout/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof LayoutSettingsRouteImport
       parentRoute: typeof LayoutRoute
     }
     '/_layout/admin/': {
@@ -275,12 +248,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminIndexRouteImport
       parentRoute: typeof LayoutAdminRoute
     }
-    '/_layout/exoplanets/$id': {
-      id: '/_layout/exoplanets/$id'
-      path: '/exoplanets/$id'
-      fullPath: '/exoplanets/$id'
-      preLoaderRoute: typeof LayoutExoplanetsIdRouteImport
-      parentRoute: typeof LayoutRoute
+    '/_layout/admin/etl': {
+      id: '/_layout/admin/etl'
+      path: '/etl'
+      fullPath: '/admin/etl'
+      preLoaderRoute: typeof LayoutAdminEtlRouteImport
+      parentRoute: typeof LayoutAdminRoute
     }
     '/_layout/admin/users': {
       id: '/_layout/admin/users'
@@ -289,12 +262,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutAdminUsersRouteImport
       parentRoute: typeof LayoutAdminRoute
     }
-    '/_layout/admin/etl': {
-      id: '/_layout/admin/etl'
-      path: '/etl'
-      fullPath: '/admin/etl'
-      preLoaderRoute: typeof LayoutAdminEtlRouteImport
-      parentRoute: typeof LayoutAdminRoute
+    '/_layout/exoplanets/': {
+      id: '/_layout/exoplanets/'
+      path: '/exoplanets'
+      fullPath: '/exoplanets/'
+      preLoaderRoute: typeof LayoutExoplanetsIndexRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/exoplanets/$id': {
+      id: '/_layout/exoplanets/$id'
+      path: '/exoplanets/$id'
+      fullPath: '/exoplanets/$id'
+      preLoaderRoute: typeof LayoutExoplanetsIdRouteImport
+      parentRoute: typeof LayoutRoute
     }
   }
 }
@@ -341,7 +321,6 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

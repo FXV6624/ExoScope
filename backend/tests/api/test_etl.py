@@ -11,14 +11,6 @@ API = settings.API_V1_STR
 
 
 class TestRunETL:
-    def test_run_etl_requires_superuser(
-        self, client: TestClient, normal_user_token_headers: dict
-    ):
-        response = client.post(
-            f"{API}/etl/run", headers=normal_user_token_headers, json={}
-        )
-        assert response.status_code == 403
-
     def test_run_etl_requires_auth(self, client: TestClient):
         response = client.post(f"{API}/etl/run", json={})
         assert response.status_code == 401

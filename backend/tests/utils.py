@@ -53,14 +53,12 @@ def create_test_user(
     email: str = "testuser@example.com",
     password: str = "securepassword123",
     full_name: str | None = "Test User",
-    is_superuser: bool = False,
 ) -> User:
     """Crea y persiste un usuario de test en la BD."""
     user_create = UserCreate(
         email=email,
         password=password,
         full_name=full_name,
-        is_superuser=is_superuser,
     )
     hashed = get_password_hash(password)
     return create_user(session=session, user_create=user_create, hashed_password=hashed)

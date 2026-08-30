@@ -82,6 +82,7 @@ class TestReadExoplanetByIdService:
                 "app.services.exoplanets.find_photo_url",
                 return_value="https://images.nasa.gov/real.jpg",
             ),
+            patch("app.services.exoplanets.clear_cache_sync"),
         ):
             result = exo_service.read_exoplanet_by_id_service(session, planet.id)
             assert result.photo_url == "https://images.nasa.gov/real.jpg"

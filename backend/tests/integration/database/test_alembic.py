@@ -28,7 +28,6 @@ class TestAlembicMigrations:
             "id",
             "email",
             "is_active",
-            "is_superuser",
             "full_name",
             "hashed_password",
             "created_at",

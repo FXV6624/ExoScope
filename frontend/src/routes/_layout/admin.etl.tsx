@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import {
   AlertCircle,
@@ -153,6 +153,7 @@ function PipelineStage({
 
 function AdminETLPage() {
   const { showSuccessToast, showErrorToast } = useCustomToast()
+  const queryClient = useQueryClient()
 
   // Configuration options matching backend ETLConfig
   const [limit, setLimit] = useState<string>("")
@@ -197,6 +198,9 @@ function AdminETLPage() {
           errors: r.errors ?? [],
         })
       }
+      queryClient.invalidateQueries({ queryKey: ["exoplanets"] })
+      queryClient.invalidateQueries({ queryKey: ["exoplanet-stats"] })
+      queryClient.invalidateQueries({ queryKey: ["exoplanet"] })
       setRunError(null)
       showSuccessToast("ETL Pipeline executed successfully")
     },
