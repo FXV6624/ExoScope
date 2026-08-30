@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { MetricsResponse, EtlRunExoplanetEtlData, EtlRunExoplanetEtlResponse, EtlReadLastEtlRunResponse, ExoplanetsReadExoplanetsData, ExoplanetsReadExoplanetsResponse, ExoplanetsReadExoplanetsFieldsData, ExoplanetsReadExoplanetsFieldsResponse, ExoplanetsGetExoplanetStatsData, ExoplanetsGetExoplanetStatsResponse, ExoplanetsReadExoplanetByIdData, ExoplanetsReadExoplanetByIdResponse, ExportsExportExoplanetsEndpointData, ExportsExportExoplanetsEndpointResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlData, LoginRecoverPasswordHtmlResponse, PrivateCreateUserData, PrivateCreateUserResponse, SchedulerReadSchedulerStatusResponse, SchedulerUpdateSchedulerData, SchedulerUpdateSchedulerResponse, SchedulerStartSchedulerRouteResponse, SchedulerStopSchedulerRouteResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersDeleteUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersRegisterUserData, UsersRegisterUserResponse, UsersReadUserData, UsersReadUserResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
+import type { MetricsResponse, EtlRunExoplanetEtlData, EtlRunExoplanetEtlResponse, EtlReadLastEtlRunResponse, ExoplanetsReadExoplanetsData, ExoplanetsReadExoplanetsResponse, ExoplanetsReadExoplanetsFieldsData, ExoplanetsReadExoplanetsFieldsResponse, ExoplanetsGetExoplanetStatsData, ExoplanetsGetExoplanetStatsResponse, ExoplanetsReadExoplanetByIdData, ExoplanetsReadExoplanetByIdResponse, ExportsExportExoplanetsEndpointData, ExportsExportExoplanetsEndpointResponse, LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginResetPasswordData, LoginResetPasswordResponse, LoginRecoverPasswordHtmlData, LoginRecoverPasswordHtmlResponse, PrivateCreateUserData, PrivateCreateUserResponse, SchedulerReadSchedulerStatusResponse, SchedulerUpdateSchedulerData, SchedulerUpdateSchedulerResponse, SchedulerStartSchedulerRouteResponse, SchedulerStopSchedulerRouteResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse, UsersReadUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersReadUserData, UsersReadUserResponse, UsersUpdateUserData, UsersUpdateUserResponse, UsersDeleteUserData, UsersDeleteUserResponse, UtilsTestEmailData, UtilsTestEmailResponse, UtilsHealthCheckResponse } from './types.gen';
 
 export class DefaultService {
     /**
@@ -494,7 +494,7 @@ export class PrivateService {
 export class SchedulerService {
     /**
      * Read Scheduler Status
-     * Get the scheduler status (superuser only).
+     * Get the scheduler status (admin only).
      * @returns unknown Successful Response
      * @throws ApiError
      */
@@ -526,7 +526,7 @@ export class SchedulerService {
     
     /**
      * Start Scheduler Route
-     * Start the scheduler (superuser only).
+     * Start the scheduler (admin only).
      * @returns unknown Successful Response
      * @throws ApiError
      */
@@ -539,7 +539,7 @@ export class SchedulerService {
     
     /**
      * Stop Scheduler Route
-     * Stop the scheduler (superuser only).
+     * Stop the scheduler (admin only).
      * @returns unknown Successful Response
      * @throws ApiError
      */
@@ -606,18 +606,6 @@ export class UsersService {
     }
     
     /**
-     * Delete User Me
-     * @returns Message Successful Response
-     * @throws ApiError
-     */
-    public static deleteUserMe(): CancelablePromise<UsersDeleteUserMeResponse> {
-        return __request(OpenAPI, {
-            method: 'DELETE',
-            url: '/api/v1/users/me'
-        });
-    }
-    
-    /**
      * Update User Me
      * @param data The data for the request.
      * @param data.requestBody
@@ -647,25 +635,6 @@ export class UsersService {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/v1/users/me/password',
-            body: data.requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: 'Validation Error'
-            }
-        });
-    }
-    
-    /**
-     * Register User
-     * @param data The data for the request.
-     * @param data.requestBody
-     * @returns UserPublic Successful Response
-     * @throws ApiError
-     */
-    public static registerUser(data: UsersRegisterUserData): CancelablePromise<UsersRegisterUserResponse> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/v1/users/signup',
             body: data.requestBody,
             mediaType: 'application/json',
             errors: {

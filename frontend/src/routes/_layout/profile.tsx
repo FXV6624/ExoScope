@@ -1,15 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { AlertTriangle, KeyRound, Shield, User } from "lucide-react"
+import { createFileRoute, redirect } from "@tanstack/react-router"
+import { KeyRound, Shield, User } from "lucide-react"
 
 import { SpaceBackground } from "@/components/Exoplanets/SpaceBackground"
 import ChangePassword from "@/components/UserSettings/ChangePassword"
-import DeleteAccount from "@/components/UserSettings/DeleteAccount"
 import UserInformation from "@/components/UserSettings/UserInformation"
-import useAuth from "@/hooks/useAuth"
+import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 
 // ─── Route ────────────────────────────────────────────────────────────────────
 
 export const Route = createFileRoute("/_layout/profile")({
+  beforeLoad: async () => {
+    if (!isLoggedIn()) {
+      throw redirect({ to: "/login" })
+    }
+  },
   component: ProfilePage,
   head: () => ({
     meta: [{ title: "Profile — Data Engineering Platform" }],
@@ -100,9 +104,7 @@ function ProfilePage() {
             <Shield size={14} className="text-space-accent" />
             <span className="text-xs text-space-muted">Role:</span>
             <span className="text-xs font-semibold text-space-primary uppercase tracking-wider">
-              {currentUser.is_superuser
-                ? "Super Administrator"
-                : "Standard User"}
+              Administrator
             </span>
           </div>
           <div className="h-3 w-px bg-white/10" />
@@ -136,15 +138,6 @@ function ProfilePage() {
             <ChangePassword />
           </ProfileSection>
         </div>
-
-        {/* Danger Zone (only for non-superusers as per backend rules) */}
-        {!currentUser.is_superuser && (
-          <div className="w-full max-w-6xl">
-            <ProfileSection title="Danger Zone" icon={AlertTriangle} danger>
-              <DeleteAccount />
-            </ProfileSection>
-          </div>
-        )}
       </div>
     </div>
   )

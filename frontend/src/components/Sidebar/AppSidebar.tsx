@@ -30,7 +30,7 @@ export function AppSidebar() {
         <NavItem icon={LayoutDashboard} title="Dashboard" path="/" exact />
         <NavItem icon={Telescope} title="Exoplanets" path="/exoplanets" />
 
-        {currentUser?.is_superuser && (
+        {currentUser && (
           <NavGroup
             icon={Database}
             title="Admin"

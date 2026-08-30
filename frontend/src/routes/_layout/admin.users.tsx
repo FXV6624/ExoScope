@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute, redirect } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { ChevronRight, Users } from "lucide-react"
 import { Suspense } from "react"
 
@@ -15,10 +15,6 @@ import useAuth from "@/hooks/useAuth"
 
 export const Route = createFileRoute("/_layout/admin/users")({
   component: AdminUsersPage,
-  beforeLoad: async () => {
-    const user = await UsersService.readUserMe()
-    if (!user.is_superuser) throw redirect({ to: "/" })
-  },
   head: () => ({ meta: [{ title: "Admin — Users" }] }),
 })
 

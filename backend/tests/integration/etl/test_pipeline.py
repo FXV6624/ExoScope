@@ -36,7 +36,10 @@ class TestExoplanetETLPipeline:
     ) -> ETLReport:
         if data is None:
             data = NASA_ROWS
-        with patch("app.etl.pipeline.extract", return_value=data):
+        with (
+            patch("app.etl.pipeline.extract", return_value=data),
+            patch("app.etl.pipeline.clear_cache_sync"),
+        ):
             etl = ExoplanetETL(session=db, config=config)
             return etl.run()
 

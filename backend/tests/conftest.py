@@ -4,7 +4,7 @@ conftest.py - Fixtures compartidas para toda la suite de tests.
 Organización:
 - db: sesión real a PostgreSQL (session-scope) → tests de integración/API
 - client: TestClient de FastAPI
-- superuser_token_headers / normal_user_token_headers: headers con JWT
+- superuser_token_headers: headers con JWT (now admin)
 """
 
 from collections.abc import Generator
@@ -16,11 +16,9 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from sqlmodel import Session, delete
 
-from app.core.config import settings
 from app.core.db import engine, init_db
 from app.main import app
 from app.models import ETLRun, Exoplanet, User
-from tests.utils.user import authentication_token_from_email
 from tests.utils.utils import get_superuser_token_headers
 
 
@@ -35,6 +33,7 @@ def setup_cache_and_limiter():
     with (
         patch("app.main.init_cache", new_callable=AsyncMock),
         patch("app.main.close_cache", new_callable=AsyncMock),
+        patch("app.core.cache.clear_cache_sync"),
     ):
         yield
 
@@ -80,13 +79,5 @@ def client() -> Generator[TestClient, None, None]:
 
 @pytest.fixture(scope="module")
 def superuser_token_headers(client: TestClient) -> dict[str, str]:
-    """Headers JWT del superusuario definido en settings."""
+    """Headers JWT del admin definido en settings."""
     return get_superuser_token_headers(client)
-
-
-@pytest.fixture(scope="module")
-def normal_user_token_headers(client: TestClient, db: Session) -> dict[str, str]:
-    """Headers JWT de un usuario normal (EMAIL_TEST_USER)."""
-    return authentication_token_from_email(
-        client=client, email=settings.EMAIL_TEST_USER, db=db
-    )

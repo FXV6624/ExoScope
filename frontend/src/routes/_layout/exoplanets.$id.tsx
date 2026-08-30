@@ -1,6 +1,6 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
-import { Suspense } from "react"
+import { Suspense, useEffect } from "react"
 
 import { type ExoplanetPublic, ExoplanetsService } from "@/client"
 import { ExoplanetProfile } from "@/components/Exoplanets/ExoplanetProfile"
@@ -55,8 +55,16 @@ export const Route = createFileRoute("/_layout/exoplanets/$id")({
 
 function ExoplanetDetailPage() {
   const { id } = Route.useParams()
+  const queryClient = useQueryClient()
   const { data } = useSuspenseQuery(getExoplanetQueryOptions(id))
   const router = useRouter()
+
+  useEffect(() => {
+    if (data?.photo_url && !data.photo_url.startsWith("/assets/")) {
+      // Enriched with real NASA photo - invalidate list queries so catalog updates
+      queryClient.invalidateQueries({ queryKey: ["exoplanets"] })
+    }
+  }, [data?.photo_url, queryClient])
 
   return (
     <div className="relative flex min-h-full flex-col">

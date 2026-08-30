@@ -22,13 +22,11 @@ def make_user_create(
     email: str = "test@example.com",
     password: str = "securepassword123",
     full_name: str | None = "Test User",
-    is_superuser: bool = False,
 ) -> UserCreate:
     return UserCreate(
         email=email,
         password=password,
         full_name=full_name,
-        is_superuser=is_superuser,
     )
 
 
@@ -36,7 +34,6 @@ def make_user_model(
     email: str = "test@example.com",
     hashed_password: str = "$argon2id$v=19$m=65536,t=3,p=4$fake",
     full_name: str | None = "Test User",
-    is_superuser: bool = False,
     is_active: bool = True,
 ) -> User:
     return User(
@@ -44,7 +41,6 @@ def make_user_model(
         email=email,
         hashed_password=hashed_password,
         full_name=full_name,
-        is_superuser=is_superuser,
         is_active=is_active,
     )
 

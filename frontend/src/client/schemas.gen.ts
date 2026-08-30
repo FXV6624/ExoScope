@@ -1307,11 +1307,6 @@ export const UserCreateSchema = {
             title: 'Is Active',
             default: true
         },
-        is_superuser: {
-            type: 'boolean',
-            title: 'Is Superuser',
-            default: false
-        },
         full_name: {
             anyOf: [
                 {
@@ -1349,11 +1344,6 @@ export const UserPublicSchema = {
             title: 'Is Active',
             default: true
         },
-        is_superuser: {
-            type: 'boolean',
-            title: 'Is Superuser',
-            default: false
-        },
         full_name: {
             anyOf: [
                 {
@@ -1389,38 +1379,6 @@ export const UserPublicSchema = {
     title: 'UserPublic'
 } as const;
 
-export const UserRegisterSchema = {
-    properties: {
-        email: {
-            type: 'string',
-            maxLength: 255,
-            format: 'email',
-            title: 'Email'
-        },
-        password: {
-            type: 'string',
-            maxLength: 128,
-            minLength: 8,
-            title: 'Password'
-        },
-        full_name: {
-            anyOf: [
-                {
-                    type: 'string',
-                    maxLength: 255
-                },
-                {
-                    type: 'null'
-                }
-            ],
-            title: 'Full Name'
-        }
-    },
-    type: 'object',
-    required: ['email', 'password'],
-    title: 'UserRegister'
-} as const;
-
 export const UserUpdateSchema = {
     properties: {
         email: {
@@ -1440,11 +1398,6 @@ export const UserUpdateSchema = {
             type: 'boolean',
             title: 'Is Active',
             default: true
-        },
-        is_superuser: {
-            type: 'boolean',
-            title: 'Is Superuser',
-            default: false
         },
         full_name: {
             anyOf: [

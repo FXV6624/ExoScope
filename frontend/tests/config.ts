@@ -7,13 +7,17 @@ const __dirname = path.dirname(__filename)
 
 dotenv.config({ path: path.join(__dirname, "../../.env") })
 
-function getEnvVar(name: string): string {
-  const value = process.env[name]
+function getEnvVar(name: string, fallbackName?: string): string {
+  const value =
+    process.env[name] || (fallbackName ? process.env[fallbackName] : undefined)
   if (!value) {
     throw new Error(`Environment variable ${name} is undefined`)
   }
   return value
 }
 
-export const firstSuperuser = getEnvVar("FIRST_SUPERUSER")
-export const firstSuperuserPassword = getEnvVar("FIRST_SUPERUSER_PASSWORD")
+export const firstSuperuser = getEnvVar("FIRST_ADMIN", "FIRST_SUPERUSER")
+export const firstSuperuserPassword = getEnvVar(
+  "FIRST_ADMIN_PASSWORD",
+  "FIRST_SUPERUSER_PASSWORD",
+)

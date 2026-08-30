@@ -17,6 +17,12 @@ OpenAPI.BASE = import.meta.env.VITE_API_URL
 OpenAPI.TOKEN = async () => {
   return localStorage.getItem("access_token") || ""
 }
+OpenAPI.HEADERS = async () => {
+  return {
+    "Cache-Control": "no-cache",
+    Pragma: "no-cache",
+  }
+}
 
 // Apply a 10-minute timeout specifically for ETL pipeline requests,
 // which can take several minutes when processing the full NASA dataset.
@@ -30,10 +36,23 @@ OpenAPI.interceptors.request.use((config) => {
 const handleApiError = (error: Error) => {
   if (error instanceof ApiError && [401, 403].includes(error.status)) {
     localStorage.removeItem("access_token")
-    window.location.href = "/login"
+    if (
+      window.location.pathname.startsWith("/admin") ||
+      window.location.pathname.startsWith("/profile") ||
+      window.location.pathname.startsWith("/settings")
+    ) {
+      window.location.href = "/login"
+    }
   }
 }
 const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 0,
+      refetchOnMount: true,
+      refetchOnWindowFocus: true,
+    },
+  },
   queryCache: new QueryCache({
     onError: handleApiError,
   }),

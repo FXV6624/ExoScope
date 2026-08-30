@@ -10,8 +10,8 @@ API = settings.API_V1_STR
 class TestLoginAccessToken:
     def test_valid_login_returns_token(self, client: TestClient):
         data = {
-            "username": settings.FIRST_SUPERUSER,
-            "password": settings.FIRST_SUPERUSER_PASSWORD,
+            "username": settings.FIRST_ADMIN,
+            "password": settings.FIRST_ADMIN_PASSWORD,
         }
         response = client.post(f"{API}/login/access-token", data=data)
         assert response.status_code == 200
@@ -20,7 +20,7 @@ class TestLoginAccessToken:
         assert body["token_type"] == "bearer"
 
     def test_wrong_password_returns_400(self, client: TestClient):
-        data = {"username": settings.FIRST_SUPERUSER, "password": "wrongpassword"}
+        data = {"username": settings.FIRST_ADMIN, "password": "wrongpassword"}
         response = client.post(f"{API}/login/access-token", data=data)
         assert response.status_code == 400
 
@@ -44,16 +44,16 @@ class TestTestToken:
         assert response.status_code == 200
         body = response.json()
         assert "email" in body
-        assert body["email"] == settings.FIRST_SUPERUSER
+        assert body["email"] == settings.FIRST_ADMIN
 
     def test_test_token_requires_auth(self, client: TestClient):
         response = client.post(f"{API}/login/test-token")
         assert response.status_code == 401
 
-    def test_test_token_with_invalid_token_returns_403(self, client: TestClient):
+    def test_test_token_with_invalid_token_returns_401(self, client: TestClient):
         headers = {"Authorization": "Bearer invalid.token.here"}
         response = client.post(f"{API}/login/test-token", headers=headers)
-        assert response.status_code == 403
+        assert response.status_code == 401
 
 
 class TestPasswordRecovery:
@@ -67,9 +67,7 @@ class TestPasswordRecovery:
         from unittest.mock import patch
 
         with patch("app.api.routes.login.send_email"):
-            response = client.post(
-                f"{API}/password-recovery/{settings.FIRST_SUPERUSER}"
-            )
+            response = client.post(f"{API}/password-recovery/{settings.FIRST_ADMIN}")
         assert response.status_code == 200
 
 

@@ -42,11 +42,11 @@ function UserInfo({ fullName, email }: UserInfoProps) {
 }
 
 export function User({ user }: { user: any }) {
-  const { logout } = useAuth()
+  const { logout, isLoading } = useAuth()
   const { isMobile, setOpenMobile } = useSidebar()
 
-  // Show skeleton while the user data is still loading (token exists but query hasn't resolved yet)
-  if (!user && isLoggedIn()) {
+  // Show skeleton only while the query is actively loading and token exists
+  if (!user && isLoggedIn() && isLoading) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>

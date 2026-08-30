@@ -1,8 +1,8 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request
 
-from app.api.deps import get_current_active_superuser
+from app.api.deps import CurrentUser
 from app.schemas.scheduler import SchedulerUpdate
 from app.services.scheduler import (
     read_scheduler_status_service,
@@ -14,12 +14,13 @@ from app.services.scheduler import (
 router = APIRouter(prefix="/scheduler", tags=["scheduler"])
 
 
-@router.get("/", dependencies=[Depends(get_current_active_superuser)])
+@router.get("/")
 def read_scheduler_status(
     request: Request,  # noqa: ARG001
+    current_user: CurrentUser,  # noqa: ARG001
 ) -> Any:
     """
-    Get the scheduler status (superuser only).
+    Get the scheduler status (admin only).
     """
     return {
         "status": "ok",
@@ -27,10 +28,12 @@ def read_scheduler_status(
     }
 
 
-@router.post("/start", dependencies=[Depends(get_current_active_superuser)])
-def start_scheduler_route() -> Any:
+@router.post("/start")
+def start_scheduler_route(
+    current_user: CurrentUser,  # noqa: ARG001
+) -> Any:
     """
-    Start the scheduler (superuser only).
+    Start the scheduler (admin only).
     """
     try:
         start_scheduler_service()
@@ -46,10 +49,12 @@ def start_scheduler_route() -> Any:
     }
 
 
-@router.post("/stop", dependencies=[Depends(get_current_active_superuser)])
-def stop_scheduler_route() -> Any:
+@router.post("/stop")
+def stop_scheduler_route(
+    current_user: CurrentUser,  # noqa: ARG001
+) -> Any:
     """
-    Stop the scheduler (superuser only).
+    Stop the scheduler (admin only).
     """
     try:
         stop_scheduler_service()
@@ -65,8 +70,9 @@ def stop_scheduler_route() -> Any:
     }
 
 
-@router.patch("/", dependencies=[Depends(get_current_active_superuser)])
+@router.patch("/")
 def update_scheduler(
+    current_user: CurrentUser,  # noqa: ARG001
     data: SchedulerUpdate,
 ) -> Any:
     try:

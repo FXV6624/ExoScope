@@ -159,7 +159,6 @@ function ExoplanetsPage() {
         fields: fieldsWithName,
       })
     },
-    placeholderData: (prev) => prev,
   })
 
   // ── Callbacks

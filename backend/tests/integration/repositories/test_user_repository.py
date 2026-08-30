@@ -45,12 +45,6 @@ class TestCreateUser:
         user = create_user(session=db, user_create=user_create, hashed_password=hashed)
         assert user.is_active is True
 
-    def test_created_user_is_not_superuser_by_default(self, db: Session):
-        user_create = _make_user_create("normal@testdomain.com")
-        hashed = get_password_hash(user_create.password)
-        user = create_user(session=db, user_create=user_create, hashed_password=hashed)
-        assert user.is_superuser is False
-
 
 class TestGetUserByEmail:
     def test_returns_user_when_found(self, db: Session):

@@ -7,13 +7,14 @@ import {
   Download,
   Globe,
   LayoutDashboard,
+  LogIn,
   Play,
   Telescope,
 } from "lucide-react"
 
 import { ExoplanetsService } from "@/client"
 import { SpaceBackground } from "@/components/Exoplanets/SpaceBackground"
-import useAuth from "@/hooks/useAuth"
+import useAuth, { isLoggedIn } from "@/hooks/useAuth"
 
 export const Route = createFileRoute("/_layout/")({
   component: Dashboard,
@@ -120,6 +121,7 @@ function QuickAction({
 
 function Dashboard() {
   const { user: currentUser } = useAuth()
+  const loggedIn = isLoggedIn()
   const firstName = currentUser?.full_name?.split(" ")[0] || currentUser?.email
 
   const { data: stats } = useQuery({
@@ -146,19 +148,23 @@ function Dashboard() {
           <h1 className="text-2xl font-bold tracking-tight text-space-primary">
             Dashboard
           </h1>
-          <p className="mt-1 text-sm text-space-muted">
-            Hi,{" "}
-            <span className="text-space-subtle font-medium">{firstName}</span>{" "}
-            👋🏼
-          </p>
-          {firstName ? (
-            <p className="text-xs text-space-muted">
-              Welcome back, nice to see you again!
-            </p>
+          {currentUser ? (
+            <>
+              <p className="mt-1 text-sm text-space-muted">
+                Hi,{" "}
+                <span className="text-space-subtle font-medium">
+                  {firstName}
+                </span>{" "}
+                👋🏼
+              </p>
+              <p className="text-xs text-space-muted">
+                Welcome back, nice to see you again!
+              </p>
+            </>
           ) : (
-            <p className="text-xs text-space-muted">
-              Welcome to our Data Engineering Platform. Log in to access special
-              features!
+            <p className="mt-1 text-sm text-space-muted">
+              Welcome to the Data Engineering Platform. Explore exoplanet data
+              from NASA's archive.
             </p>
           )}
         </div>
@@ -210,7 +216,7 @@ function Dashboard() {
               <Download size={14} className="text-space-muted" />
             </div>
 
-            {currentUser?.is_superuser ? (
+            {loggedIn ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={15} className="text-emerald-400" />
@@ -247,12 +253,15 @@ function Dashboard() {
                 icon={Telescope}
                 to="/exoplanets"
               />
-              {currentUser?.is_superuser && (
+              {loggedIn && (
                 <QuickAction
                   label="Run ETL Pipeline"
                   icon={Play}
                   to="/admin/etl"
                 />
+              )}
+              {!loggedIn && (
+                <QuickAction label="Admin Login" icon={LogIn} to="/login" />
               )}
             </div>
           </div>

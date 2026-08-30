@@ -80,4 +80,15 @@ if settings.all_cors_origins:
         allow_headers=["*"],
     )
 
+
+@app.middleware("http")
+async def disable_client_browser_cache(request: Request, call_next):  # type: ignore[no-untyped-def]
+    response = await call_next(request)
+    if request.url.path.startswith(settings.API_V1_STR):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
+
 app.include_router(api_router, prefix=settings.API_V1_STR)
