@@ -1,6 +1,17 @@
-import { BarChart3, X } from "lucide-react"
+import {
+  BarChart3,
+  CheckCircle2,
+  Compass,
+  Globe,
+  Orbit,
+  Sparkles,
+  Thermometer,
+  Trophy,
+  X,
+} from "lucide-react"
 
 import type { ExoplanetStats } from "@/client"
+import { getStoredThresholds } from "@/utils"
 
 interface StatsModalProps {
   stats: ExoplanetStats
@@ -10,196 +21,462 @@ interface StatsModalProps {
 function StatRow({
   label,
   value,
+  sub,
 }: {
   label: string
   value: string | number | null | undefined
+  sub?: string
 }) {
   return (
-    <div className="flex items-center justify-between py-1.5">
-      <span className="text-xs text-space-muted">{label}</span>
-      <span className="text-sm font-medium text-space-primary">
-        {value ?? "—"}
-      </span>
+    <div className="flex items-center justify-between py-1.5 border-b border-white/5 last:border-none">
+      <span className="text-xs text-slate-400">{label}</span>
+      <div className="flex items-baseline gap-1 text-right">
+        <span className="text-sm font-semibold font-mono text-slate-200">
+          {value ?? "—"}
+        </span>
+        {sub && (
+          <span className="text-[11px] text-slate-500 font-sans">{sub}</span>
+        )}
+      </div>
     </div>
   )
 }
 
 function Section({
   title,
+  icon: Icon,
+  className,
   children,
 }: {
   title: string
+  icon?: React.ElementType
+  className?: string
   children: React.ReactNode
 }) {
   return (
     <div
-      className="flex flex-col rounded-xl p-4"
+      className={`flex flex-col rounded-xl p-4 transition-all border border-white/10 ${className || ""}`}
       style={{
-        background: "rgba(15, 25, 50, 0.6)",
-        border: "1px solid rgba(255,255,255,0.06)",
+        background: "rgba(15, 23, 42, 0.7)",
       }}
     >
-      <p className="mb-2 text-xs uppercase tracking-widest text-space-accent">
-        {title}
-      </p>
-      <div className="divide-y divide-white/5">{children}</div>
+      <div className="mb-2.5 flex items-center gap-2">
+        {Icon && <Icon size={14} className="text-cyan-400" />}
+        <p className="text-[11px] font-bold uppercase tracking-wider text-cyan-400">
+          {title}
+        </p>
+      </div>
+      <div className="flex flex-col">{children}</div>
+    </div>
+  )
+}
+
+function SummaryGroup({
+  label,
+  summary,
+  unit,
+}: {
+  label: string
+  summary?: {
+    average?: number | null
+    minimum?: number | null
+    maximum?: number | null
+  }
+  unit?: string
+}) {
+  const formatVal = (v?: number | null) => {
+    if (v == null) return "—"
+    if (Math.abs(v) >= 1000)
+      return v.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    return v.toFixed(2)
+  }
+
+  return (
+    <div className="flex flex-col gap-1 py-2 border-b border-white/5 last:border-none">
+      <span className="text-xs font-medium text-slate-300">
+        {label}{" "}
+        {unit && <span className="text-slate-500 font-normal">({unit})</span>}
+      </span>
+      <div className="grid grid-cols-3 gap-2 text-center text-xs">
+        <div className="rounded-lg bg-white/5 p-1.5">
+          <span className="text-[10px] text-slate-400 block">Min</span>
+          <span className="font-mono text-slate-200">
+            {formatVal(summary?.minimum)}
+          </span>
+        </div>
+        <div className="rounded-lg bg-cyan-500/10 border border-cyan-500/20 p-1.5">
+          <span className="text-[10px] text-cyan-400 block font-medium">
+            Avg
+          </span>
+          <span className="font-mono text-cyan-300 font-semibold">
+            {formatVal(summary?.average)}
+          </span>
+        </div>
+        <div className="rounded-lg bg-white/5 p-1.5">
+          <span className="text-[10px] text-slate-400 block">Max</span>
+          <span className="font-mono text-slate-200">
+            {formatVal(summary?.maximum)}
+          </span>
+        </div>
+      </div>
     </div>
   )
 }
 
 export function ExoplanetStatsModal({ stats, onClose }: StatsModalProps) {
-  const topMethods = Object.entries(stats.by_method)
+  // Sort discovery methods
+  const methods = Object.entries(stats.by_method || {})
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
+    .slice(0, 6)
 
-  const topClasses = Object.entries(stats.planet_class.by_class)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
+  // Sort discovery decades
+  const decades = Object.entries(stats.by_decade || {}).sort((a, b) =>
+    a[0].localeCompare(b[0]),
+  )
 
-  const topComps = Object.entries(stats.composition.by_composition)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
+  // Planet classes
+  const classes = Object.entries(stats.planet_class?.by_class || {}).sort(
+    (a, b) => b[1] - a[1],
+  )
+
+  // Compositions
+  const compositions = Object.entries(
+    stats.composition?.by_composition || {},
+  ).sort((a, b) => b[1] - a[1])
+
+  // Completeness items
+  const completenessEntries = Object.entries(stats.completeness || {}).sort(
+    (a, b) => b[1] - a[1],
+  )
+
+  // Option 1 Calculations: Catalog Insights & Highlights
+  const dominantClass = classes[0]
+  const dominantClassPct =
+    dominantClass && stats.total > 0
+      ? ((dominantClass[1] / stats.total) * 100).toFixed(2)
+      : "0.00"
+
+  const dominantComposition = compositions[0]
+  const dominantCompositionPct =
+    dominantComposition && stats.total > 0
+      ? ((dominantComposition[1] / stats.total) * 100).toFixed(2)
+      : "0.00"
+
+  const peakDecade = [...decades].sort((a, b) => b[1] - a[1])[0]
+  const peakDecadePct =
+    peakDecade && stats.total > 0
+      ? ((peakDecade[1] / stats.total) * 100).toFixed(2)
+      : "0.00"
+
+  const avgCompleteness =
+    completenessEntries.length > 0
+      ? (
+          completenessEntries.reduce((acc, [, val]) => acc + val, 0) /
+          completenessEntries.length
+        ).toFixed(2)
+      : "0.00"
 
   return (
-    <>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       {/* Backdrop */}
       <button
         type="button"
         aria-label="Close modal"
-        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm cursor-default border-none p-0"
+        className="fixed inset-0 bg-black/75 cursor-default border-none p-0"
         onClick={onClose}
       />
 
-      {/* Modal */}
+      {/* Modal Dialog */}
       <div
-        className="fixed left-1/2 top-1/2 z-50 w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl p-6"
+        className="relative z-10 w-full max-w-5xl overflow-y-auto rounded-2xl p-6 sm:p-7 border border-cyan-500/30 shadow-2xl"
         style={{
-          maxHeight: "85vh",
-          background: "rgba(6, 13, 31, 0.97)",
-          border: "1px solid rgba(34,211,238,0.25)",
-          backdropFilter: "blur(20px)",
+          maxHeight: "90vh",
+          background: "#080e1e",
         }}
       >
         {/* Header */}
-        <div className="mb-5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <BarChart3 size={16} className="text-space-accent" />
-            <h2 className="text-lg font-bold text-space-primary">
-              Exoplanet Statistics
-            </h2>
+        <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+              <BarChart3 size={18} />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">
+                Comprehensive Exoplanet Statistics
+              </h2>
+              <p className="text-xs text-slate-400">
+                Detailed astrophysical breakdown, classification taxonomy, and
+                parameter distributions
+              </p>
+            </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-space-muted transition-colors hover:text-space-subtle"
+            className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
           >
             <X size={18} />
           </button>
         </div>
 
+        {/* Content Grid: 3 rows of 3 symmetric cards + 1 full width footer */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {/* Overview */}
-          <Section title="Overview">
+          {/* ─── Row 1 ─── */}
+          {/* 1. Overview & Habitability */}
+          <Section title="Overview & Habitability" icon={Globe}>
             <StatRow
-              label="Total Planets"
+              label="Total Planets in DB"
               value={stats.total.toLocaleString()}
             />
             <StatRow
               label="Potentially Habitable"
-              value={stats.habitability.potentially_habitable?.toLocaleString()}
+              value={stats.habitability?.potentially_habitable?.toLocaleString()}
+              sub={`(Score ≥ ${getStoredThresholds().score.toFixed(0)} | Conf ≥ ${(getStoredThresholds().confidence * 100).toFixed(0)}%)`}
             />
             <StatRow
               label="Avg Habitability Score"
               value={
-                stats.habitability.average != null
-                  ? stats.habitability.average.toFixed(1)
+                stats.habitability?.average != null
+                  ? stats.habitability.average.toFixed(2)
                   : null
+              }
+              sub="/ 100"
+            />
+            <StatRow
+              label="Habitability Confidence"
+              value={
+                stats.habitability?.average_confidence != null
+                  ? `${(stats.habitability.average_confidence * 100).toFixed(2)}%`
+                  : null
+              }
+            />
+            <StatRow
+              label="Score Range"
+              value={
+                stats.habitability?.minimum != null &&
+                stats.habitability?.maximum != null
+                  ? `${stats.habitability.minimum.toFixed(2)} - ${stats.habitability.maximum.toFixed(2)}`
+                  : "—"
               }
             />
           </Section>
 
-          {/* Discovery Methods */}
-          <Section title="By Discovery Method">
-            {topMethods.map(([method, count]) => (
+          {/* 2. Discoveries by Decade */}
+          <Section title="Discoveries by Decade" icon={Sparkles}>
+            {decades.length > 0 ? (
+              decades.map(([decade, count]) => {
+                const pct =
+                  stats.total > 0
+                    ? ((count / stats.total) * 100).toFixed(2)
+                    : "0.00"
+                return (
+                  <StatRow
+                    key={decade}
+                    label={`${decade}s`}
+                    value={count.toLocaleString()}
+                    sub={`(${pct}%)`}
+                  />
+                )
+              })
+            ) : (
+              <p className="text-xs text-slate-400 py-2">No decadal data</p>
+            )}
+          </Section>
+
+          {/* 3. Discovery Methods */}
+          <Section title="Discovery Methods" icon={Orbit}>
+            {methods.map(([method, count]) => {
+              const pct =
+                stats.total > 0
+                  ? ((count / stats.total) * 100).toFixed(2)
+                  : "0.00"
+              return (
+                <StatRow
+                  key={method}
+                  label={method}
+                  value={count.toLocaleString()}
+                  sub={`(${pct}%)`}
+                />
+              )
+            })}
+          </Section>
+
+          {/* ─── Row 2 ─── */}
+          {/* 4. Planet Class Taxonomy */}
+          <Section title="Planet Classification" icon={Globe}>
+            {classes.map(([cls, count]) => {
+              const pct =
+                stats.total > 0
+                  ? ((count / stats.total) * 100).toFixed(2)
+                  : "0.00"
+              return (
+                <StatRow
+                  key={cls}
+                  label={cls}
+                  value={count.toLocaleString()}
+                  sub={`(${pct}%)`}
+                />
+              )
+            })}
+            {stats.planet_class?.average_confidence != null && (
               <StatRow
-                key={method}
-                label={method}
-                value={count.toLocaleString()}
+                label="Class Confidence"
+                value={`${(stats.planet_class.average_confidence * 100).toFixed(2)}%`}
               />
-            ))}
+            )}
           </Section>
 
-          {/* Planet Classes */}
-          <Section title="Planet Class">
-            {topClasses.map(([cls, count]) => (
-              <StatRow key={cls} label={cls} value={count.toLocaleString()} />
-            ))}
+          {/* 5. Planetary Composition */}
+          <Section title="Composition Breakdown" icon={Sparkles}>
+            {compositions.map(([comp, count]) => {
+              const pct =
+                stats.total > 0
+                  ? ((count / stats.total) * 100).toFixed(2)
+                  : "0.00"
+              return (
+                <StatRow
+                  key={comp}
+                  label={comp}
+                  value={count.toLocaleString()}
+                  sub={`(${pct}%)`}
+                />
+              )
+            })}
+            {stats.composition?.average_confidence != null && (
+              <StatRow
+                label="Comp. Confidence"
+                value={`${(stats.composition.average_confidence * 100).toFixed(2)}%`}
+              />
+            )}
           </Section>
 
-          {/* Composition */}
-          <Section title="Composition">
-            {topComps.map(([comp, count]) => (
-              <StatRow key={comp} label={comp} value={count.toLocaleString()} />
-            ))}
-          </Section>
-
-          {/* Radius Stats */}
-          <Section title="Radius (R⊕)">
+          {/* 6. Catalog Insights & Highlights (Option 1) */}
+          <Section title="Catalog Highlights" icon={Trophy}>
             <StatRow
-              label="Average"
-              value={
-                stats.radius.average != null
-                  ? stats.radius.average.toFixed(2)
-                  : null
-              }
+              label="Dominant Class"
+              value={dominantClass ? dominantClass[0] : "—"}
+              sub={`(${dominantClassPct}%)`}
             />
             <StatRow
-              label="Minimum"
-              value={
-                stats.radius.minimum != null
-                  ? stats.radius.minimum.toFixed(2)
-                  : null
-              }
+              label="Dominant Composition"
+              value={dominantComposition ? dominantComposition[0] : "—"}
+              sub={`(${dominantCompositionPct}%)`}
             />
             <StatRow
-              label="Maximum"
-              value={
-                stats.radius.maximum != null
-                  ? stats.radius.maximum.toFixed(2)
-                  : null
-              }
+              label="Peak Discovery Era"
+              value={peakDecade ? `${peakDecade[0]}s` : "—"}
+              sub={`(${peakDecadePct}%)`}
+            />
+            <StatRow
+              label="Mean Data Completeness"
+              value={`${avgCompleteness}%`}
+              sub="across all fields"
             />
           </Section>
 
-          {/* Distance Stats */}
-          <Section title="Distance from Earth (pc)">
-            <StatRow
-              label="Average"
-              value={
-                stats.distance.average != null
-                  ? stats.distance.average.toFixed(1)
-                  : null
-              }
+          {/* ─── Row 3 ─── */}
+          {/* 7. Physical Dimensions (Radius & Mass & Density) */}
+          <Section title="Physical Properties" icon={Globe}>
+            <SummaryGroup
+              label="Planet Radius"
+              summary={stats.radius}
+              unit="R⊕ Earth Radii"
             />
-            <StatRow
-              label="Minimum"
-              value={
-                stats.distance.minimum != null
-                  ? stats.distance.minimum.toFixed(1)
-                  : null
-              }
+            <SummaryGroup
+              label="Planet Mass"
+              summary={stats.mass}
+              unit="M⊕ Earth Masses"
             />
-            <StatRow
-              label="Maximum"
-              value={
-                stats.distance.maximum != null
-                  ? stats.distance.maximum.toFixed(1)
-                  : null
-              }
+            <SummaryGroup
+              label="Planet Density"
+              summary={stats.density}
+              unit="g/cm³"
             />
+          </Section>
+
+          {/* 8. Orbital & Thermal Parameters */}
+          <Section title="Orbital & Thermal" icon={Thermometer}>
+            <SummaryGroup
+              label="Equilibrium Temp"
+              summary={stats.equilibrium_temperature}
+              unit="Kelvin"
+            />
+            <SummaryGroup
+              label="Orbital Period"
+              summary={stats.orbital_period}
+              unit="days"
+            />
+          </Section>
+
+          {/* 9. Distance from Earth */}
+          <Section title="Distance from Earth" icon={Compass}>
+            <SummaryGroup
+              label="Distance"
+              summary={stats.distance}
+              unit="parsecs"
+            />
+            {stats.distance?.average != null && (
+              <StatRow
+                label="Avg Light-Years"
+                value={`~${Math.round(stats.distance.average * 3.262).toLocaleString()} ly`}
+              />
+            )}
+          </Section>
+
+          {/* ─── Bottom Full-Width ─── */}
+          {/* 10. Data Quality & Completeness Stats */}
+          <Section
+            title="Parameter Completeness (Data Quality)"
+            icon={CheckCircle2}
+            className="col-span-1 sm:col-span-2 lg:col-span-3"
+          >
+            <div className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3 pt-1">
+              {completenessEntries.map(([field, ratio]) => {
+                const rawVal = typeof ratio === "number" ? ratio : 0
+                const pct = Math.min(100, Math.max(0, rawVal))
+                const formattedField = field
+                  .split("_")
+                  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                  .join(" ")
+
+                return (
+                  <div
+                    key={field}
+                    className="flex items-center justify-between text-xs py-1.5 border-b border-white/5"
+                  >
+                    <span
+                      className="text-slate-400 truncate pr-2"
+                      title={formattedField}
+                    >
+                      {formattedField}
+                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <div className="h-1.5 w-16 overflow-hidden rounded-full bg-white/10">
+                        <div
+                          className={`h-full rounded-full ${
+                            pct >= 80
+                              ? "bg-emerald-400"
+                              : pct >= 50
+                                ? "bg-cyan-400"
+                                : "bg-amber-400"
+                          }`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className="font-mono text-slate-200 w-14 text-right font-medium">
+                        {pct.toFixed(2)}%
+                      </span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </Section>
         </div>
       </div>
-    </>
+    </div>
   )
 }

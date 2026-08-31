@@ -66,22 +66,21 @@ export function ExportModal({
   }
 
   return (
-    <>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <button
         type="button"
         aria-label="Close export modal backdrop"
-        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm cursor-default border-none p-0"
+        className="fixed inset-0 bg-black/75 cursor-default border-none p-0"
         onClick={onClose}
       />
 
       {/* Compact Modal Dialog (Fits without scroll) */}
       <div
-        className="fixed left-1/2 top-1/2 z-50 flex w-full max-w-lg -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-2xl shadow-2xl"
+        className="relative z-10 flex w-full max-w-lg flex-col overflow-hidden rounded-2xl shadow-2xl"
         style={{
-          background: "rgba(6, 13, 31, 0.98)",
+          background: "#060d1f",
           border: "1px solid rgba(34,211,238,0.3)",
-          backdropFilter: "blur(20px)",
         }}
       >
         {/* Header */}
@@ -249,6 +248,6 @@ export function ExportModal({
           </button>
         </div>
       </div>
-    </>
+    </div>
   )
 }

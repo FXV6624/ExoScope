@@ -49,24 +49,72 @@ const SORTABLE_FIELDS: { key: ExoplanetSortField; label: string }[] =
     label: f.label,
   }))
 
+const SESSION_STORAGE_KEY = "exoplanets_catalog_state"
+
+interface SavedCatalogState {
+  skip?: number
+  limit?: number
+  sortBy?: ExoplanetSortField
+  order?: SortOrder
+  search?: string
+  filters?: BackendFilters
+  columns?: ExoplanetField[]
+}
+
+function getInitialCatalogState(): SavedCatalogState {
+  try {
+    const raw = sessionStorage.getItem(SESSION_STORAGE_KEY)
+    if (raw) return JSON.parse(raw)
+  } catch {}
+  return {}
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 function ExoplanetsPage() {
   const navigate = useNavigate()
   const { showSuccessToast, showErrorToast } = useCustomToast()
 
+  const savedState = useMemo(() => getInitialCatalogState(), [])
+
   // ── Pagination & Sorting
-  const [skip, setSkip] = useState<number>(0)
-  const [limit, setLimit] = useState<number>(25)
-  const [sortBy, setSortBy] = useState<ExoplanetSortField>("planet_name")
-  const [order, setOrder] = useState<SortOrder>("asc")
+  const [skip, setSkip] = useState<number>(savedState.skip ?? 0)
+  const [limit, setLimit] = useState<number>(savedState.limit ?? 25)
+  const [sortBy, setSortBy] = useState<ExoplanetSortField>(
+    savedState.sortBy ?? "planet_name",
+  )
+  const [order, setOrder] = useState<SortOrder>(savedState.order ?? "asc")
 
   // ── Search & Filter State
-  const [search, setSearch] = useState<string>("")
-  const [filters, setFilters] = useState<BackendFilters>({})
+  const [search, setSearch] = useState<string>(savedState.search ?? "")
+  const [filters, setFilters] = useState<BackendFilters>(
+    savedState.filters ?? {},
+  )
 
   // ── Dynamic Visible Columns
-  const [columns, setColumns] = useState<ExoplanetField[]>(DEFAULT_COLUMNS)
+  const [columns, setColumns] = useState<ExoplanetField[]>(
+    savedState.columns && savedState.columns.length > 0
+      ? savedState.columns
+      : DEFAULT_COLUMNS,
+  )
+
+  // ── Save state changes to sessionStorage so navigating to planet details doesn't clear filters/columns
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        SESSION_STORAGE_KEY,
+        JSON.stringify({
+          skip,
+          limit,
+          sortBy,
+          order,
+          search,
+          filters,
+          columns,
+        }),
+      )
+    } catch {}
+  }, [skip, limit, sortBy, order, search, filters, columns])
 
   // ── Modals & Drawers State
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false)
@@ -136,7 +184,7 @@ function ExoplanetsPage() {
       minSystemPlanetCount: filters.min_system_planet_count ?? undefined,
       minOrbitalEccentricity: filters.min_orbital_eccentricity ?? undefined,
       maxOrbitalEccentricity: filters.max_orbital_eccentricity ?? undefined,
-      hasCustomPhoto: filters.has_nasa_photo ?? undefined,
+      hasNasaPhoto: filters.has_nasa_photo ?? undefined,
     }),
     [skip, limit, sortBy, order, search, filters],
   )
@@ -332,8 +380,8 @@ function ExoplanetsPage() {
             "max_orbital_eccentricity",
             String(queryParams.maxOrbitalEccentricity),
           )
-        if (queryParams.hasCustomPhoto != null)
-          params.set("has_nasa_photo", String(queryParams.hasCustomPhoto))
+        if (queryParams.hasNasaPhoto != null)
+          params.set("has_nasa_photo", String(queryParams.hasNasaPhoto))
 
         const token = localStorage.getItem("access_token")
         const response = await fetch(

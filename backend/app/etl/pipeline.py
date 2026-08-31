@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timezone
+from datetime import datetime
 
 from sqlmodel import Session
 
@@ -25,7 +25,7 @@ class ExoplanetETL:
 
     def run(self) -> ETLReport:
         metrics = ETLMetrics()
-        metrics.started_at = datetime.now(timezone.utc)
+        metrics.started_at = datetime.now().astimezone()
         self.logger.info(
             "ETL started | dry_run=%s | load_mode=%s | persist_run=%s | limit=%s",
             self.config.dry_run,
@@ -35,7 +35,7 @@ class ExoplanetETL:
         )
 
         # EXTRACT
-        metrics.extract_start = datetime.now(timezone.utc)
+        metrics.extract_start = datetime.now().astimezone()
         try:
             self.logger.info(
                 "Extract step started | limit=%s",
@@ -46,14 +46,14 @@ class ExoplanetETL:
         except Exception as e:
             self.logger.exception("Extract failed")
             metrics.errors.append(str(e))
-            metrics.extract_end = datetime.now(timezone.utc)
-            metrics.finished_at = datetime.now(timezone.utc)
+            metrics.extract_end = datetime.now().astimezone()
+            metrics.finished_at = datetime.now().astimezone()
             return ETLReport.from_metrics(metrics)
         self.logger.info("Extract step completed | extracted=%s", metrics.extracted)
-        metrics.extract_end = datetime.now(timezone.utc)
+        metrics.extract_end = datetime.now().astimezone()
 
         # TRANSFORM
-        metrics.transform_start = datetime.now(timezone.utc)
+        metrics.transform_start = datetime.now().astimezone()
         try:
             self.logger.info("Transform step started")
             planets = transform(data)
@@ -61,10 +61,10 @@ class ExoplanetETL:
         except Exception as e:
             self.logger.exception("Transform failed")
             metrics.errors.append(str(e))
-            metrics.transform_end = datetime.now(timezone.utc)
-            metrics.finished_at = datetime.now(timezone.utc)
+            metrics.transform_end = datetime.now().astimezone()
+            metrics.finished_at = datetime.now().astimezone()
             return ETLReport.from_metrics(metrics)
-        metrics.transform_end = datetime.now(timezone.utc)
+        metrics.transform_end = datetime.now().astimezone()
         self.logger.info(
             "Transform step completed | transformed=%s", metrics.transformed
         )
@@ -76,13 +76,13 @@ class ExoplanetETL:
         except Exception as e:
             self.logger.exception("Enrichment failed")
             metrics.errors.append(str(e))
-            metrics.finished_at = datetime.now(timezone.utc)
+            metrics.finished_at = datetime.now().astimezone()
             return ETLReport.from_metrics(metrics)
         self.logger.info("Enrich step completed")
 
         # LOAD
         if not self.config.dry_run:
-            metrics.load_start = datetime.now(timezone.utc)
+            metrics.load_start = datetime.now().astimezone()
             try:
                 self.logger.info("Preparing %s planets for database load", len(planets))
                 self.logger.info("Load step started")
@@ -93,10 +93,10 @@ class ExoplanetETL:
             except Exception as e:
                 self.logger.exception("Load step failed")
                 metrics.errors.append(str(e))
-                metrics.load_end = datetime.now(timezone.utc)
-                metrics.finished_at = datetime.now(timezone.utc)
+                metrics.load_end = datetime.now().astimezone()
+                metrics.finished_at = datetime.now().astimezone()
                 return ETLReport.from_metrics(metrics)
-            metrics.load_end = datetime.now(timezone.utc)
+            metrics.load_end = datetime.now().astimezone()
             self.logger.info(
                 "Load step completed | inserted=%s | updated=%s | skipped=%s",
                 metrics.load_result.inserted,
@@ -108,7 +108,7 @@ class ExoplanetETL:
             metrics.load_result = LoadResult()
 
         # END
-        metrics.finished_at = datetime.now(timezone.utc)
+        metrics.finished_at = datetime.now().astimezone()
         report = ETLReport.from_metrics(metrics)
         self.logger.info(
             "ETL completed | extracted=%s | transformed=%s | inserted=%s | updated=%s | skipped=%s | duration=%.2fs",

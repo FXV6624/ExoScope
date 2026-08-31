@@ -53,10 +53,12 @@ def build_exoplanet_query(filters: ExoplanetFilters) -> SelectOfScalar[Exoplanet
         field = getattr(Exoplanet, field_name, None)
 
         if field is not None:
-            if isinstance(value, str) and prefix is None:
-                conditions.append(col(field).ilike(f"%{value}%"))
-            elif prefix:
+            if prefix:
                 conditions.append(op_func(field, value))
+            elif field_name in {"planet_class", "composition", "discovery_method"}:
+                conditions.append(col(field) == value)
+            elif isinstance(value, str):
+                conditions.append(col(field).ilike(f"%{value}%"))
             else:
                 conditions.append(field == value)
 
