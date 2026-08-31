@@ -8,6 +8,7 @@ import {
   Flame,
   Globe,
   Hash,
+  HelpCircle,
   Layers,
   MapPin,
   Maximize2,
@@ -20,8 +21,10 @@ import {
   Weight,
   Zap,
 } from "lucide-react"
+import { useState } from "react"
 
 import type { ExoplanetPublic } from "@/client"
+import { ConfidenceExplanationModal } from "./ConfidenceExplanationModal"
 import { StatCard } from "./StatCard"
 
 interface ExoplanetProfileProps {
@@ -172,22 +175,42 @@ export function ExoplanetProfile({ exoplanet, onBack }: ExoplanetProfileProps) {
           ? "#fbbf24"
           : "#f87171"
 
+  const isRealNasaPhoto = Boolean(
+    exoplanet.photo_url &&
+      (exoplanet.photo_url.startsWith("http://") ||
+        exoplanet.photo_url.startsWith("https://")),
+  )
+
+  const [confidenceModalOpen, setConfidenceModalOpen] = useState(false)
+
   return (
     <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 text-space-primary">
-      {/* Breadcrumb */}
-      <div className="mb-6 flex items-center gap-2 text-sm text-space-muted">
+      {/* Top Navigation & Breadcrumb */}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
         <button
           type="button"
           onClick={onBack}
-          className="flex items-center gap-1.5 transition-colors hover:text-cyan-400 cursor-pointer"
+          className="group inline-flex items-center gap-2.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer shadow-lg active:scale-95 hover:shadow-cyan-500/20"
+          style={{
+            background: "rgba(15, 25, 50, 0.85)",
+            border: "1px solid rgba(34, 211, 238, 0.4)",
+            color: "#22d3ee",
+          }}
         >
-          <ArrowLeft size={15} />
-          Exoplanets
+          <ArrowLeft
+            size={16}
+            className="transition-transform group-hover:-translate-x-1"
+          />
+          <span>Back to Exoplanets</span>
         </button>
-        <span>/</span>
-        <span className="font-medium text-space-primary">
-          {exoplanet.planet_name}
-        </span>
+
+        <div className="flex items-center gap-2 text-xs font-mono text-space-muted">
+          <span>Catalog</span>
+          <span>/</span>
+          <span className="font-semibold text-space-primary">
+            {exoplanet.planet_name}
+          </span>
+        </div>
       </div>
 
       {/* Main layout */}
@@ -225,12 +248,29 @@ export function ExoplanetProfile({ exoplanet, onBack }: ExoplanetProfileProps) {
                 </p>
               </div>
             )}
-            <span
-              className="absolute bottom-3 right-3 rounded-md px-2 py-0.5 text-[10px] font-mono tracking-wide text-space-muted backdrop-blur-md"
-              style={{ background: "rgba(6,13,31,0.7)" }}
-            >
-              NASA Archive
-            </span>
+            {isRealNasaPhoto ? (
+              <span
+                className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-mono tracking-wide backdrop-blur-md shadow-md"
+                style={{
+                  background: "rgba(6, 13, 31, 0.85)",
+                  border: "1px solid rgba(34, 211, 238, 0.5)",
+                  color: "#22d3ee",
+                }}
+              >
+                <Sparkles size={12} className="text-cyan-400" />
+                NASA Archive Photo
+              </span>
+            ) : (
+              <span
+                className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-mono tracking-wide backdrop-blur-md shadow-md text-slate-300"
+                style={{
+                  background: "rgba(6, 13, 31, 0.85)",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                }}
+              >
+                Default photo based in composition
+              </span>
+            )}
           </div>
 
           {/* Vertical Confidence Analysis Cards */}
@@ -258,7 +298,23 @@ export function ExoplanetProfile({ exoplanet, onBack }: ExoplanetProfileProps) {
             icon={Sparkles}
             badge={false}
           />
+
+          {/* How Classification Works Button */}
+          <button
+            type="button"
+            onClick={() => setConfidenceModalOpen(true)}
+            className="flex items-center justify-center gap-1.5 rounded-xl border border-cyan-500/30 bg-cyan-950/30 py-2.5 px-3 text-xs font-medium text-cyan-300 transition-all hover:bg-cyan-950/60 hover:border-cyan-400 hover:text-cyan-100 cursor-pointer active:scale-98 shadow-sm"
+          >
+            <HelpCircle size={14} className="text-cyan-400" />
+            <span>How classification works</span>
+          </button>
         </div>
+
+        {/* Modal: Confidence and Model Details */}
+        <ConfidenceExplanationModal
+          isOpen={confidenceModalOpen}
+          onClose={() => setConfidenceModalOpen(false)}
+        />
 
         {/* Right panel — Detailed Attributes & Analysis */}
         <div className="flex flex-col gap-6">

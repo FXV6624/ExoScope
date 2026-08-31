@@ -510,4 +510,6 @@ export type UtilsTestEmailData = {
 
 export type UtilsTestEmailResponse = (Message);
 
+export type UtilsPurgeCacheResponse = (Message);
+
 export type UtilsHealthCheckResponse = (boolean);

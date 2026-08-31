@@ -38,6 +38,6 @@ except Exception:
 limiter = Limiter(
     key_func=get_real_client_ip,
     storage_uri=storage_uri,
-    key_prefix="exoplanet-api",
+    key_prefix="ratelimit:",
     default_limits=["200/minute"],
 )

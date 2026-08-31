@@ -33,13 +33,19 @@ def read_scheduler_status_service() -> dict[str, Any]:
     Get the current scheduler status.
     """
     job = scheduler.get_job("exoplanet_etl")
+    next_run_iso = (
+        job.next_run_time.isoformat()
+        if (job and getattr(job, "next_run_time", None))
+        else None
+    )
 
     return {
         "running": scheduler.running,
         "interval_seconds": (
             int(job.trigger.interval.total_seconds()) if job else None
         ),
-        "next_run": job.next_run_time if job else None,
+        "next_run": next_run_iso,
+        "next_run_time": next_run_iso,
     }
 
 
