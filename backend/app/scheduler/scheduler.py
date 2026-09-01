@@ -41,6 +41,7 @@ def start_scheduler() -> None:
         _add_etl_job()
 
     scheduler.start()
+    scheduler_prometheus_metrics.initialize(_current_interval_seconds)
     _update_next_run_metric()
 
     logger.info(
@@ -71,6 +72,9 @@ def update_scheduler_interval(interval_seconds: int) -> None:
         trigger="interval",
         seconds=interval_seconds,
     )
+
+    scheduler_prometheus_metrics.initialize(interval_seconds)
+    _update_next_run_metric()
 
     logger.info(
         "Scheduler interval updated | interval=%ss",

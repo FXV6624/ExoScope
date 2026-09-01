@@ -137,62 +137,99 @@ function NumberRangeInput({
   )
 }
 
-function ConfidenceRangeInput({
+function ConfidenceSliderInput({
   label,
   minValue,
   maxValue,
-  minPlaceholder = "Min",
-  maxPlaceholder = "Max",
+  accentColor = "accent-cyan-400",
   onMinChange,
   onMaxChange,
 }: {
   label: string
   minValue: number | null | undefined
   maxValue: number | null | undefined
-  minPlaceholder?: string
-  maxPlaceholder?: string
+  accentColor?: string
   onMinChange: (v: number | null) => void
   onMaxChange: (v: number | null) => void
 }) {
+  const minPercent = minValue != null ? Math.round(minValue * 100) : 0
+  const maxPercent = maxValue != null ? Math.round(maxValue * 100) : 100
+  const isFiltered = minValue != null || maxValue != null
+
   return (
-    <div className="flex flex-col gap-1">
-      <span className="text-xs text-space-muted">{label}</span>
+    <div
+      className="flex flex-col gap-2.5 rounded-xl p-3.5 transition-all"
+      style={{
+        background: isFiltered ? "rgba(34,211,238,0.06)" : "rgba(15,25,50,0.6)",
+        border: isFiltered
+          ? "1px solid rgba(34,211,238,0.25)"
+          : "1px solid rgba(255,255,255,0.07)",
+      }}
+    >
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-space-subtle font-semibold">{label}</span>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-cyan-300 font-bold text-xs">
+            {minValue != null ? `${minPercent}%` : "0%"}
+            {" – "}
+            {maxValue != null ? `${maxPercent}%` : "100%"}
+          </span>
+          {isFiltered && (
+            <button
+              type="button"
+              onClick={() => {
+                onMinChange(null)
+                onMaxChange(null)
+              }}
+              className="text-[10px] text-space-muted hover:text-cyan-400 underline cursor-pointer"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+      </div>
 
-      <div className="flex items-center gap-2">
+      {/* Min Confidence Slider */}
+      <div className="flex flex-col gap-1">
+        <div className="flex justify-between text-[11px]">
+          <span className="text-space-muted">Minimum Confidence:</span>
+          <span className="font-mono text-slate-300 font-medium">
+            ≥ {minPercent}%
+          </span>
+        </div>
         <input
-          type="number"
-          step={0.1}
-          min={0}
-          max={1}
-          placeholder={minPlaceholder}
-          value={minValue ?? ""}
-          onChange={(e) =>
-            onMinChange(e.target.value !== "" ? Number(e.target.value) : null)
-          }
-          className="w-full rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none placeholder:text-slate-600"
-          style={{
-            background: "rgba(15,25,50,0.8)",
-            border: "1px solid rgba(255,255,255,0.1)",
+          type="range"
+          min="0"
+          max="100"
+          step="5"
+          value={minPercent}
+          onChange={(e) => {
+            const val = Number(e.target.value)
+            onMinChange(val > 0 ? val / 100 : null)
           }}
+          className={`w-full ${accentColor} cursor-pointer`}
         />
+      </div>
 
-        <span className="text-space-muted">–</span>
-
+      {/* Max Confidence Slider */}
+      <div className="flex flex-col gap-1">
+        <div className="flex justify-between text-[11px]">
+          <span className="text-space-muted">Maximum Confidence:</span>
+          <span className="font-mono text-slate-300 font-medium">
+            ≤ {maxPercent}%
+          </span>
+        </div>
         <input
-          type="number"
-          step={0.1}
-          min={0}
-          max={1}
-          placeholder={maxPlaceholder}
-          value={maxValue ?? ""}
-          onChange={(e) =>
-            onMaxChange(e.target.value !== "" ? Number(e.target.value) : null)
-          }
-          className="w-full rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none placeholder:text-slate-600"
-          style={{
-            background: "rgba(15,25,50,0.8)",
-            border: "1px solid rgba(255,255,255,0.1)",
+          type="range"
+          min="0"
+          max="100"
+          step="5"
+          value={maxPercent}
+          onChange={(e) => {
+            const val = Number(e.target.value)
+            onMaxChange(val < 100 ? val / 100 : null)
           }}
+          className={`w-full ${accentColor} cursor-pointer`}
         />
       </div>
     </div>
@@ -511,34 +548,31 @@ export function ExoplanetFiltersPanel({
 
           {/* 5. CONFIDENCE THRESHOLDS */}
           <div className="space-y-3">
-            <SectionHeader title="Confidence Thresholds" />
+            <SectionHeader title="Confidence Thresholds (0% – 100%)" />
             <div className="space-y-3">
-              <ConfidenceRangeInput
-                label="Planet Class Confidence (0.0 – 1.0)"
+              <ConfidenceSliderInput
+                label="Planet Class Confidence"
                 minValue={draftFilters.min_planet_class_confidence}
                 maxValue={draftFilters.max_planet_class_confidence}
-                minPlaceholder="0.0"
-                maxPlaceholder="1.0"
+                accentColor="accent-cyan-400"
                 onMinChange={(v) => update({ min_planet_class_confidence: v })}
                 onMaxChange={(v) => update({ max_planet_class_confidence: v })}
               />
 
-              <ConfidenceRangeInput
-                label="Composition Confidence (0.0 – 1.0)"
+              <ConfidenceSliderInput
+                label="Composition Confidence"
                 minValue={draftFilters.min_composition_confidence}
                 maxValue={draftFilters.max_composition_confidence}
-                minPlaceholder="0.0"
-                maxPlaceholder="1.0"
+                accentColor="accent-purple-400"
                 onMinChange={(v) => update({ min_composition_confidence: v })}
                 onMaxChange={(v) => update({ max_composition_confidence: v })}
               />
 
-              <ConfidenceRangeInput
-                label="Habitability Confidence (0.0 – 1.0)"
+              <ConfidenceSliderInput
+                label="Habitability Confidence"
                 minValue={draftFilters.min_habitability_confidence}
                 maxValue={draftFilters.max_habitability_confidence}
-                minPlaceholder="0.0"
-                maxPlaceholder="1.0"
+                accentColor="accent-emerald-400"
                 onMinChange={(v) => update({ min_habitability_confidence: v })}
                 onMaxChange={(v) => update({ max_habitability_confidence: v })}
               />

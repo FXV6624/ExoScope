@@ -150,10 +150,12 @@ function DashStatCard({
 
 function QuickActionsCard({
   totalPlanets,
+  isLoading,
   loggedIn,
   onOpenStats,
 }: {
   totalPlanets: number
+  isLoading?: boolean
   loggedIn: boolean
   onOpenStats: () => void
 }) {
@@ -182,7 +184,8 @@ function QuickActionsCard({
           <div className="flex items-center gap-2">
             <Telescope size={13} />
             <span>
-              Catalog ({totalPlanets ? totalPlanets.toLocaleString() : "..."})
+              Catalog (
+              {isLoading ? "..." : (totalPlanets ?? 0).toLocaleString()})
             </span>
           </div>
           <ArrowRight size={12} className="opacity-60" />
@@ -386,6 +389,7 @@ function Dashboard() {
         />
         <QuickActionsCard
           totalPlanets={totalPlanets}
+          isLoading={statsLoading}
           loggedIn={loggedIn}
           onOpenStats={() => setShowStatsModal(true)}
         />

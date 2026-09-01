@@ -177,13 +177,19 @@ export function ActiveFilterChips({
     })
   }
 
-  // Advanced
+  // Advanced Confidence Thresholds
   if (
     filters.min_planet_class_confidence != null ||
     filters.max_planet_class_confidence != null
   ) {
-    const min = filters.min_planet_class_confidence ?? ""
-    const max = filters.max_planet_class_confidence ?? ""
+    const min =
+      filters.min_planet_class_confidence != null
+        ? `${Math.round(filters.min_planet_class_confidence * 100)}%`
+        : "0%"
+    const max =
+      filters.max_planet_class_confidence != null
+        ? `${Math.round(filters.max_planet_class_confidence * 100)}%`
+        : "100%"
     chips.push({
       id: "planet_class_confidence",
       label: `Class Conf: ${min}–${max}`,
@@ -194,8 +200,14 @@ export function ActiveFilterChips({
     filters.min_composition_confidence != null ||
     filters.max_composition_confidence != null
   ) {
-    const min = filters.min_composition_confidence ?? ""
-    const max = filters.max_composition_confidence ?? ""
+    const min =
+      filters.min_composition_confidence != null
+        ? `${Math.round(filters.min_composition_confidence * 100)}%`
+        : "0%"
+    const max =
+      filters.max_composition_confidence != null
+        ? `${Math.round(filters.max_composition_confidence * 100)}%`
+        : "100%"
     chips.push({
       id: "composition_confidence",
       label: `Comp Conf: ${min}–${max}`,
@@ -206,8 +218,14 @@ export function ActiveFilterChips({
     filters.min_habitability_confidence != null ||
     filters.max_habitability_confidence != null
   ) {
-    const min = filters.min_habitability_confidence ?? ""
-    const max = filters.max_habitability_confidence ?? ""
+    const min =
+      filters.min_habitability_confidence != null
+        ? `${Math.round(filters.min_habitability_confidence * 100)}%`
+        : "0%"
+    const max =
+      filters.max_habitability_confidence != null
+        ? `${Math.round(filters.max_habitability_confidence * 100)}%`
+        : "100%"
     chips.push({
       id: "habitability_confidence",
       label: `Hab Conf: ${min}–${max}`,
