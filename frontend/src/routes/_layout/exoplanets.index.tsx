@@ -7,6 +7,7 @@ import {
   Download,
   Filter,
   Search,
+  Sparkles,
   Telescope,
   X,
 } from "lucide-react"
@@ -33,6 +34,7 @@ import {
 } from "@/components/Exoplanets/fieldDefinitions"
 import { SpaceBackground } from "@/components/Exoplanets/SpaceBackground"
 import useCustomToast from "@/hooks/useCustomToast"
+import { getStoredThresholds } from "@/utils"
 
 // ─── Route ────────────────────────────────────────────────────────────────────
 
@@ -213,6 +215,31 @@ function ExoplanetsPage() {
   const handleSearchChange = (val: string) => {
     setSearch(val)
     setSkip(0)
+  }
+
+  const isHabitableFilterActive = useMemo(() => {
+    return (
+      filters.min_habitability_score != null &&
+      filters.min_habitability_confidence != null
+    )
+  }, [filters.min_habitability_score, filters.min_habitability_confidence])
+
+  const handleToggleHabitableFilter = () => {
+    if (isHabitableFilterActive) {
+      const updated = { ...filters }
+      delete updated.min_habitability_score
+      delete updated.min_habitability_confidence
+      setFilters(updated)
+      setSkip(0)
+    } else {
+      const thresholds = getStoredThresholds()
+      setFilters((prev) => ({
+        ...prev,
+        min_habitability_score: thresholds.score,
+        min_habitability_confidence: thresholds.confidence,
+      }))
+      setSkip(0)
+    }
   }
 
   const handleFiltersChange = (newFilters: BackendFilters) => {
@@ -480,6 +507,53 @@ function ExoplanetsPage() {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
+          {/* Habitable Quick Filter Toggle Button */}
+          <button
+            type="button"
+            onClick={handleToggleHabitableFilter}
+            title={
+              isHabitableFilterActive
+                ? "Clear Potentially Habitable filter"
+                : `Filter Potentially Habitable worlds (Score ≥ ${getStoredThresholds().score}, Conf ≥ ${(getStoredThresholds().confidence * 100).toFixed(0)}%)`
+            }
+            className="flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-sm font-medium transition-all cursor-pointer select-none"
+            style={{
+              background: isHabitableFilterActive
+                ? "rgba(16, 185, 129, 0.18)"
+                : "rgba(15, 25, 50, 0.7)",
+              border: `1px solid ${
+                isHabitableFilterActive
+                  ? "rgba(16, 185, 129, 0.5)"
+                  : "rgba(255, 255, 255, 0.1)"
+              }`,
+              color: isHabitableFilterActive ? "#34d399" : "#94a3b8",
+              boxShadow: isHabitableFilterActive
+                ? "0 0 14px rgba(16, 185, 129, 0.22)"
+                : "none",
+            }}
+          >
+            <Sparkles
+              size={14}
+              className={
+                isHabitableFilterActive
+                  ? "text-emerald-400"
+                  : "text-space-muted"
+              }
+            />
+            <span>Habitable</span>
+            {isHabitableFilterActive && (
+              <span
+                className="flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ml-0.5"
+                style={{
+                  background: "rgba(16, 185, 129, 0.3)",
+                  color: "#34d399",
+                }}
+              >
+                ✓
+              </span>
+            )}
+          </button>
+
           {/* Filters Button */}
           <button
             type="button"

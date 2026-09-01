@@ -3,9 +3,11 @@ import { createFileRoute } from "@tanstack/react-router"
 import {
   Activity,
   AlertCircle,
+  AlertTriangle,
   CheckCircle2,
   Clock,
   Database,
+  Info,
   Loader2,
   Pause,
   Play,
@@ -480,9 +482,9 @@ function AdminControlPage() {
               <div>
                 <label
                   htmlFor="record-limit-input"
-                  className="text-xs font-medium text-slate-300 block mb-1.5"
+                  className="text-xs font-medium text-slate-300 flex items-center justify-between mb-1.5"
                 >
-                  Record Ingestion Limit
+                  <span>Record Ingestion Limit</span>
                 </label>
                 <input
                   id="record-limit-input"
@@ -493,8 +495,12 @@ function AdminControlPage() {
                   disabled={isRunningETL}
                   className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-3.5 py-2 text-xs font-mono text-white placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 disabled:opacity-50"
                 />
-                <span className="text-[11px] text-slate-500 mt-1 block">
-                  Leave empty to extract the full catalog.
+                <span className="text-[11px] text-slate-400 mt-1.5 flex items-start gap-1">
+                  <Info size={13} className="shrink-0 text-cyan-400 mt-0.5" />
+                  <span>
+                    Extracts the latest discoveries ordered by discovery year
+                    descending and name. Leave empty for the full catalog.
+                  </span>
                 </span>
               </div>
 
@@ -512,21 +518,65 @@ function AdminControlPage() {
                   disabled={isRunningETL}
                   className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-3.5 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 disabled:opacity-50"
                 >
-                  <option value="upsert">
-                    Upsert (Insert new & update existing)
-                  </option>
-                  <option value="append">
-                    Append (Insert new records only)
-                  </option>
-                  <option value="replace">
-                    Replace (Clear table & reload catalog)
-                  </option>
+                  <option value="upsert">Upsert</option>
+                  <option value="insert">Insert</option>
+                  <option value="reload">Reload</option>
                 </select>
-                <span className="text-[11px] text-slate-500 mt-1 block">
-                  Strategy for handling record collisions.
+                <span className="text-[11px] text-slate-400 mt-1.5 block">
+                  {loadMode === "upsert" && (
+                    <span className="text-slate-400">
+                      <strong>Upsert:</strong> Inserts new exoplanets & updates
+                      existing records if NASA parameters changed. Safe for
+                      recurring runs.
+                    </span>
+                  )}
+                  {loadMode === "insert" && (
+                    <span className="text-slate-400">
+                      <strong>Insert:</strong> Only inserts brand-new
+                      exoplanets; silently skips records that already exist
+                      without modifying them.
+                    </span>
+                  )}
+                  {loadMode === "reload" && (
+                    <span className="text-amber-400 font-medium flex items-center gap-1">
+                      <AlertTriangle size={12} className="shrink-0" />
+                      <strong>Reload:</strong> Truncates & wipes the entire
+                      local database table before inserting.
+                    </span>
+                  )}
                 </span>
               </div>
             </div>
+
+            {/* Dynamic Load Mode Warnings */}
+            {loadMode === "reload" && (
+              <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
+                <AlertTriangle
+                  size={16}
+                  className="shrink-0 text-amber-400 mt-0.5"
+                />
+                <div>
+                  <strong className="font-semibold block text-amber-300 mb-0.5">
+                    Destructive Load Strategy Warning
+                  </strong>
+                  {limit && Number(limit) > 0 ? (
+                    <span>
+                      You selected <strong>Reload</strong> with a limit of{" "}
+                      <strong>{limit}</strong> records. This will completely
+                      erase all existing exoplanets in the database and leave{" "}
+                      <strong>ONLY</strong> these {limit} newly extracted
+                      records.
+                    </span>
+                  ) : (
+                    <span>
+                      <strong>Reload</strong> will wipe the entire exoplanet
+                      database table and re-populate it from scratch with the
+                      complete NASA catalog.
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Checkboxes for Dry-Run & Persist */}
             <div className="flex flex-wrap items-center gap-6 pt-1">

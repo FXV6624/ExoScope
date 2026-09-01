@@ -103,7 +103,11 @@ const EditUser = ({ user, onSuccess }: EditUserProps) => {
         <Pencil />
         Edit User
       </DropdownMenuItem>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
