@@ -2,238 +2,22 @@ import { SlidersHorizontal, X } from "lucide-react"
 import { useEffect, useState } from "react"
 
 import type { ExoplanetFilters, PlanetClass, PlanetComposition } from "@/client"
+import {
+  COMPOSITIONS,
+  ConfidenceSliderInput,
+  DISCOVERY_METHODS,
+  NumberRangeInput,
+  PLANET_CLASSES,
+  SectionHeader,
+  TextInput,
+} from "./FilterInputs"
 
 export type BackendFilters = Omit<ExoplanetFilters, "sort_by" | "order">
-
-const PLANET_CLASSES: PlanetClass[] = [
-  "Terrestrial",
-  "Super Earth",
-  "Sub-Neptune",
-  "Neptune",
-  "Ice Giant",
-  "Gas Giant",
-  "Unknown",
-]
-
-const COMPOSITIONS: PlanetComposition[] = [
-  "Rocky",
-  "Rocky-Iron",
-  "Water World",
-  "Ice",
-  "Hydrogen-Helium",
-  "Unknown",
-]
-
-const DISCOVERY_METHODS = [
-  "Transit",
-  "Radial Velocity",
-  "Imaging",
-  "Microlensing",
-  "Astrometry",
-  "Timing",
-  "Eclipse Timing Variations",
-  "Pulsar Timing",
-  "Disk Kinematics",
-  "Other",
-]
 
 interface FiltersProps {
   filters: BackendFilters
   onFiltersChange: (f: BackendFilters) => void
   onClose: () => void
-}
-
-function SectionHeader({ title }: { title: string }) {
-  return (
-    <div className="border-b border-white/10 pb-1.5 pt-2">
-      <span className="text-xs font-bold uppercase tracking-widest text-space-accent">
-        {title}
-      </span>
-    </div>
-  )
-}
-
-function TextInput({
-  label,
-  value,
-  placeholder,
-  onChange,
-}: {
-  label: string
-  value: string | null | undefined
-  placeholder?: string
-  onChange: (v: string | null) => void
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-xs text-space-muted">{label}</span>
-      <input
-        type="text"
-        placeholder={placeholder || label}
-        value={value ?? ""}
-        onChange={(e) => onChange(e.target.value ? e.target.value : null)}
-        className="rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none placeholder:text-slate-600"
-        style={{
-          background: "rgba(15,25,50,0.8)",
-          border: "1px solid rgba(255,255,255,0.1)",
-        }}
-      />
-    </div>
-  )
-}
-
-function NumberRangeInput({
-  label,
-  minValue,
-  maxValue,
-  minPlaceholder = "Min",
-  maxPlaceholder = "Max",
-  onMinChange,
-  onMaxChange,
-}: {
-  label: string
-  minValue: number | null | undefined
-  maxValue: number | null | undefined
-  minPlaceholder?: string
-  maxPlaceholder?: string
-  onMinChange: (v: number | null) => void
-  onMaxChange: (v: number | null) => void
-}) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-xs text-space-muted">{label}</span>
-      <div className="flex items-center gap-2">
-        <input
-          type="number"
-          step="any"
-          placeholder={minPlaceholder}
-          value={minValue ?? ""}
-          onChange={(e) =>
-            onMinChange(e.target.value !== "" ? Number(e.target.value) : null)
-          }
-          className="w-full rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none placeholder:text-slate-600"
-          style={{
-            background: "rgba(15,25,50,0.8)",
-            border: "1px solid rgba(255,255,255,0.1)",
-          }}
-        />
-        <span className="text-space-muted">–</span>
-        <input
-          type="number"
-          step="any"
-          placeholder={maxPlaceholder}
-          value={maxValue ?? ""}
-          onChange={(e) =>
-            onMaxChange(e.target.value !== "" ? Number(e.target.value) : null)
-          }
-          className="w-full rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none placeholder:text-slate-600"
-          style={{
-            background: "rgba(15,25,50,0.8)",
-            border: "1px solid rgba(255,255,255,0.1)",
-          }}
-        />
-      </div>
-    </div>
-  )
-}
-
-function ConfidenceSliderInput({
-  label,
-  minValue,
-  maxValue,
-  accentColor = "accent-cyan-400",
-  onMinChange,
-  onMaxChange,
-}: {
-  label: string
-  minValue: number | null | undefined
-  maxValue: number | null | undefined
-  accentColor?: string
-  onMinChange: (v: number | null) => void
-  onMaxChange: (v: number | null) => void
-}) {
-  const minPercent = minValue != null ? Math.round(minValue * 100) : 0
-  const maxPercent = maxValue != null ? Math.round(maxValue * 100) : 100
-  const isFiltered = minValue != null || maxValue != null
-
-  return (
-    <div
-      className="flex flex-col gap-2.5 rounded-xl p-3.5 transition-all"
-      style={{
-        background: isFiltered ? "rgba(34,211,238,0.06)" : "rgba(15,25,50,0.6)",
-        border: isFiltered
-          ? "1px solid rgba(34,211,238,0.25)"
-          : "1px solid rgba(255,255,255,0.07)",
-      }}
-    >
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-space-subtle font-semibold">{label}</span>
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-cyan-300 font-bold text-xs">
-            {minValue != null ? `${minPercent}%` : "0%"}
-            {" – "}
-            {maxValue != null ? `${maxPercent}%` : "100%"}
-          </span>
-          {isFiltered && (
-            <button
-              type="button"
-              onClick={() => {
-                onMinChange(null)
-                onMaxChange(null)
-              }}
-              className="text-[10px] text-space-muted hover:text-cyan-400 underline cursor-pointer"
-            >
-              Reset
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Min Confidence Slider */}
-      <div className="flex flex-col gap-1">
-        <div className="flex justify-between text-[11px]">
-          <span className="text-space-muted">Minimum Confidence:</span>
-          <span className="font-mono text-slate-300 font-medium">
-            ≥ {minPercent}%
-          </span>
-        </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="5"
-          value={minPercent}
-          onChange={(e) => {
-            const val = Number(e.target.value)
-            onMinChange(val > 0 ? val / 100 : null)
-          }}
-          className={`w-full ${accentColor} cursor-pointer`}
-        />
-      </div>
-
-      {/* Max Confidence Slider */}
-      <div className="flex flex-col gap-1">
-        <div className="flex justify-between text-[11px]">
-          <span className="text-space-muted">Maximum Confidence:</span>
-          <span className="font-mono text-slate-300 font-medium">
-            ≤ {maxPercent}%
-          </span>
-        </div>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          step="5"
-          value={maxPercent}
-          onChange={(e) => {
-            const val = Number(e.target.value)
-            onMaxChange(val < 100 ? val / 100 : null)
-          }}
-          className={`w-full ${accentColor} cursor-pointer`}
-        />
-      </div>
-    </div>
-  )
 }
 
 export function ExoplanetFiltersPanel({
@@ -283,9 +67,8 @@ export function ExoplanetFiltersPanel({
 
       {/* Drawer Panel */}
       <div
-        className="fixed right-0 top-0 z-50 flex h-screen w-full max-w-xl flex-col overflow-hidden shadow-2xl"
+        className="space-modal fixed right-0 top-0 z-50 flex h-screen w-full max-w-xl flex-col overflow-hidden shadow-2xl"
         style={{
-          background: "#060d1f",
           borderLeft: "1px solid rgba(34,211,238,0.25)",
           transform: "translateZ(0)",
         }}
@@ -358,11 +141,7 @@ export function ExoplanetFiltersPanel({
                   onChange={(e) =>
                     update({ discovery_method: e.target.value || null })
                   }
-                  className="rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none"
-                  style={{
-                    background: "rgba(15,25,50,0.8)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                  }}
+                  className="rounded-lg px-3 py-1.5 text-sm bg-card border border-border text-foreground outline-none cursor-pointer"
                 >
                   <option value="">All Methods</option>
                   {DISCOVERY_METHODS.map((m) => (
@@ -390,7 +169,9 @@ export function ExoplanetFiltersPanel({
             <SectionHeader title="Planet Classification" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="flex flex-col gap-1">
-                <span className="text-xs text-space-muted">Planet Class</span>
+                <span className="text-xs text-muted-foreground">
+                  Planet Class
+                </span>
                 <select
                   value={draftFilters.planet_class ?? ""}
                   onChange={(e) =>
@@ -398,11 +179,7 @@ export function ExoplanetFiltersPanel({
                       planet_class: (e.target.value as PlanetClass) || null,
                     })
                   }
-                  className="rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none"
-                  style={{
-                    background: "rgba(15,25,50,0.8)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                  }}
+                  className="rounded-lg px-3 py-1.5 text-sm bg-card border border-border text-foreground outline-none cursor-pointer"
                 >
                   <option value="">All Classes</option>
                   {PLANET_CLASSES.map((c) => (
@@ -414,7 +191,9 @@ export function ExoplanetFiltersPanel({
               </div>
 
               <div className="flex flex-col gap-1">
-                <span className="text-xs text-space-muted">Composition</span>
+                <span className="text-xs text-muted-foreground">
+                  Composition
+                </span>
                 <select
                   value={draftFilters.composition ?? ""}
                   onChange={(e) =>
@@ -423,11 +202,7 @@ export function ExoplanetFiltersPanel({
                         (e.target.value as PlanetComposition) || null,
                     })
                   }
-                  className="rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none"
-                  style={{
-                    background: "rgba(15,25,50,0.8)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                  }}
+                  className="rounded-lg px-3 py-1.5 text-sm bg-card border border-border text-foreground outline-none cursor-pointer"
                 >
                   <option value="">All Compositions</option>
                   {COMPOSITIONS.map((c) => (
@@ -583,7 +358,7 @@ export function ExoplanetFiltersPanel({
           <div className="space-y-3">
             <SectionHeader title="Photo" />
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-space-muted">NASA Photo</span>
+              <span className="text-xs text-muted-foreground">NASA Photo</span>
               <select
                 value={
                   draftFilters.has_nasa_photo === null ||
@@ -599,11 +374,7 @@ export function ExoplanetFiltersPanel({
                     has_nasa_photo: val === "" ? null : val === "true",
                   })
                 }}
-                className="rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none"
-                style={{
-                  background: "rgba(15,25,50,0.8)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
+                className="rounded-lg px-3 py-1.5 text-sm bg-card border border-border text-foreground outline-none cursor-pointer"
               >
                 <option value="">All planets</option>
                 <option value="true">Has NASA photo </option>
@@ -614,23 +385,18 @@ export function ExoplanetFiltersPanel({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-white/10 px-6 py-4">
+        <div className="flex items-center justify-between border-t border-border px-6 py-4 bg-card">
           <button
             type="button"
             onClick={handleResetAndApply}
-            className="rounded-xl px-4 py-2 text-xs font-medium text-space-muted transition-colors hover:text-space-primary cursor-pointer"
+            className="rounded-xl px-4 py-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
           >
             Reset Filters
           </button>
           <button
             type="button"
             onClick={handleApply}
-            className="rounded-xl px-5 py-2 text-sm font-medium transition-colors cursor-pointer shadow-lg shadow-cyan-500/20"
-            style={{
-              background: "rgba(34,211,238,0.2)",
-              border: "1px solid rgba(34,211,238,0.4)",
-              color: "#22d3ee",
-            }}
+            className="rounded-xl px-5 py-2 text-sm font-semibold transition-all cursor-pointer shadow-md bg-cyan-600 hover:bg-cyan-500 text-white"
           >
             Apply Filters
           </button>

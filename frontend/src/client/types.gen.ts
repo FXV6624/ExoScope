@@ -278,6 +278,13 @@ export type EtlRunExoplanetEtlResponse = (unknown);
 
 export type EtlReadLastEtlRunResponse = (unknown);
 
+export type EtlReadEtlRunsData = {
+    limit?: number;
+    skip?: number;
+};
+
+export type EtlReadEtlRunsResponse = (unknown);
+
 export type ExoplanetsReadExoplanetsData = {
     composition?: (PlanetComposition | null);
     discoveryMethod?: (string | null);

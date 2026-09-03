@@ -1,4 +1,4 @@
-# Data Engineering Platform - Development
+# ExoScope - Development
 
 ## Docker Compose
 
