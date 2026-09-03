@@ -14,8 +14,31 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 
-import { type EtlRunItem, EtlService } from "@/client"
+import { EtlService } from "@/client"
 import { formatExactDateTime, formatRelativeTime } from "@/utils"
+
+export interface EtlRunItem {
+  id: string
+  started_at: string
+  finished_at?: string
+  extracted: number
+  transformed: number
+  extract_time: number
+  transform_time: number
+  load_time: number
+  total_time: number
+  success: boolean
+  errors?: string
+  load_result?: {
+    inserted?: number
+    updated?: number
+    discarded?: number
+    skipped?: number
+    strategy?: string
+    duration_seconds?: number
+    [key: string]: any
+  }
+}
 
 interface EtlHistoryModalProps {
   isOpen: boolean
