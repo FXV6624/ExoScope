@@ -45,7 +45,7 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       {
-        title: "Sign In — Data Engineering Platform",
+        title: "Sign In — ExoScope",
       },
     ],
   }),
@@ -76,10 +76,10 @@ function Login() {
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 shadow-lg shadow-cyan-500/15">
             <KeyRound size={22} />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Admin Sign In
           </h1>
-          <p className="text-xs text-slate-400 max-w-xs">
+          <p className="text-xs text-muted-foreground max-w-xs">
             Authenticate with administrator credentials to manage ETL workflows
             and platform settings.
           </p>
@@ -96,7 +96,7 @@ function Login() {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xs text-slate-300 font-medium">
+                  <FormLabel className="text-xs text-foreground font-medium">
                     Email Address
                   </FormLabel>
                   <FormControl>
@@ -104,7 +104,7 @@ function Login() {
                       data-testid="email-input"
                       placeholder="admin@example.com"
                       type="email"
-                      className="rounded-xl border border-white/10 bg-slate-900/60 px-3.5 py-2 text-xs text-white placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                      className="rounded-xl border border-input bg-background/60 px-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                       {...field}
                     />
                   </FormControl>
@@ -119,12 +119,12 @@ function Login() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center justify-between">
-                    <FormLabel className="text-xs text-slate-300 font-medium">
+                    <FormLabel className="text-xs text-foreground font-medium">
                       Password
                     </FormLabel>
                     <RouterLink
                       to="/recover-password"
-                      className="text-xs text-cyan-400 hover:text-cyan-300 hover:underline transition-colors no-underline"
+                      className="text-xs text-cyan-500 hover:text-cyan-600 dark:text-cyan-400 dark:hover:text-cyan-300 hover:underline transition-colors no-underline"
                     >
                       Forgot your password?
                     </RouterLink>
@@ -133,7 +133,7 @@ function Login() {
                     <PasswordInput
                       data-testid="password-input"
                       placeholder="••••••••"
-                      className="rounded-xl border border-white/10 bg-slate-900/60 px-3.5 py-2 text-xs text-white placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                      className="rounded-xl border border-input bg-background/60 px-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                       {...field}
                     />
                   </FormControl>
@@ -146,7 +146,7 @@ function Login() {
               type="submit"
               aria-label="Log In"
               loading={loginMutation.isPending}
-              className="mt-2 w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-2.5 text-xs font-bold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:from-cyan-400 hover:to-blue-500 active:scale-[0.99] disabled:opacity-50"
+              className="mt-2 w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-cyan-500/20 transition-all hover:from-cyan-400 hover:to-blue-500 active:scale-[0.99] disabled:opacity-50"
             >
               Log In
             </LoadingButton>
@@ -155,8 +155,8 @@ function Login() {
 
         {/* Divider */}
         <div className="relative flex items-center justify-center">
-          <div className="w-full border-t border-white/10" />
-          <span className="absolute bg-slate-900 px-3 text-[11px] font-medium uppercase tracking-wider text-slate-500 rounded-full border border-white/5">
+          <div className="w-full border-t border-border" />
+          <span className="absolute bg-card px-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground rounded-full border border-border">
             Or
           </span>
         </div>
@@ -165,24 +165,24 @@ function Login() {
         <div className="flex flex-col gap-2">
           <RouterLink
             to="/"
-            className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/50 p-3.5 backdrop-blur-md transition-all hover:border-cyan-500/40 hover:bg-slate-800/80 no-underline"
+            className="group flex items-center justify-between rounded-2xl border border-border bg-background/50 p-3.5 backdrop-blur-md transition-all hover:border-cyan-500/40 hover:bg-muted/60 no-underline"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-cyan-400 transition-colors group-hover:border-cyan-500/30 group-hover:bg-cyan-500/10">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-muted/60 text-cyan-500 dark:text-cyan-400 transition-colors group-hover:border-cyan-500/30 group-hover:bg-cyan-500/10">
                 <Telescope size={18} />
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-xs font-semibold text-white group-hover:text-cyan-300 transition-colors">
+                <span className="text-xs font-semibold text-foreground group-hover:text-cyan-500 transition-colors">
                   Not an admin? Continue without signing in
                 </span>
-                <span className="text-[11px] text-slate-400">
-                  Explore dashboard metrics, catalog & analytics freely
+                <span className="text-[11px] text-muted-foreground">
+                  Explore catalog & analytics freely
                 </span>
               </div>
             </div>
             <ArrowRight
               size={15}
-              className="text-slate-500 transition-transform group-hover:translate-x-1 group-hover:text-cyan-400 shrink-0"
+              className="text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-cyan-500 shrink-0"
             />
           </RouterLink>
         </div>

@@ -43,7 +43,7 @@ export const Route = createFileRoute("/recover-password")({
   head: () => ({
     meta: [
       {
-        title: "Recover Password — Data Engineering Platform",
+        title: "Recover Password — ExoScope",
       },
     ],
   }),

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_layout/settings")({
   head: () => ({
     meta: [
       {
-        title: "User Settings - Data Engineering Platform",
+        title: "User Settings — ExoScope",
       },
     ],
   }),

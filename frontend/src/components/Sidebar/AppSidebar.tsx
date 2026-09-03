@@ -38,7 +38,7 @@ export function AppSidebar() {
             onToggle={() => setAdminOpen((o) => !o)}
             chevron={ChevronRight}
             items={[
-              { title: "Control", path: "/admin/etl" },
+              { title: "Control Center", path: "/admin/etl" },
               { title: "Users", path: "/admin/users" },
             ]}
           />

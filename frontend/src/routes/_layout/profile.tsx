@@ -4,7 +4,9 @@ import { KeyRound, Shield, User } from "lucide-react"
 import { SpaceBackground } from "@/components/Exoplanets/SpaceBackground"
 import ChangePassword from "@/components/UserSettings/ChangePassword"
 import UserInformation from "@/components/UserSettings/UserInformation"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import useAuth, { isLoggedIn } from "@/hooks/useAuth"
+import { getInitials } from "@/utils"
 
 // ─── Route ────────────────────────────────────────────────────────────────────
 
@@ -16,7 +18,7 @@ export const Route = createFileRoute("/_layout/profile")({
   },
   component: ProfilePage,
   head: () => ({
-    meta: [{ title: "Profile — Data Engineering Platform" }],
+    meta: [{ title: "Profile — ExoScope" }],
   }),
 })
 
@@ -35,30 +37,26 @@ function ProfileSection({
 }) {
   return (
     <div
-      className="flex flex-col gap-4 rounded-2xl p-6"
-      style={{
-        background: danger
-          ? "rgba(220, 38, 38, 0.05)"
-          : "rgba(15, 25, 50, 0.6)",
-        border: danger
-          ? "1px solid rgba(239, 68, 68, 0.2)"
-          : "1px solid rgba(255,255,255,0.08)",
-      }}
+      className={`space-card flex flex-col gap-4 rounded-2xl p-6 shadow-sm ${
+        danger ? "border-red-500/30 bg-red-50 dark:bg-red-950/10" : ""
+      }`}
     >
-      <div className="flex items-center gap-2 border-b border-white/5 pb-4">
+      <div className="flex items-center gap-2 border-b border-border pb-4">
         <Icon
           size={16}
-          className={danger ? "text-red-400" : "text-space-accent"}
+          className={
+            danger ? "text-red-500" : "text-cyan-600 dark:text-cyan-400"
+          }
         />
         <h2
-          className={`text-sm font-medium uppercase tracking-widest ${
-            danger ? "text-red-400" : "text-space-accent"
+          className={`text-sm font-bold uppercase tracking-widest ${
+            danger ? "text-red-500" : "text-cyan-600 dark:text-cyan-400"
           }`}
         >
           {title}
         </h2>
       </div>
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 text-foreground">{children}</div>
     </div>
   )
 }
@@ -78,54 +76,64 @@ function ProfilePage() {
         {/* Header */}
         <div>
           <div className="mb-1 flex items-center gap-2">
-            <User size={13} className="text-space-accent" />
-            <span className="text-xs uppercase tracking-widest text-space-accent">
+            <User size={13} className="text-cyan-600 dark:text-cyan-400" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">
               Account Management
             </span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-space-primary">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Profile & Security
           </h1>
-          <p className="mt-1 text-sm text-space-muted">
-            Manage your personal profile details, account credentials, and
-            security preferences.
-          </p>
         </div>
 
         {/* Account Overview Badges */}
-        <div
-          className="flex flex-wrap items-center gap-4 rounded-2xl p-4"
-          style={{
-            background: "rgba(15, 25, 50, 0.4)",
-            border: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <div className="flex items-center gap-2">
-            <Shield size={14} className="text-space-accent" />
-            <span className="text-xs text-space-muted">Role:</span>
-            <span className="text-xs font-semibold text-space-primary uppercase tracking-wider">
-              Administrator
-            </span>
+        <div className="space-card flex flex-wrap items-center justify-between gap-4 rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center gap-3.5">
+            <Avatar className="size-12 border-2 border-sky-300 dark:border-sky-500/40 shadow-xs">
+              <AvatarImage
+                src="/assets/images/user-avatar.png"
+                alt={currentUser.full_name || "User"}
+              />
+              <AvatarFallback className="bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300 font-bold text-base">
+                {getInitials(currentUser.full_name || "User")}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h2 className="text-base font-bold text-foreground">
+                {currentUser.full_name || "User Profile"}
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                {currentUser.email}
+              </p>
+            </div>
           </div>
-          <div className="h-3 w-px bg-white/10" />
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-space-muted">Status:</span>
-            <span className="flex items-center gap-1.5 text-xs text-emerald-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              Active
-            </span>
-          </div>
-          {currentUser.created_at && (
-            <>
-              <div className="h-3 w-px bg-white/10" />
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-space-muted">Member Since:</span>
-                <span className="text-xs text-space-subtle">
+
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 px-3 py-1.5 border border-border">
+              <Shield size={14} className="text-cyan-600 dark:text-cyan-400" />
+              <span className="text-xs text-muted-foreground">Role:</span>
+              <span className="text-xs font-semibold text-foreground uppercase tracking-wider">
+                Administrator
+              </span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 px-3 py-1.5 border border-border">
+              <span className="text-xs text-muted-foreground">Status:</span>
+              <span className="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-400 font-bold">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                Active
+              </span>
+            </div>
+            {currentUser.created_at && (
+              <div className="flex items-center gap-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 px-3 py-1.5 border border-border">
+                <span className="text-xs text-muted-foreground">
+                  Member Since:
+                </span>
+                <span className="text-xs font-medium text-foreground">
                   {new Date(currentUser.created_at).toLocaleDateString()}
                 </span>
               </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Side-by-side cards: Personal Information & Password */}

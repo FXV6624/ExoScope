@@ -1,4 +1,4 @@
-# Data Engineering Platform - Deployment
+# ExoScope - Deployment
 
 You can deploy the project using Docker Compose to a remote server.
 

@@ -73,13 +73,24 @@
 
   /* Space-themed card */
   .space-card {
-    background: rgba(15, 25, 50, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 0.75rem;
+    background: linear-gradient(
+      135deg,
+      rgba(15, 23, 42, 0.75) 0%,
+      rgba(10, 15, 30, 0.85) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    backdrop-filter: blur(16px);
   }
 
   .space-card-accent {
     border-color: rgba(34, 211, 238, 0.3);
+  }
+
+  /* Planet visual container */
+  .planet-visual {
+    background: radial-gradient(circle at 40% 40%, #0c2340 0%, #06101e 100%);
+    border: 1px solid rgba(34, 211, 238, 0.25);
   }
 
   /* Cyan accent color */
@@ -97,5 +108,474 @@
 
   .text-space-primary {
     color: #f1f5f9;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     Light Mode Overrides
+     ───────────────────────────────────────────────────────────── */
+
+  /* Fondo general: azul-gris pálido (#eef2f8) con gradiente frío */
+  html:not(.dark) .bg-space {
+    background: linear-gradient(135deg, #eef2f8 0%, #e2eaf4 45%, #d8e4f2 100%);
+  }
+
+  /* Puntos del star field: pequeños puntos teal semi-transparentes */
+  html:not(.dark) .bg-space-stars {
+    opacity: 1;
+    mix-blend-mode: normal;
+    background-image:
+      radial-gradient(
+        1.5px 1.5px at 8% 18%,
+        rgba(8, 145, 178, 0.45) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 38% 8%,
+        rgba(8, 145, 178, 0.35) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 67% 28%,
+        rgba(8, 145, 178, 0.4) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 85% 12%,
+        rgba(8, 145, 178, 0.35) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 20% 60%,
+        rgba(8, 145, 178, 0.4) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 50% 75%,
+        rgba(8, 145, 178, 0.3) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 78% 65%,
+        rgba(8, 145, 178, 0.45) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 3% 88%,
+        rgba(8, 145, 178, 0.35) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 93% 50%,
+        rgba(8, 145, 178, 0.4) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 30% 40%,
+        rgba(8, 145, 178, 0.3) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 60% 95%,
+        rgba(8, 145, 178, 0.35) 0%,
+        transparent 100%
+      ),
+      radial-gradient(
+        1.5px 1.5px at 45% 52%,
+        rgba(8, 145, 178, 0.3) 0%,
+        transparent 100%
+      );
+  }
+
+  /* Sidebar: blanco casi puro con sombra sutil a la derecha */
+  html:not(.dark) [data-sidebar="sidebar"],
+  html:not(.dark) [data-slot="sidebar"] {
+    background: #fcfdfe;
+    box-shadow: 4px 0 24px -2px rgba(15, 23, 42, 0.05);
+  }
+
+  /* Cards y tabla: blanco con box-shadow suave en vez de glow oscuro */
+  html:not(.dark) .space-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow:
+      0 4px 20px -2px rgba(15, 23, 42, 0.06),
+      0 2px 6px -1px rgba(15, 23, 42, 0.04);
+    backdrop-filter: none;
+  }
+
+  /* Accent: teal profundo (#0891b2) más saturado para contrastar */
+  html:not(.dark) .space-card-accent {
+    border-color: rgba(8, 145, 178, 0.4);
+    box-shadow:
+      0 4px 20px -2px rgba(8, 145, 178, 0.12),
+      0 2px 6px -1px rgba(8, 145, 178, 0.06);
+  }
+
+  html:not(.dark) .text-space-accent {
+    color: #0891b2;
+  }
+
+  html:not(.dark) .text-space-muted {
+    color: #334155;
+  }
+
+  html:not(.dark) .text-space-subtle {
+    color: #1e293b;
+  }
+
+  html:not(.dark) .text-space-primary {
+    color: #0f172a;
+  }
+
+  /* Fuentes generales oscurecidas para alto contraste */
+  html:not(.dark) .text-slate-200 {
+    color: #0f172a;
+  }
+
+  html:not(.dark) .text-slate-300 {
+    color: #1e293b;
+  }
+
+  html:not(.dark) .text-slate-400,
+  html:not(.dark) p.text-slate-400 {
+    color: #334155;
+  }
+
+  html:not(.dark) .text-slate-500,
+  html:not(.dark) p.text-slate-500 {
+    color: #1e293b;
+  }
+
+  html:not(.dark) .text-muted-foreground {
+    color: #334155;
+  }
+
+  html:not(.dark) h1.text-white,
+  html:not(.dark) h2.text-white,
+  html:not(.dark) h3.text-white,
+  html:not(.dark) span.text-white {
+    color: #0f172a;
+  }
+
+  /* Fondos oscuros convertidos a blanco limpio en modo claro (cards y paneles) */
+  html:not(.dark) .bg-slate-900\/30,
+  html:not(.dark) .bg-slate-900\/40,
+  html:not(.dark) .bg-slate-900\/50,
+  html:not(.dark) .bg-slate-900\/60,
+  html:not(.dark) .bg-slate-900\/80,
+  html:not(.dark) .bg-slate-900 {
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+    color: #0f172a;
+  }
+
+  html:not(.dark) .bg-cyan-950\/30,
+  html:not(.dark) .bg-cyan-950\/40,
+  html:not(.dark) .bg-cyan-950\/60 {
+    background-color: #f0fdfa;
+    border-color: #0891b2;
+    color: #0891b2;
+  }
+
+  html:not(.dark) .border-white\/5,
+  html:not(.dark) .border-white\/10,
+  html:not(.dark) .border-white\/15,
+  html:not(.dark) .border-white\/20 {
+    border-color: #e2e8f0;
+  }
+
+  html:not(.dark) .bg-white\/5,
+  html:not(.dark) .bg-white\/10,
+  html:not(.dark) .bg-white\/\[0\.02\] {
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+    color: #0f172a;
+  }
+
+  /* Cards content in light mode */
+  html:not(.dark) .space-card .text-white,
+  html:not(.dark) .space-card h1,
+  html:not(.dark) .space-card h2,
+  html:not(.dark) .space-card h3 {
+    color: #0f172a;
+  }
+
+  html:not(.dark) .space-card .text-slate-400,
+  html:not(.dark) .space-card .text-slate-500 {
+    color: #334155;
+  }
+
+  html:not(.dark) .space-card .text-slate-200,
+  html:not(.dark) .space-card .text-slate-300 {
+    color: #0f172a;
+  }
+
+  html:not(.dark) .space-card input {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #0f172a;
+  }
+
+  /* Tabla: blanco con bordes suaves */
+  html:not(.dark) table {
+    background: #ffffff;
+  }
+
+  html:not(.dark) tr {
+    border-color: #e2e8f0;
+  }
+
+  html:not(.dark) th {
+    background-color: #f8fafc;
+    color: #334155;
+    font-weight: 600;
+  }
+
+  html:not(.dark) td {
+    color: #0f172a;
+  }
+
+  /* Modales y draweres en modo claro */
+  html:not(.dark) .space-modal,
+  html:not(.dark) div[style*="#070e20"],
+  html:not(.dark) div[style*="#080e1e"],
+  html:not(.dark) div[style*="#060d1f"] {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    box-shadow:
+      0 20px 40px -10px rgba(15, 23, 42, 0.16),
+      0 0 0 1px rgba(15, 23, 42, 0.05);
+    color: #0f172a;
+  }
+
+  html:not(.dark) .space-modal .border-b,
+  html:not(.dark) .space-modal .border-white\/10,
+  html:not(.dark) .space-modal .border-white\/5 {
+    border-color: #e2e8f0;
+  }
+
+  html:not(.dark) .space-modal .bg-slate-900\/60,
+  html:not(.dark) .space-modal .bg-slate-900\/40,
+  html:not(.dark) .space-modal .bg-white\/\[0\.02\] {
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+
+  html:not(.dark) .space-modal .bg-slate-900\/80 {
+    background-color: #f0fdfa;
+    border-color: #0891b2;
+  }
+
+  html:not(.dark) .space-modal .text-white,
+  html:not(.dark) .space-modal h2,
+  html:not(.dark) .space-modal h3 {
+    color: #0f172a;
+  }
+
+  html:not(.dark) .space-modal .text-slate-200,
+  html:not(.dark) .space-modal .text-slate-300,
+  html:not(.dark) .space-modal .text-slate-400 {
+    color: #334155;
+  }
+
+  html:not(.dark) .space-modal input,
+  html:not(.dark) .space-modal select {
+    background-color: #ffffff;
+    border-color: #cbd5e1;
+    color: #0f172a;
+  }
+
+  /* Botones que tenían fondos oscuros fijos en tema oscuro */
+  html:not(.dark) button.bg-slate-900\/60,
+  html:not(.dark) a.bg-slate-900\/60 {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.06);
+  }
+
+  html:not(.dark) button.bg-slate-900\/60:hover,
+  html:not(.dark) a.bg-slate-900\/60:hover {
+    background-color: #f0fdfa;
+    border-color: #0891b2;
+    color: #0891b2;
+  }
+
+  html:not(.dark) button.bg-white\/5,
+  html:not(.dark) button.bg-white\/10 {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+    box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  }
+
+  html:not(.dark) button.bg-white\/5:hover,
+  html:not(.dark) button.bg-white\/10:hover {
+    background-color: #f8fafc;
+    border-color: #0891b2;
+    color: #0891b2;
+  }
+
+  /* Botón e indicador de Purge Cache & Errores (Rojo súper saturado y legible) */
+  html:not(.dark) .text-red-300,
+  html:not(.dark) .text-red-400,
+  html:not(.dark) .text-rose-300,
+  html:not(.dark) .text-rose-400 {
+    color: #b91c1c;
+    font-weight: 700;
+  }
+
+  html:not(.dark) .bg-red-500\/10,
+  html:not(.dark) .bg-red-500\/20,
+  html:not(.dark) .bg-rose-500\/10,
+  html:not(.dark) .bg-rose-500\/20 {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    color: #b91c1c;
+    font-weight: 700;
+  }
+
+  html:not(.dark) .border-red-500\/20,
+  html:not(.dark) .border-red-500\/30,
+  html:not(.dark) .border-red-500\/50 {
+    border-color: #ef4444;
+  }
+
+  /* Etiquetas, pastillas y badges: más saturadas y contrastadas en modo claro */
+  html:not(.dark) .bg-cyan-500\/10,
+  html:not(.dark) .bg-cyan-500\/15,
+  html:not(.dark) .bg-cyan-500\/20,
+  html:not(.dark) .bg-cyan-500\/5 {
+    background-color: #e0f2fe;
+    border-color: #0284c7;
+    color: #0369a1;
+    font-weight: 700;
+  }
+
+  html:not(.dark) .bg-emerald-500\/10,
+  html:not(.dark) .bg-emerald-500\/15,
+  html:not(.dark) .bg-emerald-500\/20,
+  html:not(.dark) .bg-emerald-500\/5 {
+    background-color: #dcfce7;
+    border-color: #16a34a;
+    color: #15803d;
+    font-weight: 700;
+  }
+
+  html:not(.dark) .bg-purple-500\/10,
+  html:not(.dark) .bg-purple-500\/15,
+  html:not(.dark) .bg-purple-500\/20,
+  html:not(.dark) .bg-purple-500\/5 {
+    background-color: #f3e8ff;
+    border-color: #9333ea;
+    color: #7e22ce;
+    font-weight: 700;
+  }
+
+  html:not(.dark) .bg-amber-500\/10,
+  html:not(.dark) .bg-amber-500\/15,
+  html:not(.dark) .bg-amber-500\/20,
+  html:not(.dark) .bg-amber-500\/5 {
+    background-color: #fef3c7;
+    border-color: #d97706;
+    color: #b45309;
+    font-weight: 700;
+  }
+
+  /* Amber/emerald/violet: textos saturados y oscuros para ratio AA */
+  html:not(.dark) .text-emerald-400,
+  html:not(.dark) .text-emerald-300 {
+    color: #047857;
+    font-weight: 700;
+  }
+
+  html:not(.dark) .text-amber-400,
+  html:not(.dark) .text-yellow-400,
+  html:not(.dark) .text-amber-300 {
+    color: #b45309;
+    font-weight: 700;
+  }
+
+  html:not(.dark) .text-purple-400,
+  html:not(.dark) .text-violet-400,
+  html:not(.dark) .text-purple-300 {
+    color: #6d28d9;
+    font-weight: 700;
+  }
+
+  html:not(.dark) .text-cyan-400,
+  html:not(.dark) .text-cyan-300 {
+    color: #0891b2;
+    font-weight: 700;
+  }
+
+  /* El planeta en el detalle: fondo azul-cielo en vez de negro espacial */
+  html:not(.dark) .planet-visual {
+    background: radial-gradient(
+      circle at 40% 40%,
+      #e0f2fe 0%,
+      #bae6fd 50%,
+      #7dd3fc 100%
+    );
+    border: 1px solid #7dd3fc;
+    box-shadow: 0 8px 24px -4px rgba(8, 145, 178, 0.15);
+  }
+
+  html:not(.dark) .planet-visual .backdrop-blur-md {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(8, 145, 178, 0.4);
+    color: #0891b2;
+  }
+
+  /* Cartel de AI-generated en el detalle del planeta */
+  html:not(.dark) .ai-badge {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #cbd5e1;
+    color: #0891b2;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  }
+
+  /* Botón "How classification works" */
+  html:not(.dark) .classification-btn {
+    background-color: #f0fdfa;
+    border-color: #0891b2;
+    color: #0891b2;
+    font-weight: 600;
+  }
+
+  html:not(.dark) .classification-btn:hover {
+    background-color: #ccfbf1;
+    color: #0e7490;
+  }
+
+  /* Secciones con fondo inline en filtros, modales y confianza */
+  html:not(.dark) div[style*="rgba(15,25,50"],
+  html:not(.dark) div[style*="rgba(15, 25, 50"] {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #0f172a;
+    box-shadow: 0 2px 6px -1px rgba(15, 23, 42, 0.05);
+  }
+
+  html:not(.dark) div[style*="rgba(34,211,238,0.06)"] {
+    background: #e0f2fe;
+    border: 1px solid #0284c7;
+    color: #0369a1;
+  }
+
+  /* Inputs y selects de búsqueda y filtros */
+  html:not(.dark) input[style*="rgba(15, 25, 50"],
+  html:not(.dark) input[style*="rgba(15,25,50"],
+  html:not(.dark) select[style*="rgba(15,25,50"],
+  html:not(.dark) select[style*="rgba(15, 25, 50"] {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+  }
+
+  html:not(.dark) input[style*="rgba(15, 25, 50"]::placeholder,
+  html:not(.dark) input[style*="rgba(15,25,50"]::placeholder {
+    color: #475569;
   }
 }
