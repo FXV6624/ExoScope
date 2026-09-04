@@ -5,10 +5,8 @@ from operator import attrgetter
 from app.core.enums.exoplanet import PlanetClass, PlanetComposition
 from app.models import ExoplanetBase
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # 1. PLANET CLASS — Chen & Kipping (2017, ApJ 834, 17)
-#    Piecewise power-law boundaries from the mass-radius forecaster model.
-# ═══════════════════════════════════════════════════════════════════════════════
+# Piecewise power-law boundaries from the mass-radius forecaster model.
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,11 +34,9 @@ MASS_THRESHOLDS: tuple[float, ...] = tuple(
 )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # 2. COMPOSITION — Zeng et al. (2016, ApJ 819, 127; 2019, PNAS 116, 9723)
-#    Theoretical mass-radius curves for pure compositions.
-#    R = coefficient × M^exponent  (R in R⊕, M in M⊕)
-# ═══════════════════════════════════════════════════════════════════════════════
+# Theoretical mass-radius curves for pure compositions.
+# R = coefficient × M^exponent  (R in R⊕, M in M⊕)
 
 
 @dataclass(frozen=True, slots=True)
@@ -86,10 +82,8 @@ COMPOSITION_RADIUS_THRESHOLDS: tuple[tuple[float | None, PlanetComposition], ...
 )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # 3. HABITABILITY — Kopparapu et al. (2013, ApJ 765, 131)
-#    Habitable Zone boundaries + multi-criterion weighted scoring.
-# ═══════════════════════════════════════════════════════════════════════════════
+# Habitable Zone boundaries + multi-criterion weighted scoring.
 
 
 @dataclass(frozen=True, slots=True)
@@ -212,9 +206,7 @@ HABITABILITY_CRITERIA: tuple[HabitabilityCriterion, ...] = (
 )
 
 
-# ═══════════════════════════════════════════════════════════════════════════════
 # 4. DEFAULT PLANET IMAGES
-# ═══════════════════════════════════════════════════════════════════════════════
 
 DEFAULT_IMAGES: dict[PlanetComposition, str] = {
     PlanetComposition.ROCKY: "/assets/images/planets/rocky.webp",

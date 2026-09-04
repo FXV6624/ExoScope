@@ -6,9 +6,11 @@ from sqlmodel.sql.expression import SelectOfScalar
 
 from app.core.enums.exoplanet import ExoplanetField, ExoplanetSortField, SortOrder
 from app.models import Exoplanet
-from app.repositories.exoplanet_field_selection import apply_field_selection
-from app.repositories.exoplanet_query_builder import build_exoplanet_query
-from app.repositories.exoplanet_sorting import apply_sorting
+from app.repositories.exoplanet_query_builder import (
+    apply_field_selection,
+    apply_sorting,
+    build_exoplanet_query,
+)
 from app.schemas.exoplanet import ExoplanetFilters
 
 

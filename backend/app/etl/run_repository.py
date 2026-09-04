@@ -1,10 +1,8 @@
-from sqlmodel import Session
+"""Repository helper for saving ETL run reports.
 
-from app.etl.report import ETLReport
-from app.models import ETLRun
+This module re-exports save_etl_run from app.repositories.etl for backwards compatibility.
+"""
 
+from app.repositories.etl import save_etl_run
 
-def save_etl_run(session: Session, report: ETLReport) -> None:
-    run = ETLRun.create(report)
-    session.add(run)
-    session.commit()
+__all__ = ["save_etl_run"]
