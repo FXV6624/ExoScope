@@ -1,6 +1,8 @@
-from contextvars import ContextVar
+"""Request-scoped context variables.
 
-request_id_ctx: ContextVar[str] = ContextVar(
-    "request_id",
-    default="-",
-)
+Re-exports request_id_ctx from app.core.logging for backwards compatibility.
+"""
+
+from app.core.logging import request_id_ctx
+
+__all__ = ["request_id_ctx"]

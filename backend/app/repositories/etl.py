@@ -1,6 +1,14 @@
 from sqlmodel import Session, col, func, select
 
+from app.etl.report import ETLReport
 from app.models import ETLRun
+
+
+def save_etl_run(session: Session, report: ETLReport) -> None:
+    """Save an ETL run report to the database."""
+    run = ETLRun.create(report)
+    session.add(run)
+    session.commit()
 
 
 def get_last_etl_run(session: Session) -> ETLRun | None:

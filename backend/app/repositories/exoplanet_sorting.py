@@ -1,23 +1,11 @@
-from typing import Any
+"""Sorting helpers for exoplanet queries.
 
-from sqlmodel.sql.expression import SelectOfScalar
+Re-exports from exoplanet_query_builder for backwards compatibility.
+"""
 
-from app.core.enums.exoplanet import ExoplanetSortField, SortOrder
-from app.models import Exoplanet
+from app.repositories.exoplanet_query_builder import (
+    _SORTABLE_FIELDS,
+    apply_sorting,
+)
 
-_SORTABLE_FIELDS = {
-    field: getattr(Exoplanet, field.value) for field in ExoplanetSortField
-}
-
-
-def apply_sorting(
-    query: SelectOfScalar[Any],
-    sort_by: ExoplanetSortField | None,
-    order: SortOrder,
-) -> SelectOfScalar[Any]:
-    column = _SORTABLE_FIELDS[sort_by or ExoplanetSortField.PLANET_NAME]
-
-    if order is SortOrder.desc:
-        return query.order_by(column.desc().nulls_last())
-
-    return query.order_by(column.asc().nulls_last())
+__all__ = ["_SORTABLE_FIELDS", "apply_sorting"]

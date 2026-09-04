@@ -1,10 +1,18 @@
 from typing import Any
 
+from sqlalchemy.orm import load_only
 from sqlmodel import col, or_, select
 from sqlmodel.sql.expression import SelectOfScalar
 
+from app.core.enums.exoplanet import ExoplanetField, ExoplanetSortField, SortOrder
 from app.models import Exoplanet
 from app.schemas.exoplanet import ExoplanetFilters
+
+SELECTABLE_FIELDS = {field: getattr(Exoplanet, field.value) for field in ExoplanetField}
+
+_SORTABLE_FIELDS = {
+    field: getattr(Exoplanet, field.value) for field in ExoplanetSortField
+}
 
 
 def build_exoplanet_query(filters: ExoplanetFilters) -> SelectOfScalar[Exoplanet]:
@@ -66,3 +74,28 @@ def build_exoplanet_query(filters: ExoplanetFilters) -> SelectOfScalar[Exoplanet
         query = query.where(*conditions)
 
     return query
+
+
+def apply_field_selection(
+    query: SelectOfScalar[Any],
+    fields: list[ExoplanetField] | None,
+) -> SelectOfScalar[Any]:
+    """Apply dynamic field selection using SQLAlchemy load_only."""
+    if not fields:
+        return query
+
+    return query.options(load_only(*(SELECTABLE_FIELDS[field] for field in fields)))
+
+
+def apply_sorting(
+    query: SelectOfScalar[Any],
+    sort_by: ExoplanetSortField | None,
+    order: SortOrder,
+) -> SelectOfScalar[Any]:
+    """Apply column sorting with NULL values sorted last."""
+    column = _SORTABLE_FIELDS[sort_by or ExoplanetSortField.PLANET_NAME]
+
+    if order is SortOrder.desc:
+        return query.order_by(column.desc().nulls_last())
+
+    return query.order_by(column.asc().nulls_last())
