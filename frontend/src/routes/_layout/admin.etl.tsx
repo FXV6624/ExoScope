@@ -1,170 +1,152 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import {
-  AlertCircle,
-  CheckCircle2,
-  ChevronRight,
-  Database,
-  Loader2,
-  Play,
-  RefreshCw,
-  Sliders,
-  Timer,
-} from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-import { EtlService, type LoadMode } from "@/client"
+import {
+  type ApiError,
+  EtlService,
+  ExoplanetsService,
+  type LoadMode,
+  SchedulerService,
+} from "@/client"
+import { OpenAPI } from "@/client/core/OpenAPI"
+import { request as __request } from "@/client/core/request"
+import { EtlExecutionReportCard } from "@/components/Admin/ETL/EtlExecutionReportCard"
+import { EtlHeader } from "@/components/Admin/ETL/EtlHeader"
+import { EtlLaunchCard } from "@/components/Admin/ETL/EtlLaunchCard"
+import { EtlSchedulerCard } from "@/components/Admin/ETL/EtlSchedulerCard"
+import { EtlThresholdsCard } from "@/components/Admin/ETL/EtlThresholdsCard"
+import type { DetailedETLReport } from "@/components/Admin/ETL/types"
+import { EtlHistoryModal } from "@/components/Exoplanets/EtlHistoryModal"
 import { SpaceBackground } from "@/components/Exoplanets/SpaceBackground"
 import useCustomToast from "@/hooks/useCustomToast"
+import {
+  DEFAULT_HABITABILITY_CONFIDENCE_THRESHOLD,
+  DEFAULT_HABITABILITY_SCORE_THRESHOLD,
+  getStoredThresholds,
+  saveStoredThresholds,
+} from "@/utils"
 
 // ─── Route ────────────────────────────────────────────────────────────────────
 
 export const Route = createFileRoute("/_layout/admin/etl")({
-  component: AdminETLPage,
-  head: () => ({ meta: [{ title: "Admin — ETL Pipeline" }] }),
+  component: AdminControlPage,
+  head: () => ({
+    meta: [{ title: "Admin Control Center — ExoScope" }],
+  }),
 })
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Main Admin Control Page Component ────────────────────────────────────────
 
-interface DetailedETLReport {
-  extracted: number
-  transformed: number
-  load_result: {
-    attempted: number
-    inserted: number
-    updated: number
-    skipped: number
-  }
-  started_at?: string
-  finished_at?: string
-  duration_seconds: number
-  extract_time: number
-  transform_time: number
-  load_time: number
-  success: boolean
-  errors: string[]
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function InfoRow({
-  label,
-  value,
-  highlight,
-}: {
-  label: string
-  value: string | number | null | undefined
-  highlight?: boolean
-}) {
-  return (
-    <div className="flex items-center justify-between py-2 border-b border-white/5 last:border-none">
-      <span className="text-xs text-space-muted">{label}</span>
-      <span
-        className={`text-sm font-medium ${
-          highlight ? "text-space-accent" : "text-space-primary"
-        }`}
-      >
-        {value ?? "—"}
-      </span>
-    </div>
-  )
-}
-
-function SectionCard({
-  title,
-  icon: Icon,
-  children,
-}: {
-  title: string
-  icon: React.ElementType
-  children: React.ReactNode
-}) {
-  return (
-    <div
-      className="flex flex-col gap-3 rounded-2xl p-5"
-      style={{
-        background: "rgba(15, 25, 50, 0.6)",
-        border: "1px solid rgba(255,255,255,0.08)",
-      }}
-    >
-      <div className="flex items-center gap-2">
-        <Icon size={14} className="text-space-accent" />
-        <span className="text-xs uppercase tracking-widest text-space-accent">
-          {title}
-        </span>
-      </div>
-      <div className="flex flex-col">{children}</div>
-    </div>
-  )
-}
-
-type StageStatus = "pending" | "running" | "success" | "error"
-
-function PipelineStage({
-  label,
-  duration,
-  status,
-}: {
-  label: string
-  duration?: number
-  status: StageStatus
-}) {
-  const dot =
-    status === "pending" ? (
-      <div
-        className="h-4 w-4 rounded-full shrink-0"
-        style={{ background: "rgba(255,255,255,0.08)" }}
-      />
-    ) : status === "running" ? (
-      <Loader2 size={16} className="animate-spin text-cyan-400 shrink-0" />
-    ) : status === "success" ? (
-      <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-    ) : (
-      <AlertCircle size={16} className="text-red-400 shrink-0" />
-    )
-
-  const labelColor =
-    status === "pending"
-      ? "#64748b"
-      : status === "running"
-        ? "#22d3ee"
-        : status === "success"
-          ? "#f1f5f9"
-          : "#f87171"
-
-  return (
-    <div className="flex items-center justify-between py-2.5 border-b border-white/5 last:border-none">
-      <div className="flex items-center gap-3">
-        {dot}
-        <span className="text-sm" style={{ color: labelColor }}>
-          {label}
-        </span>
-      </div>
-      {duration != null && (
-        <span className="text-xs text-space-muted">
-          {duration > 0 ? `${duration.toFixed(2)}s` : "< 0.01s"}
-        </span>
-      )}
-    </div>
-  )
-}
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
-function AdminETLPage() {
+function AdminControlPage() {
   const { showSuccessToast, showErrorToast } = useCustomToast()
   const queryClient = useQueryClient()
 
-  // Configuration options matching backend ETLConfig
+  // 1. ETL Configuration state
   const [limit, setLimit] = useState<string>("")
   const [loadMode, setLoadMode] = useState<LoadMode>("upsert")
   const [dryRun, setDryRun] = useState<boolean>(false)
   const [persistRun, setPersistRun] = useState<boolean>(true)
-
   const [lastReport, setLastReport] = useState<DetailedETLReport | null>(null)
   const [runError, setRunError] = useState<string | null>(null)
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState<boolean>(false)
 
-  const mutation = useMutation({
+  // 2. Scheduler State
+  const [intervalInput, setIntervalInput] = useState<string>("86400")
+
+  // 3. Habitability Thresholds State (Loaded from stored preferences)
+  const initialThresholds = getStoredThresholds()
+  const [scoreThreshold, setScoreThreshold] = useState<number>(
+    initialThresholds.score,
+  )
+  const [confidenceThreshold, setConfidenceThreshold] = useState<number>(
+    initialThresholds.confidence,
+  )
+
+  // Fetch initial last run report from DB
+  const { data: initialLastRun } = useQuery({
+    queryKey: ["last-etl-run"],
+    queryFn: () => EtlService.readLastEtlRun(),
+  })
+
+  useEffect(() => {
+    const r = (initialLastRun as { report?: DetailedETLReport } | undefined)
+      ?.report
+    if (r && !lastReport) {
+      setLastReport({
+        id: r.id,
+        extracted: r.extracted ?? 0,
+        transformed: r.transformed ?? 0,
+        load_result: {
+          attempted:
+            r.load_result?.attempted ??
+            (r.load_result?.inserted ?? 0) +
+              (r.load_result?.updated ?? 0) +
+              (r.load_result?.skipped ?? 0),
+          inserted: r.load_result?.inserted ?? 0,
+          updated: r.load_result?.updated ?? 0,
+          skipped: r.load_result?.skipped ?? 0,
+        },
+        started_at: r.started_at,
+        finished_at: r.finished_at,
+        duration_seconds: r.total_time ?? r.duration_seconds ?? 0,
+        total_time: r.total_time ?? r.duration_seconds ?? 0,
+        extract_time: r.extract_time ?? 0,
+        transform_time: r.transform_time ?? 0,
+        load_time: r.load_time ?? 0,
+        success: r.success ?? r.errors?.length === 0,
+        errors: r.errors
+          ? typeof r.errors === "string"
+            ? (r.errors as string).trim()
+              ? [r.errors]
+              : []
+            : r.errors
+          : [],
+      })
+    }
+  }, [initialLastRun, lastReport])
+
+  // Fetch Scheduler Status
+  const { data: schedulerData, refetch: refetchScheduler } = useQuery({
+    queryKey: ["scheduler-status"],
+    queryFn: () => SchedulerService.readSchedulerStatus(),
+    refetchInterval: 10000,
+  })
+
+  const scheduler = (
+    schedulerData as
+      | {
+          scheduler?: {
+            running?: boolean
+            interval_seconds?: number
+            next_run_time?: string
+            next_run?: string
+          }
+        }
+      | undefined
+  )?.scheduler
+  const nextRunTimestamp = scheduler?.next_run_time || scheduler?.next_run
+
+  useEffect(() => {
+    if (scheduler?.interval_seconds) {
+      setIntervalInput(String(scheduler.interval_seconds))
+    }
+  }, [scheduler?.interval_seconds])
+
+  // Fetch Stats with custom habitability thresholds
+  const { data: customStats, isLoading: statsLoading } = useQuery({
+    queryKey: ["admin-exoplanet-stats", scoreThreshold, confidenceThreshold],
+    queryFn: () =>
+      ExoplanetsService.getExoplanetStats({
+        habitabilityScoreThreshold: scoreThreshold,
+        habitabilityConfidenceThreshold: confidenceThreshold,
+      }),
+  })
+
+  // ─── Mutations ───────────────────────────────────────────────────────────────
+
+  // ETL Run Mutation
+  const etlMutation = useMutation({
     mutationFn: () => {
       const parsedLimit = limit.trim() ? Number(limit.trim()) : undefined
       return EtlService.runExoplanetEtl({
@@ -176,418 +158,228 @@ function AdminETLPage() {
         },
       })
     },
-    onSuccess: (data: any) => {
-      const r = data?.report
+    onSuccess: (data) => {
+      const r = (data as { report?: DetailedETLReport } | undefined)?.report
       if (r) {
         setLastReport({
+          id: r.id,
           extracted: r.extracted ?? 0,
           transformed: r.transformed ?? 0,
           load_result: {
-            attempted: r.load_result?.attempted ?? 0,
+            attempted:
+              r.load_result?.attempted ??
+              (r.load_result?.inserted ?? 0) +
+                (r.load_result?.updated ?? 0) +
+                (r.load_result?.skipped ?? 0),
             inserted: r.load_result?.inserted ?? 0,
             updated: r.load_result?.updated ?? 0,
             skipped: r.load_result?.skipped ?? 0,
           },
           started_at: r.started_at,
           finished_at: r.finished_at,
-          duration_seconds: r.duration_seconds ?? 0,
+          duration_seconds: r.duration_seconds ?? r.total_time ?? 0,
+          total_time: r.total_time ?? r.duration_seconds ?? 0,
           extract_time: r.extract_time ?? 0,
           transform_time: r.transform_time ?? 0,
           load_time: r.load_time ?? 0,
           success: r.success ?? r.errors?.length === 0,
-          errors: r.errors ?? [],
+          errors: r.errors
+            ? typeof r.errors === "string"
+              ? (r.errors as string).trim()
+                ? [r.errors]
+                : []
+              : r.errors
+            : [],
         })
       }
       queryClient.invalidateQueries({ queryKey: ["exoplanets"] })
       queryClient.invalidateQueries({ queryKey: ["exoplanet-stats"] })
-      queryClient.invalidateQueries({ queryKey: ["exoplanet"] })
+      queryClient.invalidateQueries({ queryKey: ["admin-exoplanet-stats"] })
+      queryClient.invalidateQueries({ queryKey: ["last-etl-run"] })
+      queryClient.invalidateQueries({ queryKey: ["all-etl-runs"] })
       setRunError(null)
-      showSuccessToast("ETL Pipeline executed successfully")
     },
-    onError: (err: any) => {
+    onError: (err: ApiError | Error | unknown) => {
+      const apiErr = err as ApiError
       let errorMsg = "ETL execution failed."
       if (
-        err?.status === 429 ||
-        err?.body?.detail?.toString().includes("1 per 1 minute")
+        apiErr?.status === 429 ||
+        (apiErr?.body as { detail?: string })?.detail
+          ?.toString()
+          .includes("1 per 1 minute")
       ) {
         errorMsg =
-          "Rate limit reached: The ETL pipeline can only be run once per minute. Please wait a moment before running again."
-      } else if (err?.message === "Network Error") {
-        errorMsg =
-          "Network Error: The ETL request timed out or was interrupted by the server. If executing a full pipeline without limit, try specifying a smaller record limit or wait 1 minute before retrying."
-      } else if (Array.isArray(err?.body?.detail)) {
-        errorMsg = err.body.detail
-          .map((d: any) => d.msg || JSON.stringify(d))
-          .join(", ")
-      } else if (err?.body?.detail) {
-        errorMsg = String(err.body.detail)
-      } else if (err?.message) {
+          "Rate limit reached: The ETL pipeline can only be run once per minute."
+      } else if ((apiErr?.body as { detail?: string })?.detail) {
+        errorMsg = String((apiErr.body as { detail?: string }).detail)
+      } else if (err instanceof Error) {
         errorMsg = err.message
       }
       setRunError(errorMsg)
-      showErrorToast(errorMsg)
     },
   })
 
-  const isRunning = mutation.isPending
+  // Start Scheduler Mutation
+  const startSchedulerMutation = useMutation({
+    mutationFn: () => SchedulerService.startSchedulerRoute(),
+    onSuccess: () => {
+      refetchScheduler()
+      showSuccessToast("Scheduler started successfully")
+    },
+    onError: (err: ApiError | Error | unknown) => {
+      const apiErr = err as ApiError
+      showErrorToast(
+        (apiErr?.body as { detail?: string })?.detail ||
+          "Could not start scheduler",
+      )
+    },
+  })
 
-  // Derive per-stage status from the last report using timing fields + errors.
-  // Using _time > 0 to know if a stage actually ran (avoids false negatives on
-  // legitimate empty extractions where extracted/transformed = 0 by design).
-  const stageStatuses: {
-    preflight: StageStatus
-    extract: StageStatus
-    transform: StageStatus
-    load: StageStatus
-  } = (() => {
-    if (isRunning) {
-      return {
-        preflight: "running",
-        extract: "pending",
-        transform: "pending",
-        load: "pending",
-      }
-    }
-    if (!lastReport) {
-      return {
-        preflight: "pending",
-        extract: "pending",
-        transform: "pending",
-        load: "pending",
-      }
-    }
+  // Stop Scheduler Mutation
+  const stopSchedulerMutation = useMutation({
+    mutationFn: () => SchedulerService.stopSchedulerRoute(),
+    onSuccess: () => {
+      refetchScheduler()
+      showSuccessToast("Scheduler stopped")
+    },
+    onError: (err: ApiError | Error | unknown) => {
+      const apiErr = err as ApiError
+      showErrorToast(
+        (apiErr?.body as { detail?: string })?.detail ||
+          "Could not stop scheduler",
+      )
+    },
+  })
 
-    const hasErrors = lastReport.errors.length > 0
-    const extractRan = lastReport.extract_time > 0
-    const transformRan = lastReport.transform_time > 0
-    const loadRan = lastReport.load_time > 0
+  // Update Scheduler Interval Mutation
+  const updateIntervalMutation = useMutation({
+    mutationFn: (seconds: number) =>
+      SchedulerService.updateScheduler({
+        requestBody: { interval_seconds: seconds },
+      }),
+    onSuccess: () => {
+      refetchScheduler()
+      showSuccessToast("Scheduler interval updated successfully")
+    },
+    onError: (err: ApiError | Error | unknown) => {
+      const apiErr = err as ApiError
+      showErrorToast(
+        (apiErr?.body as { detail?: string })?.detail ||
+          "Failed to update interval",
+      )
+    },
+  })
 
-    // Pre-flight: failed if there are errors but extract never even started
-    const preflight: StageStatus = !extractRan ? "error" : "success"
+  // Purge Cache Mutation
+  const purgeCacheMutation = useMutation({
+    mutationFn: () =>
+      __request(OpenAPI, {
+        method: "POST",
+        url: "/api/v1/utils/purge-cache/",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries()
+      showSuccessToast("System cache (Redis & In-memory) purged successfully")
+    },
+    onError: (err: ApiError | Error | unknown) => {
+      const apiErr = err as ApiError
+      showErrorToast(
+        (apiErr?.body as { detail?: string })?.detail ||
+          "Failed to purge cache",
+      )
+    },
+  })
 
-    // Extract: ran and failed → error; ran and no errors → success; never ran → pending
-    const extract: StageStatus =
-      preflight === "error"
-        ? "pending"
-        : !extractRan
-          ? "pending"
-          : hasErrors && !transformRan
-            ? "error"
-            : "success"
+  const handleApplyThresholds = () => {
+    saveStoredThresholds(scoreThreshold, confidenceThreshold)
+    queryClient.invalidateQueries({ queryKey: ["exoplanet-stats"] })
+    queryClient.invalidateQueries({ queryKey: ["admin-exoplanet-stats"] })
+    showSuccessToast("Habitability thresholds applied to Dashboard & Stats")
+  }
 
-    // Transform: ran and failed → error; ran ok → success; never ran → pending
-    const transform: StageStatus =
-      extract === "pending" || extract === "error"
-        ? "pending"
-        : !transformRan
-          ? "pending"
-          : hasErrors && !loadRan
-            ? "error"
-            : "success"
+  const handleResetThresholds = () => {
+    setScoreThreshold(DEFAULT_HABITABILITY_SCORE_THRESHOLD)
+    setConfidenceThreshold(DEFAULT_HABITABILITY_CONFIDENCE_THRESHOLD)
+    saveStoredThresholds(
+      DEFAULT_HABITABILITY_SCORE_THRESHOLD,
+      DEFAULT_HABITABILITY_CONFIDENCE_THRESHOLD,
+    )
+    queryClient.invalidateQueries({ queryKey: ["exoplanet-stats"] })
+    queryClient.invalidateQueries({ queryKey: ["admin-exoplanet-stats"] })
+    showSuccessToast("Thresholds reset to default (80.0 / 80%)")
+  }
 
-    // Load: ran and failed → error; ran ok → success; never ran → pending
-    const load: StageStatus =
-      transform === "pending" || transform === "error"
-        ? "pending"
-        : !loadRan
-          ? "pending"
-          : hasErrors
-            ? "error"
-            : "success"
-
-    return { preflight, extract, transform, load }
-  })()
+  const isRunningETL = etlMutation.isPending
 
   return (
-    <div className="relative flex min-h-full flex-col gap-6">
+    <div className="relative flex min-h-full flex-col gap-6 pb-12">
       <SpaceBackground />
 
-      <div className="relative flex flex-col gap-6">
-        {/* Header */}
-        <div>
-          <div className="mb-1 flex items-center gap-2 text-xs text-space-muted">
-            <span>Admin</span>
-            <ChevronRight size={12} />
-            <span className="text-space-accent">ETL</span>
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-space-primary">
-            ETL Pipeline Control
-          </h1>
-          <p className="mt-1 text-sm text-space-muted">
-            Extract exoplanet records from NASA Archive, transform & enrich, and
-            load into PostgreSQL.
-          </p>
+      {/* ─── Header ──────────────────────────────────────────────────────────── */}
+      <EtlHeader
+        onPurgeCache={() => purgeCacheMutation.mutate()}
+        isPurging={purgeCacheMutation.isPending}
+      />
+
+      {/* ─── Top Control Grid ─────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        {/* SECTION 1: ETL Pipeline Ingestion & Complete Live Report (7 Cols) */}
+        <div className="flex flex-col gap-6 lg:col-span-7">
+          <EtlLaunchCard
+            limit={limit}
+            onLimitChange={setLimit}
+            loadMode={loadMode}
+            onLoadModeChange={setLoadMode}
+            dryRun={dryRun}
+            onDryRunChange={setDryRun}
+            persistRun={persistRun}
+            onPersistRunChange={setPersistRun}
+            isRunningETL={isRunningETL}
+            runError={runError}
+            onRunETL={() => etlMutation.mutate()}
+          />
+
+          <EtlExecutionReportCard
+            lastReport={lastReport}
+            onOpenHistory={() => setIsHistoryModalOpen(true)}
+          />
         </div>
 
-        {/* Configuration Card */}
-        <div
-          className="flex flex-col gap-4 rounded-2xl p-5"
-          style={{
-            background: "rgba(15, 25, 50, 0.7)",
-            border: "1px solid rgba(34,211,238,0.2)",
-          }}
-        >
-          <div className="flex items-center gap-2">
-            <Sliders size={14} className="text-space-accent" />
-            <span className="text-xs uppercase tracking-widest text-space-accent">
-              Execution Settings
-            </span>
-          </div>
+        {/* SECTION 2 & 3: Scheduler Automation & Habitability Parameters (5 Cols) */}
+        <div className="flex flex-col gap-6 lg:col-span-5">
+          <EtlSchedulerCard
+            scheduler={scheduler}
+            nextRunTimestamp={nextRunTimestamp}
+            intervalInput={intervalInput}
+            onIntervalInputChange={setIntervalInput}
+            onApplyInterval={(secs) => updateIntervalMutation.mutate(secs)}
+            isUpdatingInterval={updateIntervalMutation.isPending}
+            onStartScheduler={() => startSchedulerMutation.mutate()}
+            isStarting={startSchedulerMutation.isPending}
+            onStopScheduler={() => stopSchedulerMutation.mutate()}
+            isStopping={stopSchedulerMutation.isPending}
+          />
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Record Limit */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-xs text-space-muted">Record Limit</span>
-              <input
-                type="number"
-                min={1}
-                placeholder="All records (no limit)"
-                value={limit}
-                onChange={(e) => setLimit(e.target.value)}
-                disabled={isRunning}
-                className="rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none placeholder:text-slate-600"
-                style={{
-                  background: "rgba(6, 13, 31, 0.8)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              />
-            </div>
-
-            {/* Load Mode */}
-            <div className="flex flex-col gap-1.5">
-              <span className="text-xs text-space-muted">Load Mode</span>
-              <select
-                value={loadMode}
-                onChange={(e) => setLoadMode(e.target.value as LoadMode)}
-                disabled={isRunning}
-                className="rounded-lg px-3 py-1.5 text-sm text-space-subtle outline-none"
-                style={{
-                  background: "rgba(6, 13, 31, 0.8)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
-                <option value="upsert">
-                  UPSERT — Insert new records or update existing ones
-                </option>
-                <option value="insert">
-                  INSERT — Insert only new records, skip duplicates
-                </option>
-                <option value="reload">
-                  RELOAD — Delete all records and insert new data
-                </option>
-              </select>
-            </div>
-
-            {/* Dry Run Toggle */}
-            <div className="flex flex-col gap-1.5 justify-center">
-              <span className="text-xs text-space-muted">Simulation</span>
-              <label className="flex items-center gap-2 cursor-pointer text-sm text-space-subtle">
-                <input
-                  type="checkbox"
-                  checked={dryRun}
-                  onChange={(e) => setDryRun(e.target.checked)}
-                  disabled={isRunning}
-                  className="rounded border-slate-700"
-                />
-                Dry Run (Do not commit DB)
-              </label>
-            </div>
-
-            {/* Persist Run Toggle */}
-            <div className="flex flex-col gap-1.5 justify-center">
-              <span className="text-xs text-space-muted">Telemetry</span>
-              <label className="flex items-center gap-2 cursor-pointer text-sm text-space-subtle">
-                <input
-                  type="checkbox"
-                  checked={persistRun}
-                  onChange={(e) => setPersistRun(e.target.checked)}
-                  disabled={isRunning}
-                  className="rounded border-slate-700"
-                />
-                Persist Run Metadata
-              </label>
-            </div>
-          </div>
-
-          {/* Run button */}
-          <div className="flex justify-end pt-2 border-t border-white/5">
-            <button
-              type="button"
-              onClick={() => mutation.mutate()}
-              disabled={isRunning}
-              className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all disabled:cursor-not-allowed cursor-pointer"
-              style={{
-                background: isRunning
-                  ? "rgba(34,211,238,0.08)"
-                  : "rgba(34,211,238,0.2)",
-                border: "1px solid rgba(34,211,238,0.4)",
-                color: isRunning ? "#64748b" : "#22d3ee",
-              }}
-            >
-              {isRunning ? (
-                <Loader2 size={16} className="animate-spin" />
-              ) : (
-                <Play size={16} />
-              )}
-              {isRunning ? "Executing Pipeline..." : "Run ETL"}
-            </button>
-          </div>
+          <EtlThresholdsCard
+            scoreThreshold={scoreThreshold}
+            onScoreThresholdChange={setScoreThreshold}
+            confidenceThreshold={confidenceThreshold}
+            onConfidenceThresholdChange={setConfidenceThreshold}
+            onReset={handleResetThresholds}
+            onApply={handleApplyThresholds}
+            habitableCount={
+              customStats?.habitability?.potentially_habitable ?? 0
+            }
+            statsLoading={statsLoading}
+          />
         </div>
-
-        {/* Error banner */}
-        {runError && (
-          <div
-            className="flex items-center gap-3 rounded-xl px-4 py-3"
-            style={{
-              background: "rgba(248, 113, 113, 0.08)",
-              border: "1px solid rgba(248,113,113,0.3)",
-            }}
-          >
-            <AlertCircle size={16} className="text-red-400 shrink-0" />
-            <p className="text-sm text-red-300">{runError}</p>
-          </div>
-        )}
-
-        {/* Report Cards Grid */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {/* Pipeline stages */}
-          <SectionCard title="Pipeline Stages" icon={RefreshCw}>
-            <PipelineStage
-              label="Pre-flight Checks"
-              status={stageStatuses.preflight}
-            />
-            <PipelineStage
-              label="Extract"
-              duration={lastReport?.extract_time}
-              status={stageStatuses.extract}
-            />
-            <PipelineStage
-              label="Transform & Enrich"
-              duration={lastReport?.transform_time}
-              status={stageStatuses.transform}
-            />
-            <PipelineStage
-              label="Load"
-              duration={lastReport?.load_time}
-              status={stageStatuses.load}
-            />
-          </SectionCard>
-
-          {/* Execution Overview */}
-          <SectionCard title="Execution Overview" icon={Timer}>
-            <InfoRow
-              label="Status"
-              value={
-                lastReport == null
-                  ? "Awaiting execution"
-                  : lastReport.success
-                    ? "✓ Success"
-                    : "✕ Error"
-              }
-              highlight={lastReport?.success}
-            />
-            <InfoRow
-              label="Total Duration"
-              value={
-                lastReport?.duration_seconds != null
-                  ? `${lastReport.duration_seconds.toFixed(2)}s`
-                  : undefined
-              }
-            />
-            <InfoRow
-              label="Extract Duration"
-              value={
-                lastReport?.extract_time != null
-                  ? `${lastReport.extract_time.toFixed(2)}s`
-                  : undefined
-              }
-            />
-            <InfoRow
-              label="Transform Duration"
-              value={
-                lastReport?.transform_time != null
-                  ? `${lastReport.transform_time.toFixed(2)}s`
-                  : undefined
-              }
-            />
-            <InfoRow
-              label="Load Duration"
-              value={
-                lastReport?.load_time != null
-                  ? `${lastReport.load_time.toFixed(2)}s`
-                  : undefined
-              }
-            />
-            <InfoRow
-              label="Started At"
-              value={
-                lastReport?.started_at
-                  ? new Date(lastReport.started_at).toLocaleString()
-                  : undefined
-              }
-            />
-            <InfoRow
-              label="Finished At"
-              value={
-                lastReport?.finished_at
-                  ? new Date(lastReport.finished_at).toLocaleString()
-                  : undefined
-              }
-            />
-          </SectionCard>
-
-          {/* Database Load Results */}
-          <SectionCard title="Database Load Results" icon={Database}>
-            <InfoRow
-              label="Records Extracted"
-              value={lastReport?.extracted?.toLocaleString()}
-            />
-            <InfoRow
-              label="Records Transformed"
-              value={lastReport?.transformed?.toLocaleString()}
-            />
-            <InfoRow
-              label="Records Attempted"
-              value={lastReport?.load_result.attempted?.toLocaleString()}
-              highlight
-            />
-            <InfoRow
-              label="Inserted"
-              value={lastReport?.load_result.inserted?.toLocaleString()}
-            />
-            <InfoRow
-              label="Updated"
-              value={lastReport?.load_result.updated?.toLocaleString()}
-            />
-            <InfoRow
-              label="Skipped"
-              value={lastReport?.load_result.skipped?.toLocaleString()}
-            />
-          </SectionCard>
-        </div>
-
-        {/* Errors list if any */}
-        {lastReport && lastReport.errors.length > 0 && (
-          <div
-            className="flex flex-col gap-2 rounded-2xl p-4"
-            style={{
-              background: "rgba(248, 113, 113, 0.08)",
-              border: "1px solid rgba(248,113,113,0.3)",
-            }}
-          >
-            <span className="text-xs uppercase tracking-widest text-red-400 font-semibold">
-              Execution Errors ({lastReport.errors.length})
-            </span>
-            <div className="flex flex-col gap-1">
-              {lastReport.errors.map((err, idx) => (
-                <p key={idx} className="text-xs text-red-300">
-                  • {err}
-                </p>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
+
+      <EtlHistoryModal
+        isOpen={isHistoryModalOpen}
+        onClose={() => setIsHistoryModalOpen(false)}
+      />
     </div>
   )
 }
+export default AdminControlPage

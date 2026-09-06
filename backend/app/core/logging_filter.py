@@ -1,9 +1,8 @@
-import logging
+"""Logging filter for injecting request ID into log records.
 
-from app.core.request_context import request_id_ctx
+Re-exports RequestIdFilter from app.core.logging for backwards compatibility.
+"""
 
+from app.core.logging import RequestIdFilter
 
-class RequestIdFilter(logging.Filter):
-    def filter(self, record: logging.LogRecord) -> bool:
-        record.request_id = request_id_ctx.get()
-        return True
+__all__ = ["RequestIdFilter"]

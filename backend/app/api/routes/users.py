@@ -2,7 +2,6 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
-from sqlmodel import col, func, select
 
 from app.api.deps import (
     CurrentUser,
@@ -10,7 +9,6 @@ from app.api.deps import (
 )
 from app.core.config import settings
 from app.core.security import get_password_hash, verify_password
-from app.models import User
 from app.schemas.auth import Message
 from app.schemas.user import (
     UpdatePassword,
@@ -26,9 +24,6 @@ from app.utils import generate_new_account_email, send_email
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-# -----------------------
-# GET USERS (admin)
-# -----------------------
 @router.get(
     "/",
     response_model=UsersPublic,
@@ -39,18 +34,10 @@ def read_users(
     skip: int = 0,
     limit: int = 100,
 ) -> Any:
-    count = session.exec(select(func.count()).select_from(User)).one()
-
-    users = session.exec(
-        select(User).order_by(col(User.created_at).desc()).offset(skip).limit(limit)
-    ).all()
-
+    users, count = user_service.get_users(session, skip=skip, limit=limit)
     return UsersPublic(data=[UserPublic.model_validate(u) for u in users], count=count)
 
 
-# -----------------------
-# CREATE USER (admin)
-# -----------------------
 @router.post("/", response_model=UserPublic)
 def create_user(
     session: SessionDep,
@@ -83,9 +70,6 @@ def create_user(
     return user
 
 
-# -----------------------
-# ME
-# -----------------------
 @router.get("/me", response_model=UserPublic)
 def read_user_me(current_user: CurrentUser) -> Any:
     return current_user
@@ -102,13 +86,7 @@ def update_user_me(
             raise HTTPException(status_code=409, detail="Email already used")
 
     data = user_in.model_dump(exclude_unset=True)
-
-    current_user.sqlmodel_update(data)
-    session.add(current_user)
-    session.commit()
-    session.refresh(current_user)
-
-    return current_user
+    return user_service.update_user_fields(session, current_user, data)
 
 
 @router.patch("/me/password", response_model=Message)
@@ -131,16 +109,13 @@ def update_password_me(
     return Message(message="Password updated")
 
 
-# -----------------------
-# GET BY ID (admin)
-# -----------------------
 @router.get("/{user_id}", response_model=UserPublic)
 def read_user(
     user_id: uuid.UUID,
     session: SessionDep,
     current_user: CurrentUser,  # noqa: ARG001
 ) -> Any:
-    user = session.get(User, user_id)
+    user = user_service.get_user_by_id(session, user_id)
 
     if not user:
         raise HTTPException(status_code=404)
@@ -148,9 +123,6 @@ def read_user(
     return user
 
 
-# -----------------------
-# UPDATE USER (admin)
-# -----------------------
 @router.patch(
     "/{user_id}",
     response_model=UserPublic,
@@ -161,7 +133,7 @@ def update_user(
     current_user: CurrentUser,  # noqa: ARG001
     user_in: UserUpdate,
 ) -> Any:
-    db_user = session.get(User, user_id)
+    db_user = user_service.get_user_by_id(session, user_id)
 
     if not db_user:
         raise HTTPException(status_code=404)
@@ -171,23 +143,16 @@ def update_user(
         if existing and existing.id != user_id:
             raise HTTPException(status_code=409)
 
-    db_user.sqlmodel_update(user_in.model_dump(exclude_unset=True))
-
-    session.add(db_user)
-    session.commit()
-    session.refresh(db_user)
-
-    return db_user
+    return user_service.update_user_fields(
+        session, db_user, user_in.model_dump(exclude_unset=True)
+    )
 
 
-# -----------------------
-# DELETE USER (admin)
-# -----------------------
 @router.delete("/{user_id}")
 def delete_user(
     session: SessionDep, current_user: CurrentUser, user_id: uuid.UUID
 ) -> Any:
-    user = session.get(User, user_id)
+    user = user_service.get_user_by_id(session, user_id)
 
     if not user:
         raise HTTPException(status_code=404)
@@ -195,7 +160,6 @@ def delete_user(
     if user == current_user:
         raise HTTPException(status_code=403)
 
-    session.delete(user)
-    session.commit()
+    user_service.delete_user(session, user)
 
     return Message(message="User deleted")

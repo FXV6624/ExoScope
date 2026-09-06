@@ -17,8 +17,8 @@ function Layout() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="flex min-h-screen flex-col min-w-0 w-full max-w-full overflow-x-hidden">
-        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background/80 backdrop-blur-sm px-4">
-          <SidebarTrigger className="-ml-1 text-muted-foreground" />
+        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-border bg-background/80 backdrop-blur-sm px-4">
+          <SidebarTrigger className="-ml-1 text-muted-foreground hover:text-foreground transition-colors" />
         </header>
         <div className="flex min-h-0 flex-1 flex-col min-w-0 w-full overflow-y-auto p-6 md:p-8">
           <Outlet />

@@ -205,7 +205,7 @@ def _build_completeness(session: Session) -> CompletenessStats:
 
     return CompletenessStats(
         **{
-            field: round(row[field] * 100 / total, 1)
+            field: round(row[field] * 100 / total, 2)
             for field in CompletenessStats.model_fields
         }
     )

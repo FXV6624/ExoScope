@@ -4,6 +4,7 @@ import {
   Link as RouterLink,
   redirect,
 } from "@tanstack/react-router"
+import { ArrowRight, KeyRound, Telescope } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -44,7 +45,7 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       {
-        title: "Log In - FastAPI Template",
+        title: "Sign In — ExoScope",
       },
     ],
   }),
@@ -69,31 +70,45 @@ function Login() {
 
   return (
     <AuthLayout>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-6"
-        >
-          <div className="flex flex-col items-center gap-2 text-center">
-            <h1 className="text-2xl font-bold">Login to your account</h1>
+      <div className="flex flex-col gap-6">
+        {/* Header Icon & Title */}
+        <div className="flex flex-col items-center text-center gap-2">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 shadow-lg shadow-cyan-500/15">
+            <KeyRound size={22} />
           </div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            Admin Sign In
+          </h1>
+          <p className="text-xs text-muted-foreground max-w-xs">
+            Authenticate with administrator credentials to manage ETL workflows
+            and platform settings.
+          </p>
+        </div>
 
-          <div className="grid gap-4">
+        {/* Form */}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-xs text-foreground font-medium">
+                    Email Address
+                  </FormLabel>
                   <FormControl>
                     <Input
                       data-testid="email-input"
-                      placeholder="user@example.com"
+                      placeholder="admin@example.com"
                       type="email"
+                      className="rounded-xl border border-input bg-background/60 px-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage className="text-xs" />
+                  <FormMessage className="text-xs text-red-400" />
                 </FormItem>
               )}
             />
@@ -103,11 +118,13 @@ function Login() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex items-center">
-                    <FormLabel>Password</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel className="text-xs text-foreground font-medium">
+                      Password
+                    </FormLabel>
                     <RouterLink
                       to="/recover-password"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
+                      className="text-xs text-cyan-500 hover:text-cyan-600 dark:text-cyan-400 dark:hover:text-cyan-300 hover:underline transition-colors no-underline"
                     >
                       Forgot your password?
                     </RouterLink>
@@ -115,21 +132,61 @@ function Login() {
                   <FormControl>
                     <PasswordInput
                       data-testid="password-input"
-                      placeholder="Password"
+                      placeholder="••••••••"
+                      className="rounded-xl border border-input bg-background/60 px-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage className="text-xs" />
+                  <FormMessage className="text-xs text-red-400" />
                 </FormItem>
               )}
             />
 
-            <LoadingButton type="submit" loading={loginMutation.isPending}>
+            <LoadingButton
+              type="submit"
+              aria-label="Log In"
+              loading={loginMutation.isPending}
+              className="mt-2 w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-cyan-500/20 transition-all hover:from-cyan-400 hover:to-blue-500 active:scale-[0.99] disabled:opacity-50"
+            >
               Log In
             </LoadingButton>
-          </div>
-        </form>
-      </Form>
+          </form>
+        </Form>
+
+        {/* Divider */}
+        <div className="relative flex items-center justify-center">
+          <div className="w-full border-t border-border" />
+          <span className="absolute bg-card px-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground rounded-full border border-border">
+            Or
+          </span>
+        </div>
+
+        {/* Public / Guest Access Option */}
+        <div className="flex flex-col gap-2">
+          <RouterLink
+            to="/"
+            className="group flex items-center justify-between rounded-2xl border border-border bg-background/50 p-3.5 backdrop-blur-md transition-all hover:border-cyan-500/40 hover:bg-muted/60 no-underline"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-muted/60 text-cyan-500 dark:text-cyan-400 transition-colors group-hover:border-cyan-500/30 group-hover:bg-cyan-500/10">
+                <Telescope size={18} />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-xs font-semibold text-foreground group-hover:text-cyan-500 transition-colors">
+                  Not an admin? Continue without signing in
+                </span>
+                <span className="text-[11px] text-muted-foreground">
+                  Explore catalog & analytics freely
+                </span>
+              </div>
+            </div>
+            <ArrowRight
+              size={15}
+              className="text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-cyan-500 shrink-0"
+            />
+          </RouterLink>
+        </div>
+      </div>
     </AuthLayout>
   )
 }

@@ -79,6 +79,45 @@ class TestUpdateMe:
         assert response.json()["full_name"] == "Updated Name"
 
 
+class TestCreateUser:
+    def test_admin_can_create_user(
+        self, client: TestClient, superuser_token_headers: dict, db: Session
+    ):
+        from unittest.mock import patch
+
+        email = f"newuser-{uuid.uuid4().hex[:8]}@apitest.com"
+        payload = {
+            "email": email,
+            "password": "password12345",
+            "full_name": "New Admin Created",
+        }
+
+        with patch("app.api.routes.users.send_email"):
+            response = client.post(
+                f"{API}/users/", headers=superuser_token_headers, json=payload
+            )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["email"] == email
+        assert data["full_name"] == "New Admin Created"
+
+        # Cleanup
+        db_user = db.get(User, uuid.UUID(data["id"]))
+        if db_user:
+            db.delete(db_user)
+            db.commit()
+
+    def test_cannot_create_duplicate_email(
+        self, client: TestClient, superuser_token_headers: dict
+    ):
+        payload = {"email": settings.FIRST_ADMIN, "password": "password12345"}
+        response = client.post(
+            f"{API}/users/", headers=superuser_token_headers, json=payload
+        )
+        assert response.status_code == 400
+        assert "already exists" in response.json()["detail"]
+
+
 class TestGetUserById:
     def test_admin_can_get_any_user(
         self, client: TestClient, superuser_token_headers: dict, test_user
@@ -91,6 +130,87 @@ class TestGetUserById:
         response = client.get(f"{API}/users/{uuid.uuid4()}")
         assert response.status_code == 401
 
+    def test_get_user_not_found(
+        self, client: TestClient, superuser_token_headers: dict
+    ):
+        response = client.get(
+            f"{API}/users/{uuid.uuid4()}", headers=superuser_token_headers
+        )
+        assert response.status_code == 404
+
+
+class TestUpdatePasswordMe:
+    def test_update_password_incorrect_current(self, client: TestClient, test_user):
+        user, _ = test_user
+        headers = _get_token(client, user.email, "testpassword123")
+        response = client.patch(
+            f"{API}/users/me/password",
+            headers=headers,
+            json={
+                "current_password": "wrongpassword123",
+                "new_password": "newpassword1234",
+            },
+        )
+        assert response.status_code == 400
+        assert "Incorrect password" in response.json()["detail"]
+
+    def test_update_password_same_as_current(self, client: TestClient, test_user):
+        user, password = test_user
+        headers = _get_token(client, user.email, password)
+        response = client.patch(
+            f"{API}/users/me/password",
+            headers=headers,
+            json={"current_password": password, "new_password": password},
+        )
+        assert response.status_code == 400
+        assert "cannot be the same" in response.json()["detail"]
+
+    def test_update_password_success(self, client: TestClient, test_user):
+        user, password = test_user
+        headers = _get_token(client, user.email, password)
+        response = client.patch(
+            f"{API}/users/me/password",
+            headers=headers,
+            json={"current_password": password, "new_password": "brandnewpassword123"},
+        )
+        assert response.status_code == 200
+        assert response.json()["message"] == "Password updated"
+
+
+class TestUpdateUser:
+    def test_admin_update_user_success(
+        self, client: TestClient, superuser_token_headers: dict, test_user
+    ):
+        user, _ = test_user
+        response = client.patch(
+            f"{API}/users/{user.id}",
+            headers=superuser_token_headers,
+            json={"full_name": "Admin Modified Name"},
+        )
+        assert response.status_code == 200
+        assert response.json()["full_name"] == "Admin Modified Name"
+
+    def test_admin_update_user_not_found(
+        self, client: TestClient, superuser_token_headers: dict
+    ):
+        response = client.patch(
+            f"{API}/users/{uuid.uuid4()}",
+            headers=superuser_token_headers,
+            json={"full_name": "Ghost"},
+        )
+        assert response.status_code == 404
+
+    def test_admin_update_user_email_conflict(
+        self, client: TestClient, superuser_token_headers: dict, test_user
+    ):
+        user, _ = test_user
+        response = client.patch(
+            f"{API}/users/{user.id}",
+            headers=superuser_token_headers,
+            json={"email": settings.FIRST_ADMIN},
+        )
+        assert response.status_code == 409
+
 
 class TestDeleteUser:
     def test_admin_can_delete_user(
@@ -102,6 +222,14 @@ class TestDeleteUser:
             f"{API}/users/{user.id}", headers=superuser_token_headers
         )
         assert response.status_code == 200
+
+    def test_delete_user_not_found(
+        self, client: TestClient, superuser_token_headers: dict
+    ):
+        response = client.delete(
+            f"{API}/users/{uuid.uuid4()}", headers=superuser_token_headers
+        )
+        assert response.status_code == 404
 
     def test_admin_cannot_delete_themselves(
         self, client: TestClient, superuser_token_headers: dict, db: Session

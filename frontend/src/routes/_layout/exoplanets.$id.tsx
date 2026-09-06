@@ -1,5 +1,5 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
-import { createFileRoute, useRouter } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { Suspense, useEffect } from "react"
 
 import { type ExoplanetPublic, ExoplanetsService } from "@/client"
@@ -57,7 +57,7 @@ function ExoplanetDetailPage() {
   const { id } = Route.useParams()
   const queryClient = useQueryClient()
   const { data } = useSuspenseQuery(getExoplanetQueryOptions(id))
-  const router = useRouter()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (data?.photo_url && !data.photo_url.startsWith("/assets/")) {
@@ -69,7 +69,10 @@ function ExoplanetDetailPage() {
   return (
     <div className="relative flex min-h-full flex-col">
       <SpaceBackground />
-      <ExoplanetProfile exoplanet={data} onBack={() => router.history.back()} />
+      <ExoplanetProfile
+        exoplanet={data}
+        onBack={() => navigate({ to: "/exoplanets" })}
+      />
     </div>
   )
 }

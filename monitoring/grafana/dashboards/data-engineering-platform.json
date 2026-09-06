@@ -1,5 +1,7 @@
 {
-  "annotations": { "list": [] },
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -10,18 +12,45 @@
     {
       "type": "row",
       "title": "🟢 Health Status",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
       "collapsed": false
     },
     {
       "title": "Backend",
       "type": "stat",
-      "gridPos": { "h": 3, "w": 6, "x": 0, "y": 1 },
-      "targets": [{ "expr": "up{job=\"backend\"}" }],
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"backend\"}",
+          "instant": true
+        }
+      ],
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            { "type": "value", "options": { "0": { "text": "DOWN ❌", "color": "red" }, "1": { "text": "UP 🟢", "color": "green" } } }
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN ❌",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP 🟢",
+                  "color": "green"
+                }
+              }
+            }
           ]
         }
       }
@@ -29,12 +58,34 @@
     {
       "title": "Prometheus",
       "type": "stat",
-      "gridPos": { "h": 3, "w": 6, "x": 6, "y": 1 },
-      "targets": [{ "expr": "up{job=\"prometheus\"}" }],
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"prometheus\"}",
+          "instant": true
+        }
+      ],
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            { "type": "value", "options": { "0": { "text": "DOWN ❌", "color": "red" }, "1": { "text": "UP 🟢", "color": "green" } } }
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN ❌",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP 🟢",
+                  "color": "green"
+                }
+              }
+            }
           ]
         }
       }
@@ -42,12 +93,34 @@
     {
       "title": "PostgreSQL Exporter",
       "type": "stat",
-      "gridPos": { "h": 3, "w": 6, "x": 12, "y": 1 },
-      "targets": [{ "expr": "up{job=\"postgres\"}" }],
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"postgres\"}",
+          "instant": true
+        }
+      ],
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            { "type": "value", "options": { "0": { "text": "DOWN ❌", "color": "red" }, "1": { "text": "UP 🟢", "color": "green" } } }
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN ❌",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP 🟢",
+                  "color": "green"
+                }
+              }
+            }
           ]
         }
       }
@@ -55,12 +128,34 @@
     {
       "title": "Redis Exporter",
       "type": "stat",
-      "gridPos": { "h": 3, "w": 6, "x": 18, "y": 1 },
-      "targets": [{ "expr": "up{job=\"redis\"}" }],
+      "gridPos": {
+        "h": 3,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"redis\"}",
+          "instant": true
+        }
+      ],
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            { "type": "value", "options": { "0": { "text": "DOWN ❌", "color": "red" }, "1": { "text": "UP 🟢", "color": "green" } } }
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN ❌",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "UP 🟢",
+                  "color": "green"
+                }
+              }
+            }
           ]
         }
       }
@@ -68,27 +163,58 @@
     {
       "type": "row",
       "title": "📦 ETL Pipeline",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 4 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
       "collapsed": false
     },
     {
       "title": "Total Runs",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 0, "y": 5 },
-      "targets": [{ "expr": "etl_runs_total" }]
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 5
+      },
+      "targets": [
+        {
+          "expr": "etl_runs_total",
+          "instant": true
+        }
+      ]
     },
     {
       "title": "Failed Runs",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 3, "y": 5 },
-      "targets": [{ "expr": "etl_failed_runs_total" }],
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 3,
+        "y": 5
+      },
+      "targets": [
+        {
+          "expr": "etl_failed_runs_total",
+          "instant": true
+        }
+      ],
       "fieldConfig": {
         "defaults": {
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "red", "value": 1 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
             ]
           }
         }
@@ -97,50 +223,136 @@
     {
       "title": "Último ETL (Total)",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 6, "y": 5 },
-      "targets": [{ "expr": "etl_last_duration_seconds" }],
-      "fieldConfig": { "defaults": { "unit": "s" } }
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 6,
+        "y": 5
+      },
+      "targets": [
+        {
+          "expr": "etl_last_duration_seconds",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
     },
     {
       "title": "Extract",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 9, "y": 5 },
-      "targets": [{ "expr": "etl_last_extract_duration_seconds" }],
-      "fieldConfig": { "defaults": { "unit": "s" } }
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 9,
+        "y": 5
+      },
+      "targets": [
+        {
+          "expr": "etl_last_extract_duration_seconds",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
     },
     {
       "title": "Transform",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 12, "y": 5 },
-      "targets": [{ "expr": "etl_last_transform_duration_seconds" }],
-      "fieldConfig": { "defaults": { "unit": "s" } }
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 12,
+        "y": 5
+      },
+      "targets": [
+        {
+          "expr": "etl_last_transform_duration_seconds",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
     },
     {
       "title": "Load",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 15, "y": 5 },
-      "targets": [{ "expr": "etl_last_load_duration_seconds" }],
-      "fieldConfig": { "defaults": { "unit": "s" } }
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 15,
+        "y": 5
+      },
+      "targets": [
+        {
+          "expr": "etl_last_load_duration_seconds",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
     },
     {
       "title": "Histórico de Duraciones Promedio",
       "type": "timeseries",
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 5 },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 5
+      },
       "targets": [
-        { "expr": "sum(rate(etl_duration_seconds_sum[5m])) / sum(rate(etl_duration_seconds_count[5m]))", "legendFormat": "Total (Promedio)" }
+        {
+          "expr": "sum(rate(etl_duration_seconds_sum[5m])) / sum(rate(etl_duration_seconds_count[5m]))",
+          "legendFormat": "Total (Promedio)"
+        }
       ],
-      "fieldConfig": { "defaults": { "unit": "s" } }
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
     },
     {
       "title": "Last Run Time",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 9 },
-      "targets": [{ "expr": "etl_last_run_timestamp * 1000" }],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 9
+      },
+      "targets": [
+        {
+          "expr": "etl_last_run_timestamp * 1000",
+          "instant": true
+        }
+      ],
       "fieldConfig": {
         "defaults": {
           "unit": "dateTimeAsIso",
           "mappings": [
-            { "type": "value", "options": { "0": { "text": "Pendiente", "color": "orange" } } }
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Pendiente",
+                  "color": "orange"
+                }
+              }
+            }
           ]
         }
       }
@@ -148,12 +360,34 @@
     {
       "title": "Last Run Status",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 6, "y": 9 },
-      "targets": [{ "expr": "etl_last_run_success" }],
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 6,
+        "y": 9
+      },
+      "targets": [
+        {
+          "expr": "etl_last_run_success",
+          "instant": true
+        }
+      ],
       "fieldConfig": {
         "defaults": {
           "mappings": [
-            { "type": "value", "options": { "0": { "text": "ERROR ❌", "color": "red" }, "1": { "text": "SUCCESS  ", "color": "green" } } }
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "ERROR ❌",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "SUCCESS  ",
+                  "color": "green"
+                }
+              }
+            }
           ]
         }
       }
@@ -161,39 +395,95 @@
     {
       "title": "Extracted",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 9, "y": 9 },
-      "targets": [{ "expr": "etl_records_extracted" }]
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 9,
+        "y": 9
+      },
+      "targets": [
+        {
+          "expr": "etl_records_extracted",
+          "instant": true
+        }
+      ]
     },
     {
       "title": "Inserted",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 12, "y": 9 },
-      "targets": [{ "expr": "etl_records_inserted" }]
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 12,
+        "y": 9
+      },
+      "targets": [
+        {
+          "expr": "etl_records_inserted",
+          "instant": true
+        }
+      ]
     },
     {
       "title": "Updated",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 15, "y": 9 },
-      "targets": [{ "expr": "etl_records_updated" }]
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 15,
+        "y": 9
+      },
+      "targets": [
+        {
+          "expr": "etl_records_updated",
+          "instant": true
+        }
+      ]
     },
     {
       "title": "Skipped",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 18, "y": 9 },
-      "targets": [{ "expr": "etl_records_skipped" }]
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 18,
+        "y": 9
+      },
+      "targets": [
+        {
+          "expr": "etl_records_skipped",
+          "instant": true
+        }
+      ]
     },
     {
       "title": "Errors",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 3, "x": 21, "y": 9 },
-      "targets": [{ "expr": "etl_errors_total" }],
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 9
+      },
+      "targets": [
+        {
+          "expr": "etl_errors_total",
+          "instant": true
+        }
+      ],
       "fieldConfig": {
         "defaults": {
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "red", "value": 1 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
             ]
           }
         }
@@ -202,87 +492,215 @@
     {
       "type": "row",
       "title": "📈 API Metrics",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 13 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
       "collapsed": false
     },
     {
       "title": "Backend Uptime",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 4, "x": 0, "y": 14 },
-      "targets": [{ "expr": "time() - process_start_time_seconds" }],
-      "fieldConfig": { "defaults": { "unit": "d_h_m_s" } }
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 14
+      },
+      "targets": [
+        {
+          "expr": "time() - process_start_time_seconds",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "d_h_m_s"
+        }
+      }
     },
     {
       "title": "Requests por segundo",
       "type": "timeseries",
-      "gridPos": { "h": 6, "w": 8, "x": 4, "y": 14 },
-      "targets": [{ "expr": "sum(irate(http_requests_total{handler!=\"/metrics\"}[1m]))" }],
-      "fieldConfig": { "defaults": { "unit": "rps" } }
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 4,
+        "y": 14
+      },
+      "targets": [
+        {
+          "expr": "sum(irate(http_requests_total{handler!=\"/metrics\"}[1m]))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "rps"
+        }
+      }
     },
     {
       "title": "Latencia Media",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 4, "x": 12, "y": 14 },
-      "targets": [{ "expr": "sum(rate(http_request_duration_seconds_sum{handler!=\"/metrics\"}[5m])) / sum(rate(http_request_duration_seconds_count{handler!=\"/metrics\"}[5m]))" }],
-      "fieldConfig": { "defaults": { "unit": "s" } }
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 12,
+        "y": 14
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_request_duration_seconds_sum{handler!=\"/metrics\"}[5m])) / sum(rate(http_request_duration_seconds_count{handler!=\"/metrics\"}[5m]))",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
     },
     {
       "title": "P95 / P99 Latencia",
       "type": "timeseries",
-      "gridPos": { "h": 6, "w": 5, "x": 16, "y": 14 },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 16,
+        "y": 14
+      },
       "targets": [
-        { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{handler!=\"/metrics\"}[5m])) by (le))", "legendFormat": "P95" },
-        { "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{handler!=\"/metrics\"}[5m])) by (le))", "legendFormat": "P99" }
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{handler!=\"/metrics\"}[5m])) by (le))",
+          "legendFormat": "P95"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{handler!=\"/metrics\"}[5m])) by (le))",
+          "legendFormat": "P99"
+        }
       ],
-      "fieldConfig": { "defaults": { "unit": "s" } }
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
     },
     {
       "title": "Requests Activas",
       "type": "stat",
-      "gridPos": { "h": 6, "w": 3, "x": 21, "y": 14 },
-      "targets": [{ "expr": "http_requests_active" }]
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 21,
+        "y": 14
+      },
+      "targets": [
+        {
+          "expr": "http_requests_active",
+          "instant": true
+        }
+      ]
     },
     {
       "type": "row",
       "title": "🌐 Endpoints Traffic",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 20 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
       "collapsed": false
     },
     {
       "title": "Tráfico por Endpoint",
       "type": "timeseries",
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 21 },
-      "targets": [{ "expr": "sum(irate(http_requests_total{handler!=\"/metrics\"}[1m])) by (handler)", "legendFormat": "{{handler}}" }],
-      "fieldConfig": { "defaults": { "unit": "rps" } }
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "targets": [
+        {
+          "expr": "sum(irate(http_requests_total{handler!=\"/metrics\"}[1m])) by (handler)",
+          "legendFormat": "{{handler}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "rps"
+        }
+      }
     },
     {
       "type": "row",
       "title": "🚦 HTTP Status",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
       "collapsed": false
     },
     {
       "title": "Códigos de Estado HTTP (Distribución)",
       "type": "barchart",
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 28 },
-      "targets": [{ "expr": "sum(rate(http_requests_total[5m])) by (status)", "legendFormat": "{{status}}" }]
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total[5m])) by (status)",
+          "legendFormat": "{{status}}"
+        }
+      ]
     },
     {
       "type": "row",
       "title": "⏰ Scheduler",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 34 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      },
       "collapsed": false
     },
     {
       "title": "Última ejecución automática",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 35 },
-      "targets": [{ "expr": "scheduler_last_run_timestamp_seconds * 1000" }],
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 35
+      },
+      "targets": [
+        {
+          "expr": "scheduler_last_run_timestamp_seconds * 1000",
+          "instant": true
+        }
+      ],
       "fieldConfig": {
         "defaults": {
           "unit": "dateTimeAsIso",
           "mappings": [
-            { "type": "value", "options": { "0": { "text": "Pendiente", "color": "orange" } } }
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Pendiente",
+                  "color": "orange"
+                }
+              }
+            }
           ]
         }
       }
@@ -290,20 +708,52 @@
     {
       "title": "Tiempo entre ejecuciones",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 35 },
-      "targets": [{ "expr": "scheduler_execution_interval_seconds" }],
-      "fieldConfig": { "defaults": { "unit": "s" } }
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 35
+      },
+      "targets": [
+        {
+          "expr": "scheduler_execution_interval_seconds",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      }
     },
     {
       "title": "Próxima ejecución estimada",
       "type": "stat",
-      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 35 },
-      "targets": [{ "expr": "scheduler_next_run_timestamp_seconds * 1000" }],
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 35
+      },
+      "targets": [
+        {
+          "expr": "scheduler_next_run_timestamp_seconds * 1000",
+          "instant": true
+        }
+      ],
       "fieldConfig": {
         "defaults": {
           "unit": "dateTimeAsIso",
           "mappings": [
-            { "type": "value", "options": { "0": { "text": "Pendiente", "color": "orange" } } }
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Pendiente",
+                  "color": "orange"
+                }
+              }
+            }
           ]
         }
       }
@@ -311,117 +761,300 @@
     {
       "type": "row",
       "title": "🐘 PostgreSQL",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 39 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 39
+      },
       "collapsed": false
     },
     {
       "title": "Conexiones",
       "type": "stat",
-      "gridPos": { "h": 5, "w": 4, "x": 0, "y": 40 },
-      "targets": [{ "expr": "pg_stat_database_numbackends" }]
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 40
+      },
+      "targets": [
+        {
+          "expr": "pg_stat_database_numbackends",
+          "instant": true
+        }
+      ]
     },
     {
       "title": "Queries / s",
       "type": "timeseries",
-      "gridPos": { "h": 5, "w": 6, "x": 4, "y": 40 },
-      "targets": [{ "expr": "sum(rate(pg_stat_database_xact_commit[5m]) + rate(pg_stat_database_xact_rollback[5m]))" }]
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 4,
+        "y": 40
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(pg_stat_database_xact_commit[5m]) + rate(pg_stat_database_xact_rollback[5m]))"
+        }
+      ]
     },
     {
       "title": "Cache Hit Ratio",
       "type": "stat",
-      "gridPos": { "h": 5, "w": 4, "x": 10, "y": 40 },
-      "targets": [{ "expr": "sum(pg_stat_database_blks_hit) / (sum(pg_stat_database_blks_read) + sum(pg_stat_database_blks_hit))" }],
-      "fieldConfig": { "defaults": { "unit": "percentunit" } }
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 10,
+        "y": 40
+      },
+      "targets": [
+        {
+          "expr": "sum(pg_stat_database_blks_hit) / (sum(pg_stat_database_blks_read) + sum(pg_stat_database_blks_hit))",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        }
+      }
     },
     {
       "title": "Locks Activos",
       "type": "stat",
-      "gridPos": { "h": 5, "w": 4, "x": 14, "y": 40 },
-      "targets": [{ "expr": "sum(pg_locks_count)" }]
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 14,
+        "y": 40
+      },
+      "targets": [
+        {
+          "expr": "sum(pg_locks_count)",
+          "instant": true
+        }
+      ]
     },
     {
       "title": "Tamaño de Base de Datos",
       "type": "timeseries",
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 40 },
-      "targets": [{ "expr": "pg_database_size_bytes" }],
-      "fieldConfig": { "defaults": { "unit": "decbytes" } }
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 40
+      },
+      "targets": [
+        {
+          "expr": "pg_database_size_bytes"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decbytes"
+        }
+      }
     },
     {
       "type": "row",
       "title": "⚡ Redis",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 45 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 45
+      },
       "collapsed": false
     },
     {
       "title": "Memoria Usada",
       "type": "timeseries",
-      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 46 },
-      "targets": [{ "expr": "redis_memory_used_bytes" }],
-      "fieldConfig": { "defaults": { "unit": "decbytes" } }
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 46
+      },
+      "targets": [
+        {
+          "expr": "redis_memory_used_bytes"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decbytes"
+        }
+      }
     },
     {
       "title": "Hits vs Misses",
       "type": "timeseries",
-      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 46 },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 46
+      },
       "targets": [
-        { "expr": "rate(redis_keyspace_hits_total[5m])", "legendFormat": "Hits" },
-        { "expr": "rate(redis_keyspace_misses_total[5m])", "legendFormat": "Misses" }
+        {
+          "expr": "rate(redis_keyspace_hits_total[5m])",
+          "legendFormat": "Hits"
+        },
+        {
+          "expr": "rate(redis_keyspace_misses_total[5m])",
+          "legendFormat": "Misses"
+        }
       ]
     },
     {
       "title": "Clientes Conectados",
       "type": "stat",
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 46 },
-      "targets": [{ "expr": "redis_connected_clients" }]
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 46
+      },
+      "targets": [
+        {
+          "expr": "redis_connected_clients",
+          "instant": true
+        }
+      ]
     },
     {
       "title": "Comandos Procesados (Ratio)",
       "type": "stat",
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 46 },
-      "targets": [{ "expr": "rate(redis_commands_processed_total[5m])" }],
-      "fieldConfig": { "defaults": { "unit": "ops" } }
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 46
+      },
+      "targets": [
+        {
+          "expr": "rate(redis_commands_processed_total[5m])",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        }
+      }
     },
     {
       "type": "row",
       "title": "🐳 Docker (cAdvisor)",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 51 },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 51
+      },
       "collapsed": false
     },
     {
       "title": "CPU Usage",
       "type": "timeseries",
-      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 52 },
-      "targets": [{ "expr": "sum(rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_service=\"backend\"}[5m])) * 100" }],
-      "fieldConfig": { "defaults": { "unit": "percent" } }
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 52
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container_label_com_docker_compose_service=\"backend\"}[5m])) * 100"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        }
+      }
     },
     {
       "title": "RAM Usage",
       "type": "timeseries",
-      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 52 },
-      "targets": [{ "expr": "container_memory_working_set_bytes{container_label_com_docker_compose_service=\"backend\"}" }],
-      "fieldConfig": { "defaults": { "unit": "decbytes" } }
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 52
+      },
+      "targets": [
+        {
+          "expr": "container_memory_working_set_bytes{container_label_com_docker_compose_service=\"backend\"}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "decbytes"
+        }
+      }
     },
     {
       "title": "Network I/O",
       "type": "timeseries",
-      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 52 },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 52
+      },
       "targets": [
-        { "expr": "sum(rate(container_network_receive_bytes_total{container_label_com_docker_compose_service=\"backend\"}[5m]))", "legendFormat": "Rx (Entrada)" },
-        { "expr": "sum(rate(container_network_transmit_bytes_total{container_label_com_docker_compose_service=\"backend\"}[5m]))", "legendFormat": "Tx (Salida)" }
+        {
+          "expr": "sum(rate(container_network_receive_bytes_total{container_label_com_docker_compose_service=\"backend\"}[5m]))",
+          "legendFormat": "Rx (Entrada)"
+        },
+        {
+          "expr": "sum(rate(container_network_transmit_bytes_total{container_label_com_docker_compose_service=\"backend\"}[5m]))",
+          "legendFormat": "Tx (Salida)"
+        }
       ],
-      "fieldConfig": { "defaults": { "unit": "bps" } }
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps"
+        }
+      }
     },
     {
       "title": "Disk I/O",
       "type": "timeseries",
-      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 52 },
-      "targets": [{ "expr": "sum(rate(container_fs_writes_bytes_total{container_label_com_docker_compose_service=\"backend\"}[5m]))" }],
-      "fieldConfig": { "defaults": { "unit": "bps" } }
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 52
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_fs_writes_bytes_total{container_label_com_docker_compose_service=\"backend\"}[5m]))"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps"
+        }
+      }
     }
   ],
   "schemaVersion": 38,
   "style": "dark",
-  "tags": ["etl", "prometheus", "postgres", "redis", "docker"],
-  "title": "Data Engineering Platform",
-  "refresh": "30s"
+  "tags": [
+    "etl",
+    "prometheus",
+    "postgres",
+    "redis",
+    "docker"
+  ],
+  "title": "ExoScope",
+  "refresh": "5s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  }
 }

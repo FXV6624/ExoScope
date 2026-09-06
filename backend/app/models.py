@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any
 
 from pydantic import EmailStr
@@ -11,8 +11,8 @@ from app.core.enums.exoplanet import PlanetClass, PlanetComposition
 from app.etl.report import ETLReport
 
 
-def get_datetime_utc() -> datetime:
-    return datetime.now(timezone.utc)
+def get_datetime_local() -> datetime:
+    return datetime.now().astimezone()
 
 
 # Shared properties
@@ -27,7 +27,7 @@ class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     created_at: datetime | None = Field(
-        default_factory=get_datetime_utc,
+        default_factory=get_datetime_local,
         sa_type=DateTime(timezone=True),  # type: ignore
     )
 
@@ -77,8 +77,13 @@ class Exoplanet(ExoplanetBase, table=True):
 
 class ETLRun(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    started_at: datetime = Field(default_factory=get_datetime_utc)
-    finished_at: datetime
+    started_at: datetime = Field(
+        default_factory=get_datetime_local,
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
+    finished_at: datetime = Field(
+        sa_type=DateTime(timezone=True),  # type: ignore
+    )
     extracted: int
     transformed: int
     load_result: dict[str, Any] = Field(sa_column=Column(JSONB))

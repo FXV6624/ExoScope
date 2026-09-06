@@ -1,4 +1,5 @@
 import { CheckSquare, Columns, RotateCcw, Square, X } from "lucide-react"
+import { useState } from "react"
 
 import type { ExoplanetField } from "@/client"
 import { ALL_EXOPLANET_FIELDS, DEFAULT_COLUMNS } from "./fieldDefinitions"
@@ -42,90 +43,111 @@ export function ColumnsModal({
   ] as const
 
   return (
-    <>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <button
         type="button"
         aria-label="Close column selection backdrop"
-        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm cursor-default border-none p-0"
+        className="fixed inset-0 bg-black/75 cursor-default border-none p-0"
         onClick={onClose}
       />
 
       {/* Modal dialog */}
-      <div
-        className="fixed left-1/2 top-1/2 z-50 flex max-h-[85vh] w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-2xl shadow-2xl"
-        style={{
-          background: "rgba(6, 13, 31, 0.98)",
-          border: "1px solid rgba(34,211,238,0.3)",
-          backdropFilter: "blur(20px)",
-        }}
-      >
+      <div className="space-modal relative z-10 flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl shadow-2xl bg-background border border-border">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-border bg-card px-6 py-4">
           <div className="flex items-center gap-2">
-            <Columns size={16} className="text-space-accent" />
-            <h2 className="text-base font-bold text-space-primary">
+            <Columns size={16} className="text-cyan-600 dark:text-cyan-400" />
+            <h2 className="text-base font-bold text-foreground">
               Display Columns ({currentSelection.length} selected)
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-space-muted transition-colors hover:text-space-primary cursor-pointer"
+            className="text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Category-based Selection Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {categories.map((category) => {
-            const fieldsInCategory = ALL_EXOPLANET_FIELDS.filter(
-              (f) => f.category === category,
+        {/* Action bar */}
+        <div className="flex items-center justify-between border-b border-border px-6 py-3 bg-muted/40">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={selectAll}
+              className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 hover:underline cursor-pointer"
+            >
+              Select all
+            </button>
+            <span className="text-muted-foreground">•</span>
+            <button
+              type="button"
+              onClick={resetDefault}
+              className="flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground cursor-pointer"
+            >
+              <RotateCcw size={12} />
+              Reset to default
+            </button>
+          </div>
+          <span className="text-xs text-muted-foreground">
+            {ALL_EXOPLANET_FIELDS.length} available
+          </span>
+        </div>
+
+        {/* Scrollable Column Groups */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+          {categories.map((cat) => {
+            const fieldsInCat = ALL_EXOPLANET_FIELDS.filter(
+              (f) => f.category === cat,
             )
             return (
-              <div key={category} className="space-y-2.5">
-                <span className="text-xs font-bold uppercase tracking-widest text-space-accent">
-                  {category}
-                </span>
+              <div key={cat} className="space-y-3">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400 border-b border-border pb-1">
+                  {cat}
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {fieldsInCategory.map((field) => {
-                    const isChecked = currentSelection.includes(field.key)
+                  {fieldsInCat.map((f) => {
+                    const selected = currentSelection.includes(f.key)
+                    const isRequired = f.key === "planet_name"
                     return (
                       <button
                         type="button"
-                        key={field.key}
-                        onClick={() => toggleField(field.key)}
-                        className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-left transition-all cursor-pointer"
-                        style={{
-                          background: isChecked
-                            ? "rgba(34,211,238,0.1)"
-                            : "rgba(15,25,50,0.6)",
-                          border: isChecked
-                            ? "1px solid rgba(34,211,238,0.4)"
-                            : "1px solid rgba(255,255,255,0.06)",
-                        }}
+                        key={f.key}
+                        disabled={isRequired}
+                        onClick={() => toggleField(f.key)}
+                        className={`flex items-start gap-2.5 rounded-xl p-2.5 text-left transition-all ${
+                          selected
+                            ? "bg-cyan-50 border-2 border-cyan-500 text-cyan-950 dark:bg-cyan-950/40 dark:border-cyan-500/40 dark:text-cyan-200"
+                            : "space-card bg-muted/50 border border-transparent hover:border-cyan-500/40 text-foreground"
+                        } ${isRequired ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
                       >
-                        {isChecked ? (
-                          <CheckSquare
-                            size={16}
-                            className="text-space-accent shrink-0"
-                          />
-                        ) : (
-                          <Square
-                            size={16}
-                            className="text-space-muted shrink-0"
-                          />
-                        )}
-                        <span
-                          className={`text-sm ${
-                            isChecked
-                              ? "text-space-primary font-medium"
-                              : "text-space-muted"
-                          }`}
-                        >
-                          {field.label}
-                        </span>
+                        <div className="mt-0.5 shrink-0 text-cyan-600 dark:text-cyan-400">
+                          {selected ? (
+                            <CheckSquare size={16} />
+                          ) : (
+                            <Square
+                              size={16}
+                              className="text-muted-foreground"
+                            />
+                          )}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-xs font-semibold text-foreground truncate">
+                            {f.label}
+                            {f.unit && (
+                              <span className="text-muted-foreground font-normal ml-1">
+                                ({f.unit})
+                              </span>
+                            )}
+                            {isRequired && (
+                              <span className="ml-1.5 text-[10px] text-cyan-600 dark:text-cyan-400 font-normal">
+                                (Required)
+                              </span>
+                            )}
+                          </span>
+                        </div>
                       </button>
                     )
                   })}
@@ -136,30 +158,15 @@ export function ColumnsModal({
         </div>
 
         {/* Footer */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 px-6 py-4">
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={selectAll}
-              className="rounded-lg px-2.5 py-1 text-xs text-space-muted hover:text-space-accent transition-colors cursor-pointer"
-            >
-              Select All
-            </button>
-            <span className="text-white/20">|</span>
-            <button
-              type="button"
-              onClick={resetDefault}
-              className="flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs text-space-muted hover:text-space-accent transition-colors cursor-pointer"
-            >
-              <RotateCcw size={12} />
-              Reset Default
-            </button>
-          </div>
+        <div className="flex items-center justify-between border-t border-border px-6 py-4 bg-card">
+          <span className="text-xs text-muted-foreground">
+            {currentSelection.length} columns active
+          </span>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl px-4 py-2 text-xs font-medium text-space-muted hover:text-space-primary transition-colors cursor-pointer"
+              className="rounded-xl px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -169,20 +176,13 @@ export function ColumnsModal({
                 onApplyColumns(currentSelection)
                 onClose()
               }}
-              className="rounded-xl px-5 py-2 text-sm font-medium transition-colors cursor-pointer"
-              style={{
-                background: "rgba(34,211,238,0.2)",
-                border: "1px solid rgba(34,211,238,0.4)",
-                color: "#22d3ee",
-              }}
+              className="rounded-xl px-5 py-2 text-sm font-semibold transition-all cursor-pointer shadow-md bg-cyan-600 hover:bg-cyan-500 text-white"
             >
               Apply Columns
             </button>
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
-
-import { useState } from "react"

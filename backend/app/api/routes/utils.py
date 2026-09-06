@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from pydantic.networks import EmailStr
 
 from app.api.deps import CurrentUser
+from app.core.cache import clear_cache
 from app.schemas.auth import Message
 from app.utils import generate_test_email, send_email
 
@@ -26,6 +27,15 @@ def test_email(
         html_content=email_data.html_content,
     )
     return Message(message="Test email sent")
+
+
+@router.post("/purge-cache/")
+async def purge_cache(current_user: CurrentUser) -> Message:  # noqa: ARG001
+    """
+    Purge Redis and in-memory cache (admin only).
+    """
+    await clear_cache()
+    return Message(message="Cache purged successfully")
 
 
 @router.get("/health-check/")

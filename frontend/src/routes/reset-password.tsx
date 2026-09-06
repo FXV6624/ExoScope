@@ -6,6 +6,7 @@ import {
   redirect,
   useNavigate,
 } from "@tanstack/react-router"
+import { KeyRound } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -60,7 +61,7 @@ export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
       {
-        title: "Reset Password - FastAPI Template",
+        title: "Reset Password — ExoScope",
       },
     ],
   }),
@@ -98,30 +99,41 @@ function ResetPassword() {
 
   return (
     <AuthLayout>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-6"
-        >
-          <div className="flex flex-col items-center gap-2 text-center">
-            <h1 className="text-2xl font-bold">Reset Password</h1>
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col items-center text-center gap-2">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 shadow-lg shadow-cyan-500/15">
+            <KeyRound size={22} />
           </div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            Reset Password
+          </h1>
+          <p className="text-xs text-slate-400 max-w-xs">
+            Enter your new secure password below to regain platform access.
+          </p>
+        </div>
 
-          <div className="grid gap-4">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
             <FormField
               control={form.control}
               name="new_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New Password</FormLabel>
+                  <FormLabel className="text-xs text-slate-300 font-medium">
+                    New Password
+                  </FormLabel>
                   <FormControl>
                     <PasswordInput
                       data-testid="new-password-input"
-                      placeholder="New Password"
+                      placeholder="••••••••"
+                      className="rounded-xl border border-white/10 bg-slate-900/60 px-3.5 py-2 text-xs text-white placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-xs text-red-400" />
                 </FormItem>
               )}
             />
@@ -131,36 +143,43 @@ function ResetPassword() {
               name="confirm_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel className="text-xs text-slate-300 font-medium">
+                    Confirm Password
+                  </FormLabel>
                   <FormControl>
                     <PasswordInput
                       data-testid="confirm-password-input"
-                      placeholder="Confirm Password"
+                      placeholder="••••••••"
+                      className="rounded-xl border border-white/10 bg-slate-900/60 px-3.5 py-2 text-xs text-white placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-xs text-red-400" />
                 </FormItem>
               )}
             />
 
             <LoadingButton
               type="submit"
-              className="w-full"
+              aria-label="Reset Password"
+              className="mt-2 w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-2.5 text-xs font-bold text-slate-950 shadow-lg shadow-cyan-500/20 transition-all hover:from-cyan-400 hover:to-blue-500 active:scale-[0.99] disabled:opacity-50"
               loading={mutation.isPending}
             >
               Reset Password
             </LoadingButton>
-          </div>
 
-          <div className="text-center text-sm">
-            Remember your password?{" "}
-            <RouterLink to="/login" className="underline underline-offset-4">
-              Log in
-            </RouterLink>
-          </div>
-        </form>
-      </Form>
+            <div className="text-center text-xs text-slate-400 pt-2">
+              Remember your password?{" "}
+              <RouterLink
+                to="/login"
+                className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors no-underline"
+              >
+                Log in
+              </RouterLink>
+            </div>
+          </form>
+        </Form>
+      </div>
     </AuthLayout>
   )
 }

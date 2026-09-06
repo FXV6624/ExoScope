@@ -1,22 +1,11 @@
-from typing import Any
+"""Field selection helpers for exoplanet queries.
 
-from sqlalchemy.orm import load_only
-from sqlmodel.sql.expression import SelectOfScalar
+Re-exports from exoplanet_query_builder for backwards compatibility.
+"""
 
-from app.core.enums.exoplanet import ExoplanetField
-from app.models import Exoplanet
+from app.repositories.exoplanet_query_builder import (
+    SELECTABLE_FIELDS,
+    apply_field_selection,
+)
 
-SELECTABLE_FIELDS = {field: getattr(Exoplanet, field.value) for field in ExoplanetField}
-
-
-def apply_field_selection(
-    query: SelectOfScalar[Any],
-    fields: list[ExoplanetField] | None,
-) -> SelectOfScalar[Any]:
-    """
-    Apply dynamic field selection using SQLAlchemy load_only.
-    """
-    if not fields:
-        return query
-
-    return query.options(load_only(*(SELECTABLE_FIELDS[field] for field in fields)))
+__all__ = ["SELECTABLE_FIELDS", "apply_field_selection"]

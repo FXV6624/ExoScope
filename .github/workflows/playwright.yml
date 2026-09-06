@@ -43,7 +43,7 @@ jobs:
             changed:
               - backend/**
               - frontend/**
-              - .env
+              - .env.example
               - compose*.yml
               - .github/workflows/playwright.yml
 
@@ -55,6 +55,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+
+      - name: Create .env from template
+        run: cp .env.example .env
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2

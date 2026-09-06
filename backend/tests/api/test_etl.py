@@ -48,3 +48,20 @@ class TestRunETL:
             f"{API}/etl/run", headers=superuser_token_headers, json=payload
         )
         assert response.status_code == 422
+
+
+class TestReadETLRuns:
+    def test_read_etl_runs_requires_auth(self, client: TestClient):
+        response = client.get(f"{API}/etl/runs")
+        assert response.status_code == 401
+
+    def test_read_etl_runs_success(
+        self, client: TestClient, superuser_token_headers: dict
+    ):
+        response = client.get(f"{API}/etl/runs", headers=superuser_token_headers)
+        assert response.status_code == 200
+        data = response.json()
+        assert data["status"] == "ok"
+        assert "runs" in data
+        assert "count" in data
+        assert isinstance(data["runs"], list)

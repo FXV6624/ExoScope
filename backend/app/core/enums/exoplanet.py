@@ -6,7 +6,9 @@ class PlanetClass(str, Enum):
     SUPER_EARTH = "Super Earth"
     SUB_NEPTUNE = "Sub-Neptune"
     NEPTUNE = "Neptune"
-    ICE_GIANT = "Ice Giant"
+    ICE_GIANT = (
+        "Ice Giant"  # Deprecated: merged into Neptune (kept for DB compatibility)
+    )
     GAS_GIANT = "Gas Giant"
     UNKNOWN = "Unknown"
 

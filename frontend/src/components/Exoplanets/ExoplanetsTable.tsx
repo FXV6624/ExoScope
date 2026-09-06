@@ -4,134 +4,89 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   ChevronUp,
   Loader2,
   Search,
 } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
-import type { ExoplanetField, ExoplanetSortField } from "@/client"
+import type {
+  ExoplanetField,
+  ExoplanetPublic,
+  ExoplanetSortField,
+} from "@/client"
+import { TablePagination } from "@/components/Common/TablePagination"
+import {
+  CLASS_BADGE_CLASSES,
+  COMPOSITION_BADGE_CLASSES,
+  DEFAULT_BADGE_CLASS,
+  getHabitabilityScoreColor,
+  METHOD_BADGE_CLASSES,
+} from "./badgeUtils"
 import { ALL_EXOPLANET_FIELDS } from "./fieldDefinitions"
 
 // ─── Badges & Formatters ───────────────────────────────────────────────────────
 
-const METHOD_COLOR: Record<string, { bg: string; color: string }> = {
-  Transit: { bg: "rgba(34,211,238,0.15)", color: "#22d3ee" },
-  Imaging: { bg: "rgba(168,85,247,0.15)", color: "#c084fc" },
-  "Radial Velocity": { bg: "rgba(251,191,36,0.12)", color: "#fbbf24" },
-  Microlensing: { bg: "rgba(244,114,182,0.15)", color: "#f472b6" },
-  Astrometry: { bg: "rgba(96,165,250,0.15)", color: "#60a5fa" },
-}
-
-const CLASS_COLOR: Record<string, { bg: string; color: string }> = {
-  Terrestrial: { bg: "rgba(34,211,238,0.12)", color: "#22d3ee" },
-  "Super Earth": { bg: "rgba(52,211,153,0.12)", color: "#34d399" },
-  "Sub-Neptune": { bg: "rgba(168,85,247,0.12)", color: "#c084fc" },
-  Neptune: { bg: "rgba(96,165,250,0.12)", color: "#60a5fa" },
-  "Ice Giant": { bg: "rgba(147,197,253,0.12)", color: "#93c5fd" },
-  "Gas Giant": { bg: "rgba(251,191,36,0.12)", color: "#fbbf24" },
-  Unknown: { bg: "rgba(100,116,139,0.12)", color: "#64748b" },
-}
-
-const COMPOSITION_COLOR: Record<string, { bg: string; color: string }> = {
-  Rocky: { bg: "rgba(251,146,60,0.12)", color: "#fb923c" },
-  "Rocky-Iron": { bg: "rgba(248,113,113,0.12)", color: "#f87171" },
-  "Water World": { bg: "rgba(56,189,248,0.12)", color: "#38bdf8" },
-  Ice: { bg: "rgba(165,243,252,0.12)", color: "#a5f3fc" },
-  "Hydrogen-Helium": { bg: "rgba(192,132,252,0.12)", color: "#c084fc" },
-  Unknown: { bg: "rgba(100,116,139,0.12)", color: "#64748b" },
-}
-
-function renderCellContent(fieldKey: ExoplanetField, val: any) {
+function renderCellContent(fieldKey: ExoplanetField, val: unknown) {
   if (val === null || val === undefined || val === "") {
     if (fieldKey === "photo_url") {
-      return <span className="text-slate-500 font-mono text-xs">No</span>
+      return <span className="text-muted-foreground font-mono text-xs">No</span>
     }
-    return <span style={{ color: "#475569" }}>—</span>
+    return <span className="text-muted-foreground/60">—</span>
   }
 
   // 1. Planet Name
   if (fieldKey === "planet_name") {
-    return <span className="font-semibold text-slate-100">{String(val)}</span>
+    return <span className="font-semibold text-foreground">{String(val)}</span>
   }
 
   // 2. Photo Status (Indicator whether photo exists or not)
   if (fieldKey === "photo_url") {
     const hasPhoto = !String(val).startsWith("/assets")
     return hasPhoto ? (
-      <span
-        className="rounded-md px-2 py-0.5 text-xs font-medium"
-        style={{
-          background: "rgba(52, 211, 153, 0.15)",
-          color: "#34d399",
-          border: "1px solid rgba(52, 211, 153, 0.3)",
-        }}
-      >
+      <span className="rounded-md px-2 py-0.5 text-xs font-semibold border bg-emerald-100 text-emerald-800 border-emerald-400 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/40">
         Yes
       </span>
     ) : (
-      <span className="text-slate-500 font-mono text-xs">No</span>
+      <span className="text-muted-foreground font-mono text-xs">No</span>
     )
   }
 
   // 3. Planet Class Badge
   if (fieldKey === "planet_class") {
-    const style = CLASS_COLOR[val] || {
-      bg: "rgba(100,116,139,0.12)",
-      color: "#94a3b8",
-    }
+    const key = String(val)
+    const cls = CLASS_BADGE_CLASSES[key] || DEFAULT_BADGE_CLASS
     return (
       <span
-        className="rounded-md px-2 py-0.5 text-xs font-medium"
-        style={{
-          background: style.bg,
-          color: style.color,
-          border: `1px solid ${style.color}35`,
-        }}
+        className={`rounded-md px-2 py-0.5 text-xs font-semibold border ${cls}`}
       >
-        {String(val)}
+        {key}
       </span>
     )
   }
 
   // 4. Composition Badge
   if (fieldKey === "composition") {
-    const style = COMPOSITION_COLOR[val] || {
-      bg: "rgba(100,116,139,0.12)",
-      color: "#94a3b8",
-    }
+    const key = String(val)
+    const cls = COMPOSITION_BADGE_CLASSES[key] || DEFAULT_BADGE_CLASS
     return (
       <span
-        className="rounded-md px-2 py-0.5 text-xs font-medium"
-        style={{
-          background: style.bg,
-          color: style.color,
-          border: `1px solid ${style.color}35`,
-        }}
+        className={`rounded-md px-2 py-0.5 text-xs font-semibold border ${cls}`}
       >
-        {String(val)}
+        {key}
       </span>
     )
   }
 
   // 5. Discovery Method Badge
   if (fieldKey === "discovery_method") {
-    const style = METHOD_COLOR[val] || {
-      bg: "rgba(255,255,255,0.06)",
-      color: "#94a3b8",
-    }
+    const key = String(val)
+    const cls = METHOD_BADGE_CLASSES[key] || DEFAULT_BADGE_CLASS
     return (
       <span
-        className="rounded-md px-2 py-0.5 text-xs"
-        style={{
-          background: style.bg,
-          color: style.color,
-          border: `1px solid ${style.color}30`,
-        }}
+        className={`rounded-md px-2 py-0.5 text-xs font-semibold border ${cls}`}
       >
-        {String(val)}
+        {key}
       </span>
     )
   }
@@ -140,19 +95,16 @@ function renderCellContent(fieldKey: ExoplanetField, val: any) {
   if (fieldKey === "habitability_score") {
     const score = Number(val)
     const pct = Math.min(100, Math.max(0, score))
-    const color = pct >= 70 ? "#34d399" : pct >= 40 ? "#fbbf24" : "#f87171"
+    const color = getHabitabilityScoreColor(pct)
     return (
       <div className="flex items-center gap-2">
-        <div
-          className="h-1.5 w-12 overflow-hidden rounded-full shrink-0"
-          style={{ background: "rgba(255,255,255,0.08)" }}
-        >
+        <div className="h-1.5 w-12 overflow-hidden rounded-full shrink-0 bg-slate-200 dark:bg-white/10">
           <div
             className="h-full rounded-full"
             style={{ width: `${pct}%`, background: color }}
           />
         </div>
-        <span className="text-xs font-medium" style={{ color }}>
+        <span className="text-xs font-bold font-mono" style={{ color }}>
           {pct.toFixed(0)}
         </span>
       </div>
@@ -167,7 +119,7 @@ function renderCellContent(fieldKey: ExoplanetField, val: any) {
   ) {
     const num = Number(val)
     return (
-      <span className="text-slate-300 font-mono text-xs">
+      <span className="text-foreground font-mono text-xs font-medium">
         {(num * 100).toFixed(0)}%
       </span>
     )
@@ -176,19 +128,19 @@ function renderCellContent(fieldKey: ExoplanetField, val: any) {
   // 8. Numeric Decimals
   if (typeof val === "number") {
     return (
-      <span className="text-slate-300 font-mono text-xs">
+      <span className="text-foreground font-mono text-xs font-medium">
         {Number.isInteger(val) ? val.toLocaleString() : val.toFixed(2)}
       </span>
     )
   }
 
-  return <span className="text-slate-300 text-xs">{String(val)}</span>
+  return <span className="text-foreground text-xs">{String(val)}</span>
 }
 
 // ─── Table Component ──────────────────────────────────────────────────────────
 
 interface ExoplanetsTableProps {
-  data: any[]
+  data: ExoplanetPublic[]
   total: number
   skip: number
   limit: number
@@ -196,7 +148,7 @@ interface ExoplanetsTableProps {
   order: "asc" | "desc"
   columns: ExoplanetField[]
   isLoading: boolean
-  onSelectPlanet: (item: any) => void
+  onSelectPlanet: (item: ExoplanetPublic) => void
   onSortChange: (field: ExoplanetSortField, order: "asc" | "desc") => void
   onPageChange: (skip: number) => void
   onLimitChange: (limit: number) => void
@@ -218,9 +170,6 @@ export function ExoplanetsTable({
   onPageChange,
   onLimitChange,
 }: ExoplanetsTableProps) {
-  const pageIndex = Math.floor(skip / limit)
-  const pageCount = Math.ceil(total / limit)
-
   // ── Synchronized Horizontal Scrollbars
   const topScrollRef = useRef<HTMLDivElement>(null)
   const mainScrollRef = useRef<HTMLDivElement>(null)
@@ -351,10 +300,8 @@ export function ExoplanetsTable({
       <div
         ref={mainScrollRef}
         onScroll={handleMainScroll}
-        className="rounded-2xl overflow-x-hidden w-full max-w-full"
+        className="space-card rounded-2xl overflow-x-hidden w-full max-w-full"
         style={{
-          border: "1px solid rgba(34,211,238,0.18)",
-          background: "rgba(6, 13, 31, 0.7)",
           scrollbarWidth: "none",
         }}
       >
@@ -363,12 +310,7 @@ export function ExoplanetsTable({
           className="w-max min-w-full text-left border-collapse table-auto"
         >
           <thead className="sticky top-0 z-10 backdrop-blur-md">
-            <tr
-              style={{
-                background: "rgba(6, 18, 42, 0.95)",
-                borderBottom: "1px solid rgba(34,211,238,0.25)",
-              }}
-            >
+            <tr className="border-b border-border bg-slate-100/90 dark:bg-slate-900/95">
               {columns.map((colKey) => {
                 const def = ALL_EXOPLANET_FIELDS.find((f) => f.key === colKey)
                 const label = def ? def.label : colKey
@@ -455,21 +397,7 @@ export function ExoplanetsTable({
                   <tr
                     key={id || rowIdx}
                     onClick={() => onSelectPlanet(item)}
-                    className="transition-colors cursor-pointer"
-                    style={{
-                      borderBottom:
-                        rowIdx < data.length - 1
-                          ? "1px solid rgba(255,255,255,0.04)"
-                          : "none",
-                    }}
-                    onMouseEnter={(e) => {
-                      ;(e.currentTarget as HTMLElement).style.background =
-                        "rgba(34,211,238,0.05)"
-                    }}
-                    onMouseLeave={(e) => {
-                      ;(e.currentTarget as HTMLElement).style.background =
-                        "transparent"
-                    }}
+                    className="transition-colors cursor-pointer border-b border-border/40 hover:bg-slate-100/70 dark:hover:bg-cyan-500/10"
                   >
                     {columns.map((colKey) => (
                       <td
@@ -488,102 +416,15 @@ export function ExoplanetsTable({
       </div>
 
       {/* Pagination Footer */}
-      {total > 0 && (
-        <div
-          className="flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3"
-          style={{
-            background: "rgba(15, 25, 50, 0.5)",
-            border: "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <div className="flex flex-wrap items-center gap-4">
-            <span className="text-xs text-space-muted">
-              Showing{" "}
-              <span className="text-space-subtle font-medium">{skip + 1}</span>{" "}
-              to{" "}
-              <span className="text-space-subtle font-medium">
-                {Math.min(skip + limit, total)}
-              </span>{" "}
-              of{" "}
-              <span className="font-semibold text-space-primary">
-                {total.toLocaleString()}
-              </span>{" "}
-              exoplanets
-            </span>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-space-muted">Rows per page</span>
-              <select
-                value={limit}
-                onChange={(e) => onLimitChange(Number(e.target.value))}
-                className="rounded-md px-2 py-1 text-xs text-space-subtle outline-none"
-                style={{
-                  background: "rgba(6,13,31,0.9)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              >
-                {PAGE_SIZES.map((sz) => (
-                  <option key={sz} value={sz}>
-                    {sz}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-space-muted">
-              Page{" "}
-              <span className="font-semibold text-space-primary">
-                {pageIndex + 1}
-              </span>{" "}
-              of{" "}
-              <span className="font-semibold text-space-primary">
-                {Math.max(1, pageCount)}
-              </span>
-            </span>
-
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => onPageChange(0)}
-                disabled={pageIndex === 0}
-                aria-label="First page"
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-400/40 text-space-subtle transition-colors cursor-pointer"
-              >
-                <ChevronsLeft size={14} />
-              </button>
-              <button
-                type="button"
-                onClick={() => onPageChange(Math.max(0, skip - limit))}
-                disabled={pageIndex === 0}
-                aria-label="Previous page"
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-400/40 text-space-subtle transition-colors cursor-pointer"
-              >
-                <ChevronLeft size={14} />
-              </button>
-              <button
-                type="button"
-                onClick={() => onPageChange(skip + limit)}
-                disabled={pageIndex >= pageCount - 1}
-                aria-label="Next page"
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-400/40 text-space-subtle transition-colors cursor-pointer"
-              >
-                <ChevronRight size={14} />
-              </button>
-              <button
-                type="button"
-                onClick={() => onPageChange((pageCount - 1) * limit)}
-                disabled={pageIndex >= pageCount - 1}
-                aria-label="Last page"
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 disabled:opacity-30 disabled:cursor-not-allowed hover:border-cyan-400/40 text-space-subtle transition-colors cursor-pointer"
-              >
-                <ChevronsRight size={14} />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <TablePagination
+        skip={skip}
+        limit={limit}
+        total={total}
+        itemLabel="exoplanets"
+        pageSizes={PAGE_SIZES}
+        onLimitChange={onLimitChange}
+        onPageChange={onPageChange}
+      />
     </div>
   )
 }

@@ -66,24 +66,17 @@ export function ExportModal({
   }
 
   return (
-    <>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <button
         type="button"
         aria-label="Close export modal backdrop"
-        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm cursor-default border-none p-0"
+        className="fixed inset-0 bg-black/75 cursor-default border-none p-0"
         onClick={onClose}
       />
 
       {/* Compact Modal Dialog (Fits without scroll) */}
-      <div
-        className="fixed left-1/2 top-1/2 z-50 flex w-full max-w-lg -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-2xl shadow-2xl"
-        style={{
-          background: "rgba(6, 13, 31, 0.98)",
-          border: "1px solid rgba(34,211,238,0.3)",
-          backdropFilter: "blur(20px)",
-        }}
-      >
+      <div className="space-modal relative z-10 flex w-full max-w-lg flex-col overflow-hidden rounded-2xl shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-3.5">
           <div className="flex items-center gap-2">
@@ -104,25 +97,19 @@ export function ExportModal({
         {/* Compact Form Body */}
         <div className="p-5 space-y-4">
           {/* Scope Notice Banner */}
-          <div
-            className="flex flex-wrap items-center justify-between gap-2 rounded-xl px-3.5 py-2 text-xs"
-            style={{
-              background: "rgba(34,211,238,0.06)",
-              border: "1px solid rgba(34,211,238,0.2)",
-            }}
-          >
-            <div className="flex items-center gap-1.5 text-space-accent font-medium">
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl px-3.5 py-2 text-xs bg-cyan-50 border border-cyan-200 text-cyan-950 dark:bg-cyan-950/40 dark:border-cyan-500/30 dark:text-cyan-200">
+            <div className="flex items-center gap-1.5 text-cyan-700 dark:text-cyan-300 font-medium">
               <AlertCircle size={13} />
               <span>Exporting current view only:</span>
             </div>
-            <div className="flex items-center gap-2 text-space-subtle">
-              <span className="font-semibold text-space-primary">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <span className="font-semibold text-foreground">
                 {activeFilterCount > 0
                   ? `${activeFilterCount} active filters`
                   : "All records"}
               </span>
               <span>•</span>
-              <span className="font-semibold text-space-primary">
+              <span className="font-semibold text-foreground">
                 {selectedColumnCount} columns
               </span>
             </div>
@@ -130,7 +117,7 @@ export function ExportModal({
 
           {/* Format Selection (Horizontal Row) */}
           <div className="space-y-1.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-space-muted">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               File Format
             </span>
             <div className="grid grid-cols-3 gap-2">
@@ -142,32 +129,30 @@ export function ExportModal({
                     key={fmt.format}
                     type="button"
                     onClick={() => setSelectedFormat(fmt.format)}
-                    className="flex flex-col items-center justify-center gap-1.5 rounded-xl py-3 px-2 text-center transition-all cursor-pointer"
-                    style={{
-                      background: isSelected
-                        ? "rgba(34,211,238,0.15)"
-                        : "rgba(15,25,50,0.6)",
-                      border: isSelected
-                        ? "1px solid rgba(34,211,238,0.5)"
-                        : "1px solid rgba(255,255,255,0.06)",
-                    }}
+                    className={`flex flex-col items-center justify-center gap-1.5 rounded-xl py-3 px-2 text-center transition-all cursor-pointer shadow-xs ${
+                      isSelected
+                        ? "bg-cyan-50 border-2 border-cyan-500 text-cyan-800 dark:bg-cyan-500/20 dark:border-cyan-400 dark:text-cyan-300"
+                        : "space-card text-foreground hover:border-cyan-500/40"
+                    }`}
                   >
                     <Icon
                       size={18}
                       className={
-                        isSelected ? "text-space-accent" : "text-space-muted"
+                        isSelected
+                          ? "text-cyan-600 dark:text-cyan-400"
+                          : "text-muted-foreground"
                       }
                     />
                     <span
                       className={`text-xs font-medium ${
                         isSelected
-                          ? "text-space-primary font-semibold"
-                          : "text-space-subtle"
+                          ? "text-foreground font-semibold"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {fmt.label}
                     </span>
-                    <span className="text-[10px] text-space-muted font-mono">
+                    <span className="text-[10px] text-muted-foreground font-mono">
                       {fmt.ext}
                     </span>
                   </button>
@@ -179,30 +164,22 @@ export function ExportModal({
           {/* Filename & Compression (Inline Side-by-Side) */}
           <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 items-end">
             <div className="space-y-1">
-              <span className="text-xs text-space-muted">Filename</span>
+              <span className="text-xs text-muted-foreground">Filename</span>
               <input
                 type="text"
                 value={filename}
                 onChange={(e) => setFilename(e.target.value)}
                 placeholder="exoplanets"
-                className="w-full rounded-lg px-3 py-2 text-sm text-space-subtle outline-none placeholder:text-slate-600"
-                style={{
-                  background: "rgba(15,25,50,0.8)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
+                className="w-full rounded-lg px-3 py-2 text-sm bg-card border border-border text-foreground outline-none placeholder:text-muted-foreground"
               />
             </div>
 
             <label
-              className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-white/10 transition-colors cursor-pointer text-xs select-none"
-              style={{
-                background: compress
-                  ? "rgba(251,191,36,0.1)"
-                  : "rgba(15,25,50,0.8)",
-                borderColor: compress
-                  ? "rgba(251,191,36,0.3)"
-                  : "rgba(255,255,255,0.1)",
-              }}
+              className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-xs select-none ${
+                compress
+                  ? "bg-amber-50 border-amber-500 text-amber-900 dark:bg-amber-500/20 dark:border-amber-500/40 dark:text-amber-300"
+                  : "bg-card border-border text-foreground"
+              }`}
             >
               <input
                 type="checkbox"
@@ -210,18 +187,18 @@ export function ExportModal({
                 onChange={(e) => setCompress(e.target.checked)}
                 className="rounded border-slate-700"
               />
-              <FolderArchive size={14} className="text-amber-400" />
-              <span className="text-space-primary font-medium">ZIP (.zip)</span>
+              <FolderArchive size={14} className="text-amber-500" />
+              <span className="font-medium">ZIP (.zip)</span>
             </label>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-white/10 px-5 py-3.5 bg-black/20">
+        <div className="flex items-center justify-between border-t border-border px-5 py-3.5 bg-card">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl px-4 py-2 text-xs font-medium text-space-muted hover:text-space-primary transition-colors cursor-pointer"
+            className="rounded-xl px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -229,14 +206,7 @@ export function ExportModal({
             type="button"
             onClick={handleDownload}
             disabled={isLoading}
-            className="flex items-center gap-2 rounded-xl px-5 py-2 text-sm font-medium transition-all disabled:cursor-not-allowed cursor-pointer"
-            style={{
-              background: isLoading
-                ? "rgba(34,211,238,0.08)"
-                : "rgba(34,211,238,0.2)",
-              border: "1px solid rgba(34,211,238,0.4)",
-              color: isLoading ? "#64748b" : "#22d3ee",
-            }}
+            className="flex items-center gap-2 rounded-xl px-5 py-2 text-sm font-semibold transition-all cursor-pointer shadow-md bg-cyan-600 hover:bg-cyan-500 text-white disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {isLoading ? (
               <Loader2 size={15} className="animate-spin" />
@@ -249,6 +219,6 @@ export function ExportModal({
           </button>
         </div>
       </div>
-    </>
+    </div>
   )
 }

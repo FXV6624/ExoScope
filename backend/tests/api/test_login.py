@@ -81,3 +81,50 @@ class TestResetPassword:
         payload = {"token": "sometoken", "new_password": "short"}
         response = client.post(f"{API}/reset-password/", json=payload)
         assert response.status_code == 422
+
+    def test_reset_with_valid_token_success(self, client: TestClient):
+        from app.utils import generate_password_reset_token
+
+        token = generate_password_reset_token(email=settings.FIRST_ADMIN)
+        payload = {"token": token, "new_password": "brandNewAdminPassword123!"}
+        response = client.post(f"{API}/reset-password/", json=payload)
+        assert response.status_code == 200
+        assert "Password updated successfully" in response.json()["message"]
+
+        # Restore original password
+        token2 = generate_password_reset_token(email=settings.FIRST_ADMIN)
+        client.post(
+            f"{API}/reset-password/",
+            json={"token": token2, "new_password": settings.FIRST_ADMIN_PASSWORD},
+        )
+
+    def test_reset_with_valid_token_user_not_found(self, client: TestClient):
+        from app.utils import generate_password_reset_token
+
+        token = generate_password_reset_token(email="nonexistentuser@example.com")
+        payload = {"token": token, "new_password": "brandNewPassword123!"}
+        response = client.post(f"{API}/reset-password/", json=payload)
+        assert response.status_code == 400
+        assert "Invalid token" in response.json()["detail"]
+
+
+class TestPasswordRecoveryHtmlContent:
+    def test_recovery_html_existing_user(
+        self, client: TestClient, superuser_token_headers: dict
+    ):
+        response = client.post(
+            f"{API}/password-recovery-html-content/{settings.FIRST_ADMIN}",
+            headers=superuser_token_headers,
+        )
+        assert response.status_code == 200
+        assert "text/html" in response.headers["content-type"]
+        assert "Password recovery" in response.headers.get("subject", "")
+
+    def test_recovery_html_user_not_found(
+        self, client: TestClient, superuser_token_headers: dict
+    ):
+        response = client.post(
+            f"{API}/password-recovery-html-content/nobody@nowhere.com",
+            headers=superuser_token_headers,
+        )
+        assert response.status_code == 404

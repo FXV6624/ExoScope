@@ -1,8 +1,38 @@
-.vscode/*
-!.vscode/extensions.json
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+backend/.venv/
+*.egg-info/
+
+# Testing & Code Coverage
+.coverage
+.coverage.*
+htmlcov/
+backend/htmlcov/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Logs
+backend/logs/
+logs/
+*.log
+
+# Node & Frontend
 node_modules/
+dist/
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
-backend/logs/
+
+# IDE & Editor
+.vscode/*
+!.vscode/extensions.json

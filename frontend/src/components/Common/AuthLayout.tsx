@@ -1,6 +1,5 @@
 import { Appearance } from "@/components/Common/Appearance"
-import { Logo } from "@/components/Common/Logo"
-import { Footer } from "./Footer"
+import { SpaceBackground } from "@/components/Exoplanets/SpaceBackground"
 
 interface AuthLayoutProps {
   children: React.ReactNode
@@ -8,19 +7,24 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children }: AuthLayoutProps) {
   return (
-    <div className="grid min-h-svh lg:grid-cols-2">
-      <div className="bg-muted dark:bg-zinc-900 relative hidden lg:flex lg:items-center lg:justify-center">
-        <Logo variant="full" className="h-16" asLink={false} />
-      </div>
-      <div className="flex flex-col gap-4 p-6 md:p-10">
-        <div className="flex justify-end">
-          <Appearance />
+    <div className="relative min-h-screen flex flex-col justify-between overflow-x-hidden bg-background text-foreground">
+      {/* Dynamic Animated Cosmic Space Background */}
+      <SpaceBackground />
+
+      {/* Top Header - Theme switcher only */}
+      <header className="relative z-10 flex items-center justify-end p-6 md:p-8">
+        <Appearance buttonClassName="bg-blue-600 hover:bg-blue-700 text-white border-blue-500 shadow-md shadow-blue-600/25 [&_svg]:text-white" />
+      </header>
+
+      {/* Main Centered Modal Card */}
+      <main className="relative z-10 flex flex-1 items-center justify-center p-4 sm:p-6 md:p-8">
+        <div className="space-card w-full max-w-md rounded-3xl p-6 sm:p-8 backdrop-blur-2xl transition-all duration-300 shadow-2xl">
+          {children}
         </div>
-        <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-xs">{children}</div>
-        </div>
-        <Footer />
-      </div>
+      </main>
+
+      {/* Bottom Spacer for balanced vertical centering */}
+      <div className="relative z-10 p-6 md:p-8" />
     </div>
   )
 }

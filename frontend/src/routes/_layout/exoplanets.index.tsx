@@ -1,25 +1,18 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import {
-  ArrowDownAZ,
-  ArrowUpAZ,
-  Columns,
-  Download,
-  Filter,
-  Search,
-  Telescope,
-  X,
-} from "lucide-react"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { Telescope } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
 
 import {
   type ExoplanetField,
+  type ExoplanetPublic,
   type ExoplanetSortField,
   ExoplanetsService,
-  type ExportFormat,
   type SortOrder,
 } from "@/client"
 import { ActiveFilterChips } from "@/components/Exoplanets/ActiveFilterChips"
+import { CatalogSortBar } from "@/components/Exoplanets/CatalogSortBar"
+import { CatalogToolbar } from "@/components/Exoplanets/CatalogToolbar"
 import { ColumnsModal } from "@/components/Exoplanets/ColumnsModal"
 import {
   type BackendFilters,
@@ -32,13 +25,14 @@ import {
   DEFAULT_COLUMNS,
 } from "@/components/Exoplanets/fieldDefinitions"
 import { SpaceBackground } from "@/components/Exoplanets/SpaceBackground"
-import useCustomToast from "@/hooks/useCustomToast"
+import { useExoplanetExport } from "@/hooks/useExoplanetExport"
+import { getStoredThresholds } from "@/utils"
 
 // ─── Route ────────────────────────────────────────────────────────────────────
 
 export const Route = createFileRoute("/_layout/exoplanets/")({
   component: ExoplanetsPage,
-  head: () => ({ meta: [{ title: "Exoplanets — Data Engineering Platform" }] }),
+  head: () => ({ meta: [{ title: "Exoplanets — ExoScope" }] }),
 })
 
 // ─── Sortable Fields List ─────────────────────────────────────────────────────
@@ -49,30 +43,76 @@ const SORTABLE_FIELDS: { key: ExoplanetSortField; label: string }[] =
     label: f.label,
   }))
 
+const SESSION_STORAGE_KEY = "exoplanets_catalog_state"
+
+interface SavedCatalogState {
+  skip?: number
+  limit?: number
+  sortBy?: ExoplanetSortField
+  order?: SortOrder
+  search?: string
+  filters?: BackendFilters
+  columns?: ExoplanetField[]
+}
+
+function getInitialCatalogState(): SavedCatalogState {
+  try {
+    const raw = sessionStorage.getItem(SESSION_STORAGE_KEY)
+    if (raw) return JSON.parse(raw)
+  } catch {}
+  return {}
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 function ExoplanetsPage() {
   const navigate = useNavigate()
-  const { showSuccessToast, showErrorToast } = useCustomToast()
+
+  const savedState = useMemo(() => getInitialCatalogState(), [])
 
   // ── Pagination & Sorting
-  const [skip, setSkip] = useState<number>(0)
-  const [limit, setLimit] = useState<number>(25)
-  const [sortBy, setSortBy] = useState<ExoplanetSortField>("planet_name")
-  const [order, setOrder] = useState<SortOrder>("asc")
+  const [skip, setSkip] = useState<number>(savedState.skip ?? 0)
+  const [limit, setLimit] = useState<number>(savedState.limit ?? 25)
+  const [sortBy, setSortBy] = useState<ExoplanetSortField>(
+    savedState.sortBy ?? "planet_name",
+  )
+  const [order, setOrder] = useState<SortOrder>(savedState.order ?? "asc")
 
   // ── Search & Filter State
-  const [search, setSearch] = useState<string>("")
-  const [filters, setFilters] = useState<BackendFilters>({})
+  const [search, setSearch] = useState<string>(savedState.search ?? "")
+  const [filters, setFilters] = useState<BackendFilters>(
+    savedState.filters ?? {},
+  )
 
   // ── Dynamic Visible Columns
-  const [columns, setColumns] = useState<ExoplanetField[]>(DEFAULT_COLUMNS)
+  const [columns, setColumns] = useState<ExoplanetField[]>(
+    savedState.columns && savedState.columns.length > 0
+      ? savedState.columns
+      : DEFAULT_COLUMNS,
+  )
+
+  // ── Save state changes to sessionStorage so navigating to planet details doesn't clear filters/columns
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        SESSION_STORAGE_KEY,
+        JSON.stringify({
+          skip,
+          limit,
+          sortBy,
+          order,
+          search,
+          filters,
+          columns,
+        }),
+      )
+    } catch {}
+  }, [skip, limit, sortBy, order, search, filters, columns])
 
   // ── Modals & Drawers State
   const [filtersOpen, setFiltersOpen] = useState<boolean>(false)
   const [columnsOpen, setColumnsOpen] = useState<boolean>(false)
   const [exportOpen, setExportOpen] = useState<boolean>(false)
-  const [exportLoading, setExportLoading] = useState<boolean>(false)
 
   // ── Lock background scrolling when any modal/drawer is open
   const isAnyModalOpen = filtersOpen || columnsOpen || exportOpen
@@ -136,7 +176,7 @@ function ExoplanetsPage() {
       minSystemPlanetCount: filters.min_system_planet_count ?? undefined,
       minOrbitalEccentricity: filters.min_orbital_eccentricity ?? undefined,
       maxOrbitalEccentricity: filters.max_orbital_eccentricity ?? undefined,
-      hasCustomPhoto: filters.has_nasa_photo ?? undefined,
+      hasNasaPhoto: filters.has_nasa_photo ?? undefined,
     }),
     [skip, limit, sortBy, order, search, filters],
   )
@@ -165,6 +205,33 @@ function ExoplanetsPage() {
   const handleSearchChange = (val: string) => {
     setSearch(val)
     setSkip(0)
+  }
+
+  const isHabitableFilterActive = useMemo(() => {
+    return (
+      filters.min_habitability_score != null &&
+      filters.min_habitability_confidence != null
+    )
+  }, [filters.min_habitability_score, filters.min_habitability_confidence])
+
+  const thresholds = useMemo(() => getStoredThresholds(), [])
+
+  const handleToggleHabitableFilter = () => {
+    if (isHabitableFilterActive) {
+      const updated = { ...filters }
+      delete updated.min_habitability_score
+      delete updated.min_habitability_confidence
+      setFilters(updated)
+      setSkip(0)
+    } else {
+      const thresholds = getStoredThresholds()
+      setFilters((prev) => ({
+        ...prev,
+        min_habitability_score: thresholds.score,
+        min_habitability_confidence: thresholds.confidence,
+      }))
+      setSkip(0)
+    }
   }
 
   const handleFiltersChange = (newFilters: BackendFilters) => {
@@ -199,7 +266,7 @@ function ExoplanetsPage() {
     setSkip(0)
   }
 
-  const handleSelectPlanet = (planet: any) => {
+  const handleSelectPlanet = (planet: ExoplanetPublic) => {
     // Always navigate by planet_name (guaranteed to be present in every row)
     const name = planet.planet_name || planet.id
     if (name) {
@@ -211,168 +278,11 @@ function ExoplanetsPage() {
   }
 
   // ── Robust Streaming Export Implementation
-  const handleExport = useCallback(
-    async (format: ExportFormat, compress: boolean, filename: string) => {
-      setExportLoading(true)
-      try {
-        const baseUrl = import.meta.env.VITE_API_URL || ""
-        const params = new URLSearchParams()
-        params.set("format", format)
-        params.set("filename", filename)
-        params.set("compress", String(compress))
-
-        // Selected visible columns only
-        for (const col of columns) {
-          params.append("fields", col)
-        }
-
-        // Active filters only
-        if (queryParams.planetName)
-          params.set("planet_name", queryParams.planetName)
-        if (queryParams.hostStar) params.set("host_star", queryParams.hostStar)
-        if (queryParams.discoveryMethod)
-          params.set("discovery_method", queryParams.discoveryMethod)
-        if (queryParams.minDiscoveryYear != null)
-          params.set("min_discovery_year", String(queryParams.minDiscoveryYear))
-        if (queryParams.maxDiscoveryYear != null)
-          params.set("max_discovery_year", String(queryParams.maxDiscoveryYear))
-        if (queryParams.minOrbitalPeriod != null)
-          params.set("min_orbital_period", String(queryParams.minOrbitalPeriod))
-        if (queryParams.maxOrbitalPeriod != null)
-          params.set("max_orbital_period", String(queryParams.maxOrbitalPeriod))
-        if (queryParams.minPlanetRadius != null)
-          params.set("min_planet_radius", String(queryParams.minPlanetRadius))
-        if (queryParams.maxPlanetRadius != null)
-          params.set("max_planet_radius", String(queryParams.maxPlanetRadius))
-        if (queryParams.minPlanetMass != null)
-          params.set("min_planet_mass", String(queryParams.minPlanetMass))
-        if (queryParams.maxPlanetMass != null)
-          params.set("max_planet_mass", String(queryParams.maxPlanetMass))
-        if (queryParams.planetClass)
-          params.set("planet_class", queryParams.planetClass)
-        if (queryParams.minPlanetClassConfidence != null)
-          params.set(
-            "min_planet_class_confidence",
-            String(queryParams.minPlanetClassConfidence),
-          )
-        if (queryParams.maxPlanetClassConfidence != null)
-          params.set(
-            "max_planet_class_confidence",
-            String(queryParams.maxPlanetClassConfidence),
-          )
-        if (queryParams.composition)
-          params.set("composition", queryParams.composition)
-        if (queryParams.minCompositionConfidence != null)
-          params.set(
-            "min_composition_confidence",
-            String(queryParams.minCompositionConfidence),
-          )
-        if (queryParams.maxCompositionConfidence != null)
-          params.set(
-            "max_composition_confidence",
-            String(queryParams.maxCompositionConfidence),
-          )
-        if (queryParams.minHabitabilityScore != null)
-          params.set(
-            "min_habitability_score",
-            String(queryParams.minHabitabilityScore),
-          )
-        if (queryParams.maxHabitabilityScore != null)
-          params.set(
-            "max_habitability_score",
-            String(queryParams.maxHabitabilityScore),
-          )
-        if (queryParams.minHabitabilityConfidence != null)
-          params.set(
-            "min_habitability_confidence",
-            String(queryParams.minHabitabilityConfidence),
-          )
-        if (queryParams.maxHabitabilityConfidence != null)
-          params.set(
-            "max_habitability_confidence",
-            String(queryParams.maxHabitabilityConfidence),
-          )
-        if (queryParams.minDistanceFromEarth != null)
-          params.set(
-            "min_distance_from_earth",
-            String(queryParams.minDistanceFromEarth),
-          )
-        if (queryParams.maxDistanceFromEarth != null)
-          params.set(
-            "max_distance_from_earth",
-            String(queryParams.maxDistanceFromEarth),
-          )
-        if (queryParams.minEquilibriumTemperature != null)
-          params.set(
-            "min_equilibrium_temperature",
-            String(queryParams.minEquilibriumTemperature),
-          )
-        if (queryParams.maxEquilibriumTemperature != null)
-          params.set(
-            "max_equilibrium_temperature",
-            String(queryParams.maxEquilibriumTemperature),
-          )
-        if (queryParams.systemPlanetCount != null)
-          params.set(
-            "system_planet_count",
-            String(queryParams.systemPlanetCount),
-          )
-        if (queryParams.minSystemPlanetCount != null)
-          params.set(
-            "min_system_planet_count",
-            String(queryParams.minSystemPlanetCount),
-          )
-        if (queryParams.minOrbitalEccentricity != null)
-          params.set(
-            "min_orbital_eccentricity",
-            String(queryParams.minOrbitalEccentricity),
-          )
-        if (queryParams.maxOrbitalEccentricity != null)
-          params.set(
-            "max_orbital_eccentricity",
-            String(queryParams.maxOrbitalEccentricity),
-          )
-        if (queryParams.hasCustomPhoto != null)
-          params.set("has_nasa_photo", String(queryParams.hasCustomPhoto))
-
-        const token = localStorage.getItem("access_token")
-        const response = await fetch(
-          `${baseUrl}/api/v1/exports/export?${params.toString()}`,
-          {
-            headers: {
-              Authorization: token ? `Bearer ${token}` : "",
-            },
-          },
-        )
-
-        if (!response.ok) {
-          const errData = await response.json().catch(() => ({}))
-          throw new Error(
-            errData.detail || `Export failed with HTTP ${response.status}`,
-          )
-        }
-
-        const blob = await response.blob()
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = url
-        const downloadExt = compress ? "zip" : format
-        a.download = `${filename}.${downloadExt}`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        URL.revokeObjectURL(url)
-
-        showSuccessToast(`Export downloaded: ${filename}.${downloadExt}`)
-        setExportOpen(false)
-      } catch (err: any) {
-        showErrorToast(err?.message || "Failed to download export.")
-      } finally {
-        setExportLoading(false)
-      }
-    },
-    [columns, queryParams, showSuccessToast, showErrorToast],
-  )
+  const { isExporting: exportLoading, handleExport } = useExoplanetExport({
+    columns,
+    queryParams,
+    onSuccess: () => setExportOpen(false),
+  })
 
   const planets = (response?.data ?? []) as any[]
   const total = response?.meta?.count ?? 0
@@ -399,103 +309,22 @@ function ExoplanetsPage() {
       </div>
 
       {/* Main Top Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        {/* Search Bar */}
-        <div className="relative flex-1 min-w-[240px] max-w-md">
-          <Search
-            size={14}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-space-muted"
-          />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Search exoplanets by name..."
-            className="w-full rounded-xl py-2 pl-9 pr-8 text-sm outline-none placeholder:text-slate-600"
-            style={{
-              background: "rgba(15, 25, 50, 0.7)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              color: "#f1f5f9",
-            }}
-          />
-          {search && (
-            <button
-              type="button"
-              onClick={() => handleSearchChange("")}
-              aria-label="Clear search"
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-space-muted hover:text-space-subtle cursor-pointer"
-            >
-              <X size={14} />
-            </button>
-          )}
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Filters Button */}
-          <button
-            type="button"
-            onClick={() => setFiltersOpen(true)}
-            className="flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition-colors cursor-pointer"
-            style={{
-              background:
-                activeFiltersCount > 0
-                  ? "rgba(34,211,238,0.15)"
-                  : "rgba(15,25,50,0.7)",
-              border: `1px solid ${
-                activeFiltersCount > 0
-                  ? "rgba(34,211,238,0.4)"
-                  : "rgba(255,255,255,0.1)"
-              }`,
-              color: activeFiltersCount > 0 ? "#22d3ee" : "#94a3b8",
-            }}
-          >
-            <Filter size={14} />
-            <span>Filters</span>
-            {activeFiltersCount > 0 && (
-              <span
-                className="flex h-4 w-4 items-center justify-center rounded-full text-xs font-bold"
-                style={{
-                  background: "rgba(34,211,238,0.25)",
-                  color: "#22d3ee",
-                }}
-              >
-                {activeFiltersCount}
-              </span>
-            )}
-          </button>
-
-          {/* Columns Button */}
-          <button
-            type="button"
-            onClick={() => setColumnsOpen(true)}
-            className="flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition-colors cursor-pointer"
-            style={{
-              background: "rgba(15,25,50,0.7)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "#94a3b8",
-            }}
-          >
-            <Columns size={14} />
-            <span>Columns ({columns.length})</span>
-          </button>
-
-          {/* Export Button */}
-          <button
-            type="button"
-            onClick={() => setExportOpen(true)}
-            className="flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition-colors cursor-pointer"
-            style={{
-              background: "rgba(15,25,50,0.7)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "#94a3b8",
-            }}
-          >
-            <Download size={14} />
-            <span>Export</span>
-          </button>
-        </div>
-      </div>
+      <CatalogToolbar
+        search={search}
+        onSearchChange={handleSearchChange}
+        isHabitableFilterActive={isHabitableFilterActive}
+        onToggleHabitableFilter={handleToggleHabitableFilter}
+        habitableTitle={
+          isHabitableFilterActive
+            ? "Clear Potentially Habitable filter"
+            : `Filter Potentially Habitable worlds (Score ≥ ${thresholds.score}, Conf ≥ ${(thresholds.confidence * 100).toFixed(0)}%)`
+        }
+        activeFiltersCount={activeFiltersCount}
+        onOpenFilters={() => setFiltersOpen(true)}
+        columnsCount={columns.length}
+        onOpenColumns={() => setColumnsOpen(true)}
+        onOpenExport={() => setExportOpen(true)}
+      />
 
       {/* Active Filter Badges */}
       <ActiveFilterChips
@@ -505,67 +334,13 @@ function ExoplanetsPage() {
       />
 
       {/* Table Sorting & Status Bar */}
-      <div
-        className="flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-2.5"
-        style={{
-          background: "rgba(15, 25, 50, 0.4)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
-        {/* Sort Controls */}
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-xs text-space-muted font-medium">Sort by:</span>
-          <select
-            value={sortBy}
-            onChange={(e) =>
-              handleSortChange(e.target.value as ExoplanetSortField, order)
-            }
-            className="rounded-lg px-2.5 py-1 text-xs text-space-subtle outline-none"
-            style={{
-              background: "rgba(6,13,31,0.85)",
-              border: "1px solid rgba(255,255,255,0.12)",
-            }}
-          >
-            {SORTABLE_FIELDS.map((f) => (
-              <option key={f.key} value={f.key}>
-                {f.label}
-              </option>
-            ))}
-          </select>
-
-          <button
-            type="button"
-            onClick={() =>
-              handleSortChange(sortBy, order === "asc" ? "desc" : "asc")
-            }
-            className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium text-space-subtle hover:text-space-accent transition-colors cursor-pointer"
-            style={{
-              background: "rgba(6,13,31,0.85)",
-              border: "1px solid rgba(255,255,255,0.12)",
-            }}
-          >
-            {order === "asc" ? (
-              <>
-                <ArrowUpAZ size={13} className="text-space-accent" />
-                <span>Ascending</span>
-              </>
-            ) : (
-              <>
-                <ArrowDownAZ size={13} className="text-space-accent" />
-                <span>Descending</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Results Counter */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-space-muted">Total Results:</span>
-          <span className="text-sm font-bold text-space-accent font-mono">
-            {total.toLocaleString()}
-          </span>
-        </div>
-      </div>
+      <CatalogSortBar
+        sortBy={sortBy}
+        order={order}
+        sortableFields={SORTABLE_FIELDS}
+        onSortChange={handleSortChange}
+        total={total}
+      />
 
       {/* Dynamic Results Table */}
       <ExoplanetsTable

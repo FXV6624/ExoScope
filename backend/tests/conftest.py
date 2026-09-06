@@ -33,7 +33,10 @@ def setup_cache_and_limiter():
     with (
         patch("app.main.init_cache", new_callable=AsyncMock),
         patch("app.main.close_cache", new_callable=AsyncMock),
-        patch("app.core.cache.clear_cache_sync"),
+        patch(
+            "app.core.cache.SyncRedis.from_url",
+            side_effect=Exception("Redis disabled in tests"),
+        ),
     ):
         yield
 
