@@ -27,6 +27,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.get(
     "/",
     response_model=UsersPublic,
+    summary="List users",
 )
 def read_users(
     session: SessionDep,
@@ -34,16 +35,26 @@ def read_users(
     skip: int = 0,
     limit: int = 100,
 ) -> Any:
+    """
+    Retrieve a paginated list of registered users (admin only).
+    """
     users, count = user_service.get_users(session, skip=skip, limit=limit)
     return UsersPublic(data=[UserPublic.model_validate(u) for u in users], count=count)
 
 
-@router.post("/", response_model=UserPublic)
+@router.post(
+    "/",
+    response_model=UserPublic,
+    summary="Create user",
+)
 def create_user(
     session: SessionDep,
     current_user: CurrentUser,  # noqa: ARG001
     user_in: UserCreate,
 ) -> Any:
+    """
+    Create a new administrator user (admin only).
+    """
     if user_service.get_user(session, user_in.email):
         raise HTTPException(
             status_code=400,
@@ -70,15 +81,29 @@ def create_user(
     return user
 
 
-@router.get("/me", response_model=UserPublic)
+@router.get(
+    "/me",
+    response_model=UserPublic,
+    summary="Get current user",
+)
 def read_user_me(current_user: CurrentUser) -> Any:
+    """
+    Retrieve profile information for the authenticated user.
+    """
     return current_user
 
 
-@router.patch("/me", response_model=UserPublic)
+@router.patch(
+    "/me",
+    response_model=UserPublic,
+    summary="Update current user",
+)
 def update_user_me(
     session: SessionDep, user_in: UserUpdateMe, current_user: CurrentUser
 ) -> Any:
+    """
+    Update profile details for the authenticated user.
+    """
     if user_in.email:
         existing = user_service.get_user(session, user_in.email)
 
@@ -89,10 +114,17 @@ def update_user_me(
     return user_service.update_user_fields(session, current_user, data)
 
 
-@router.patch("/me/password", response_model=Message)
+@router.patch(
+    "/me/password",
+    response_model=Message,
+    summary="Update current user password",
+)
 def update_password_me(
     session: SessionDep, body: UpdatePassword, current_user: CurrentUser
 ) -> Any:
+    """
+    Change password for the authenticated user.
+    """
     verified, _ = verify_password(body.current_password, current_user.hashed_password)
 
     if not verified:
@@ -109,12 +141,19 @@ def update_password_me(
     return Message(message="Password updated")
 
 
-@router.get("/{user_id}", response_model=UserPublic)
+@router.get(
+    "/{user_id}",
+    response_model=UserPublic,
+    summary="Get user by ID",
+)
 def read_user(
     user_id: uuid.UUID,
     session: SessionDep,
     current_user: CurrentUser,  # noqa: ARG001
 ) -> Any:
+    """
+    Retrieve user details by unique identifier (admin only).
+    """
     user = user_service.get_user_by_id(session, user_id)
 
     if not user:
@@ -126,6 +165,7 @@ def read_user(
 @router.patch(
     "/{user_id}",
     response_model=UserPublic,
+    summary="Update user by ID",
 )
 def update_user(
     user_id: uuid.UUID,
@@ -133,6 +173,9 @@ def update_user(
     current_user: CurrentUser,  # noqa: ARG001
     user_in: UserUpdate,
 ) -> Any:
+    """
+    Update user information by unique identifier (admin only).
+    """
     db_user = user_service.get_user_by_id(session, user_id)
 
     if not db_user:
@@ -148,10 +191,17 @@ def update_user(
     )
 
 
-@router.delete("/{user_id}")
+@router.delete(
+    "/{user_id}",
+    response_model=Message,
+    summary="Delete user by ID",
+)
 def delete_user(
     session: SessionDep, current_user: CurrentUser, user_id: uuid.UUID
 ) -> Any:
+    """
+    Delete a user account by unique identifier (admin only).
+    """
     user = user_service.get_user_by_id(session, user_id)
 
     if not user:

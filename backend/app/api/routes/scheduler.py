@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 
 from app.api.deps import CurrentUser
-from app.schemas.scheduler import SchedulerUpdate
+from app.schemas.scheduler import SchedulerStatusResponse, SchedulerUpdate
 from app.services.scheduler import (
     read_scheduler_status_service,
     start_scheduler_service,
@@ -14,13 +14,17 @@ from app.services.scheduler import (
 router = APIRouter(prefix="/scheduler", tags=["scheduler"])
 
 
-@router.get("/")
+@router.get(
+    "/",
+    response_model=SchedulerStatusResponse,
+    summary="Get scheduler status",
+)
 def read_scheduler_status(
     request: Request,  # noqa: ARG001
     current_user: CurrentUser,  # noqa: ARG001
 ) -> Any:
     """
-    Get the scheduler status (admin only).
+    Retrieve the current status of the background ETL scheduler (admin only).
     """
     return {
         "status": "ok",
@@ -28,12 +32,16 @@ def read_scheduler_status(
     }
 
 
-@router.post("/start")
+@router.post(
+    "/start",
+    response_model=SchedulerStatusResponse,
+    summary="Start scheduler",
+)
 def start_scheduler_route(
     current_user: CurrentUser,  # noqa: ARG001
 ) -> Any:
     """
-    Start the scheduler (admin only).
+    Start the background ETL scheduler (admin only).
     """
     try:
         start_scheduler_service()
@@ -49,12 +57,16 @@ def start_scheduler_route(
     }
 
 
-@router.post("/stop")
+@router.post(
+    "/stop",
+    response_model=SchedulerStatusResponse,
+    summary="Stop scheduler",
+)
 def stop_scheduler_route(
     current_user: CurrentUser,  # noqa: ARG001
 ) -> Any:
     """
-    Stop the scheduler (admin only).
+    Stop the background ETL scheduler (admin only).
     """
     try:
         stop_scheduler_service()
@@ -70,11 +82,18 @@ def stop_scheduler_route(
     }
 
 
-@router.patch("/")
+@router.patch(
+    "/",
+    response_model=SchedulerStatusResponse,
+    summary="Update scheduler interval",
+)
 def update_scheduler(
     current_user: CurrentUser,  # noqa: ARG001
     data: SchedulerUpdate,
 ) -> Any:
+    """
+    Update the execution frequency of the background ETL scheduler (admin only).
+    """
     try:
         update_scheduler_interval_service(data.interval_seconds)
     except ValueError as exc:

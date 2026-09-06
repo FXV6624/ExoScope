@@ -19,19 +19,44 @@ MEDIA_TYPES = {
 }
 
 
-@router.get("/export")
+@router.get(
+    "/export",
+    summary="Export exoplanets dataset",
+    response_description="Streamed export file attachment",
+    responses={
+        200: {
+            "content": {
+                "text/csv": {},
+                "application/json": {},
+                "application/octet-stream": {},
+                "application/zip": {},
+            },
+            "description": "Exported data file as attachment stream.",
+        }
+    },
+)
 @limiter.limit("1/minute")
 def export_exoplanets_endpoint(
     request: Request,  # noqa: ARG001
     session: SessionDep,
     format: ExportFormat = ExportFormat.CSV,
-    filename: str = "exoplanets",
-    fields: Annotated[list[str] | None, Query()] = None,
-    compress: bool = False,
+    filename: Annotated[
+        str, Query(description="Base name for the generated download file.")
+    ] = "exoplanets",
+    fields: Annotated[
+        list[str] | None,
+        Query(
+            description="List of fields to include in export (omit to export all fields)."
+        ),
+    ] = None,
+    compress: Annotated[
+        bool,
+        Query(description="Whether to compress the exported file into a ZIP archive."),
+    ] = False,
     filters: ExoplanetFilters = Depends(),
 ) -> StreamingResponse:
     """
-    Export exoplanets using the selected format.
+    Export filtered exoplanet data to a downloadable file stream in CSV, JSON, or Parquet format.
     """
     export = ExportRequest(
         format=format,

@@ -20,10 +20,14 @@ class PrivateUserCreate(BaseModel):
     is_verified: bool = False
 
 
-@router.post("/users/", response_model=UserPublic)
+@router.post(
+    "/users/",
+    response_model=UserPublic,
+    summary="Create user (local dev)",
+)
 def create_user(user_in: PrivateUserCreate, session: SessionDep) -> Any:
     """
-    Create a new user.
+    Create a user directly in the database without requiring authentication (local development only).
     """
 
     user = User(

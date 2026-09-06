@@ -26,7 +26,11 @@ from app.services.exoplanets import (
 router = APIRouter(prefix="/exoplanets", tags=["exoplanets"])
 
 
-@router.get("/", response_model=ExoplanetsQueryResponse)
+@router.get(
+    "/",
+    response_model=ExoplanetsQueryResponse,
+    summary="List exoplanets",
+)
 @limiter.limit("60/minute")
 @cache(expire=3600)
 def read_exoplanets(
@@ -39,7 +43,7 @@ def read_exoplanets(
     filters: ExoplanetFilters = Depends(),
 ) -> Any:
     """
-    Retrieve a standard list of exoplanets with full models.
+    Retrieve a paginated and filterable list of exoplanets with full physical and astrophysical properties.
     """
     return read_exoplanets_service(
         session,
@@ -51,13 +55,20 @@ def read_exoplanets(
     )
 
 
-@router.get("/fields", response_model=ExoplanetsQueryResponse)
+@router.get(
+    "/fields",
+    response_model=ExoplanetsQueryResponse,
+    summary="List exoplanets with selected fields",
+)
 @limiter.limit("60/minute")
 @cache(expire=3600)
 def read_exoplanets_fields(
     request: Request,  # noqa: ARG001
     session: SessionDep,
-    fields: Annotated[list[ExoplanetField], Query()],
+    fields: Annotated[
+        list[ExoplanetField],
+        Query(description="List of fields to project in response items."),
+    ],
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=500)] = 50,
     sort_by: ExoplanetSortField = ExoplanetSortField.PLANET_NAME,
@@ -65,8 +76,7 @@ def read_exoplanets_fields(
     filters: ExoplanetFilters = Depends(),
 ) -> Any:
     """
-    Retrieve exoplanets selecting only the requested fields.
-    Useful for lightweight clients and large datasets.
+    Retrieve exoplanets projecting only specified fields to minimize bandwidth and payload size.
     """
     return read_exoplanets_service(
         session,
@@ -79,17 +89,35 @@ def read_exoplanets_fields(
     )
 
 
-@router.get("/stats", response_model=ExoplanetStats)
+@router.get(
+    "/stats",
+    response_model=ExoplanetStats,
+    summary="Get exoplanet statistics",
+)
 @limiter.limit("30/minute")
 @cache(expire=3600)
 def get_exoplanet_stats(
     request: Request,  # noqa: ARG001
     session: SessionDep,
-    habitability_score_threshold: Annotated[float, Query(ge=0, le=100)] = 80.0,
-    habitability_confidence_threshold: Annotated[float, Query(ge=0, le=1)] = 0.8,
+    habitability_score_threshold: Annotated[
+        float,
+        Query(
+            ge=0,
+            le=100,
+            description="Minimum habitability score threshold (0-100 scale).",
+        ),
+    ] = 80.0,
+    habitability_confidence_threshold: Annotated[
+        float,
+        Query(
+            ge=0,
+            le=1,
+            description="Minimum habitability confidence threshold (0.0-1.0 scale).",
+        ),
+    ] = 0.8,
 ) -> Any:
     """
-    Retrieve statistics about the exoplanets dataset.
+    Retrieve aggregated analytics and summary distributions for the exoplanets catalogue.
     """
     stats = get_exoplanet_stats_service(
         session, habitability_score_threshold, habitability_confidence_threshold
@@ -98,7 +126,11 @@ def get_exoplanet_stats(
     return stats
 
 
-@router.get("/{exoplanet_id:uuid}", response_model=ExoplanetPublic)
+@router.get(
+    "/{exoplanet_id:uuid}",
+    response_model=ExoplanetPublic,
+    summary="Get exoplanet by ID",
+)
 @limiter.limit("120/minute")
 @cache(expire=3600)
 def read_exoplanet_by_id(
@@ -107,7 +139,7 @@ def read_exoplanet_by_id(
     session: SessionDep,
 ) -> Any:
     """
-    Get a specific exoplanet by ID.
+    Retrieve complete astrophysical record and verified imagery for a single exoplanet by UUID.
     """
     exoplanet = read_exoplanet_by_id_service(session, exoplanet_id)
     if not exoplanet:

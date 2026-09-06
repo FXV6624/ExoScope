@@ -207,25 +207,249 @@ export const ETLConfigSchema = {
                 }
             ],
             title: 'Limit',
-            description: 'Max number of records to extract. None = no limit'
+            description: 'Maximum number of records to extract from NASA TAP service (None = full extraction).'
         },
         dry_run: {
             type: 'boolean',
             title: 'Dry Run',
+            description: 'If True, runs extraction and transformation without persisting to database.',
             default: false
         },
         persist_run: {
             type: 'boolean',
             title: 'Persist Run',
+            description: 'Whether to save the execution metrics and summary in the database.',
             default: true
         },
         load_mode: {
             '$ref': '#/components/schemas/LoadMode',
+            description: 'Database load strategy: upsert, insert, or reload.',
             default: 'upsert'
         }
     },
     type: 'object',
-    title: 'ETLConfig'
+    title: 'ETLConfig',
+    examples: [
+        {
+            dry_run: false,
+            limit: 100,
+            load_mode: 'upsert',
+            persist_run: true
+        }
+    ]
+} as const;
+
+export const ETLLastRunResponseSchema = {
+    properties: {
+        status: {
+            type: 'string',
+            title: 'Status',
+            default: 'ok'
+        },
+        report: {
+            anyOf: [
+                {
+                    '$ref': '#/components/schemas/ETLRunItem'
+                },
+                {
+                    type: 'null'
+                }
+            ]
+        }
+    },
+    type: 'object',
+    title: 'ETLLastRunResponse'
+} as const;
+
+export const ETLReportSchema = {
+    properties: {
+        extracted: {
+            type: 'integer',
+            title: 'Extracted',
+            default: 0
+        },
+        transformed: {
+            type: 'integer',
+            title: 'Transformed',
+            default: 0
+        },
+        load_result: {
+            '$ref': '#/components/schemas/LoadResult'
+        },
+        started_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Started At'
+        },
+        finished_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Finished At'
+        },
+        success: {
+            type: 'boolean',
+            title: 'Success',
+            default: true
+        },
+        errors: {
+            items: {
+                type: 'string'
+            },
+            type: 'array',
+            title: 'Errors'
+        },
+        duration_seconds: {
+            type: 'number',
+            title: 'Duration Seconds',
+            default: 0
+        },
+        extract_time: {
+            type: 'number',
+            title: 'Extract Time',
+            default: 0
+        },
+        transform_time: {
+            type: 'number',
+            title: 'Transform Time',
+            default: 0
+        },
+        load_time: {
+            type: 'number',
+            title: 'Load Time',
+            default: 0
+        }
+    },
+    type: 'object',
+    title: 'ETLReport'
+} as const;
+
+export const ETLRunItemSchema = {
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        started_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Started At'
+        },
+        finished_at: {
+            anyOf: [
+                {
+                    type: 'string',
+                    format: 'date-time'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Finished At'
+        },
+        extracted: {
+            type: 'integer',
+            title: 'Extracted',
+            default: 0
+        },
+        transformed: {
+            type: 'integer',
+            title: 'Transformed',
+            default: 0
+        },
+        load_result: {
+            additionalProperties: true,
+            type: 'object',
+            title: 'Load Result'
+        },
+        extract_time: {
+            type: 'number',
+            title: 'Extract Time',
+            default: 0
+        },
+        transform_time: {
+            type: 'number',
+            title: 'Transform Time',
+            default: 0
+        },
+        load_time: {
+            type: 'number',
+            title: 'Load Time',
+            default: 0
+        },
+        total_time: {
+            type: 'number',
+            title: 'Total Time',
+            default: 0
+        },
+        success: {
+            type: 'boolean',
+            title: 'Success',
+            default: true
+        },
+        errors: {
+            type: 'string',
+            title: 'Errors',
+            default: ''
+        }
+    },
+    type: 'object',
+    required: ['id', 'started_at'],
+    title: 'ETLRunItem'
+} as const;
+
+export const ETLRunResponseSchema = {
+    properties: {
+        status: {
+            type: 'string',
+            title: 'Status',
+            default: 'ok'
+        },
+        report: {
+            '$ref': '#/components/schemas/ETLReport'
+        }
+    },
+    type: 'object',
+    required: ['report'],
+    title: 'ETLRunResponse'
+} as const;
+
+export const ETLRunsResponseSchema = {
+    properties: {
+        status: {
+            type: 'string',
+            title: 'Status',
+            default: 'ok'
+        },
+        count: {
+            type: 'integer',
+            title: 'Count'
+        },
+        runs: {
+            items: {
+                '$ref': '#/components/schemas/ETLRunItem'
+            },
+            type: 'array',
+            title: 'Runs'
+        }
+    },
+    type: 'object',
+    required: ['count', 'runs'],
+    title: 'ETLRunsResponse'
 } as const;
 
 export const ExoplanetFieldSchema = {
@@ -311,7 +535,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Min Orbital Period'
+            title: 'Min Orbital Period',
+            description: 'Minimum orbital period in days.'
         },
         max_orbital_period: {
             anyOf: [
@@ -322,7 +547,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Max Orbital Period'
+            title: 'Max Orbital Period',
+            description: 'Maximum orbital period in days.'
         },
         min_planet_radius: {
             anyOf: [
@@ -333,7 +559,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Min Planet Radius'
+            title: 'Min Planet Radius',
+            description: 'Minimum planet radius in Earth radii (R⊕).'
         },
         max_planet_radius: {
             anyOf: [
@@ -344,7 +571,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Max Planet Radius'
+            title: 'Max Planet Radius',
+            description: 'Maximum planet radius in Earth radii (R⊕).'
         },
         min_planet_mass: {
             anyOf: [
@@ -355,7 +583,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Min Planet Mass'
+            title: 'Min Planet Mass',
+            description: 'Minimum planet mass in Earth masses (M⊕).'
         },
         max_planet_mass: {
             anyOf: [
@@ -366,7 +595,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Max Planet Mass'
+            title: 'Max Planet Mass',
+            description: 'Maximum planet mass in Earth masses (M⊕).'
         },
         planet_class: {
             anyOf: [
@@ -441,7 +671,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Min Habitability Score'
+            title: 'Min Habitability Score',
+            description: 'Minimum habitability score (0-100 scale).'
         },
         max_habitability_score: {
             anyOf: [
@@ -452,7 +683,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Max Habitability Score'
+            title: 'Max Habitability Score',
+            description: 'Maximum habitability score (0-100 scale).'
         },
         min_habitability_confidence: {
             anyOf: [
@@ -485,7 +717,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Min Distance From Earth'
+            title: 'Min Distance From Earth',
+            description: 'Minimum distance from Earth in parsecs (pc).'
         },
         max_distance_from_earth: {
             anyOf: [
@@ -496,7 +729,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Max Distance From Earth'
+            title: 'Max Distance From Earth',
+            description: 'Maximum distance from Earth in parsecs (pc).'
         },
         min_equilibrium_temperature: {
             anyOf: [
@@ -507,7 +741,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Min Equilibrium Temperature'
+            title: 'Min Equilibrium Temperature',
+            description: 'Minimum planetary equilibrium temperature in Kelvin (K).'
         },
         max_equilibrium_temperature: {
             anyOf: [
@@ -518,7 +753,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Max Equilibrium Temperature'
+            title: 'Max Equilibrium Temperature',
+            description: 'Maximum planetary equilibrium temperature in Kelvin (K).'
         },
         system_planet_count: {
             anyOf: [
@@ -573,7 +809,8 @@ export const ExoplanetFiltersSchema = {
                     type: 'null'
                 }
             ],
-            title: 'Has Nasa Photo'
+            title: 'Has Nasa Photo',
+            description: 'Filter planets having verified NASA imagery.'
         },
         sort_by: {
             anyOf: [
@@ -1102,6 +1339,33 @@ export const LoadModeSchema = {
     title: 'LoadMode'
 } as const;
 
+export const LoadResultSchema = {
+    properties: {
+        attempted: {
+            type: 'integer',
+            title: 'Attempted',
+            default: 0
+        },
+        inserted: {
+            type: 'integer',
+            title: 'Inserted',
+            default: 0
+        },
+        updated: {
+            type: 'integer',
+            title: 'Updated',
+            default: 0
+        },
+        skipped: {
+            type: 'integer',
+            title: 'Skipped',
+            default: 0
+        }
+    },
+    type: 'object',
+    title: 'LoadResult'
+} as const;
+
 export const MessageSchema = {
     properties: {
         message: {
@@ -1198,12 +1462,75 @@ export const PrivateUserCreateSchema = {
     title: 'PrivateUserCreate'
 } as const;
 
+export const SchedulerStatusSchema = {
+    properties: {
+        running: {
+            type: 'boolean',
+            title: 'Running'
+        },
+        interval_seconds: {
+            anyOf: [
+                {
+                    type: 'integer'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Interval Seconds'
+        },
+        next_run: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Next Run'
+        },
+        next_run_time: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Next Run Time'
+        }
+    },
+    type: 'object',
+    required: ['running'],
+    title: 'SchedulerStatus'
+} as const;
+
+export const SchedulerStatusResponseSchema = {
+    properties: {
+        status: {
+            type: 'string',
+            title: 'Status',
+            default: 'ok'
+        },
+        scheduler: {
+            '$ref': '#/components/schemas/SchedulerStatus'
+        }
+    },
+    type: 'object',
+    required: ['scheduler'],
+    title: 'SchedulerStatusResponse'
+} as const;
+
 export const SchedulerUpdateSchema = {
     properties: {
         interval_seconds: {
             type: 'integer',
             exclusiveMinimum: 59,
-            title: 'Interval Seconds'
+            title: 'Interval Seconds',
+            description: 'Execution interval in seconds for the background ETL job (minimum 60s).',
+            examples: [3600]
         }
     },
     type: 'object',
