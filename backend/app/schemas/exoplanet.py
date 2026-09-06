@@ -1,7 +1,7 @@
 import uuid
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.core.enums.exoplanet import (
     ExoplanetField,
@@ -47,31 +47,59 @@ class ExoplanetFilters(BaseModel):
     discovery_year: int | None = None
     min_discovery_year: int | None = None
     max_discovery_year: int | None = None
-    min_orbital_period: float | None = None
-    max_orbital_period: float | None = None
-    min_planet_radius: float | None = None
-    max_planet_radius: float | None = None
-    min_planet_mass: float | None = None
-    max_planet_mass: float | None = None
+    min_orbital_period: float | None = Field(
+        default=None, description="Minimum orbital period in days."
+    )
+    max_orbital_period: float | None = Field(
+        default=None, description="Maximum orbital period in days."
+    )
+    min_planet_radius: float | None = Field(
+        default=None, description="Minimum planet radius in Earth radii (R⊕)."
+    )
+    max_planet_radius: float | None = Field(
+        default=None, description="Maximum planet radius in Earth radii (R⊕)."
+    )
+    min_planet_mass: float | None = Field(
+        default=None, description="Minimum planet mass in Earth masses (M⊕)."
+    )
+    max_planet_mass: float | None = Field(
+        default=None, description="Maximum planet mass in Earth masses (M⊕)."
+    )
     planet_class: PlanetClass | None = None
     min_planet_class_confidence: float | None = None
     max_planet_class_confidence: float | None = None
     composition: PlanetComposition | None = None
     min_composition_confidence: float | None = None
     max_composition_confidence: float | None = None
-    min_habitability_score: float | None = None
-    max_habitability_score: float | None = None
+    min_habitability_score: float | None = Field(
+        default=None, description="Minimum habitability score (0-100 scale)."
+    )
+    max_habitability_score: float | None = Field(
+        default=None, description="Maximum habitability score (0-100 scale)."
+    )
     min_habitability_confidence: float | None = None
     max_habitability_confidence: float | None = None
-    min_distance_from_earth: float | None = None
-    max_distance_from_earth: float | None = None
-    min_equilibrium_temperature: float | None = None
-    max_equilibrium_temperature: float | None = None
+    min_distance_from_earth: float | None = Field(
+        default=None, description="Minimum distance from Earth in parsecs (pc)."
+    )
+    max_distance_from_earth: float | None = Field(
+        default=None, description="Maximum distance from Earth in parsecs (pc)."
+    )
+    min_equilibrium_temperature: float | None = Field(
+        default=None,
+        description="Minimum planetary equilibrium temperature in Kelvin (K).",
+    )
+    max_equilibrium_temperature: float | None = Field(
+        default=None,
+        description="Maximum planetary equilibrium temperature in Kelvin (K).",
+    )
     system_planet_count: int | None = None
     min_system_planet_count: int | None = None
     min_orbital_eccentricity: float | None = None
     max_orbital_eccentricity: float | None = None
-    has_nasa_photo: bool | None = None
+    has_nasa_photo: bool | None = Field(
+        default=None, description="Filter planets having verified NASA imagery."
+    )
     sort_by: ExoplanetSortField | None = None
     order: SortOrder = SortOrder.asc
 

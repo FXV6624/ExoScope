@@ -46,12 +46,68 @@ export type CompositionStats = {
 
 export type ETLConfig = {
     /**
-     * Max number of records to extract. None = no limit
+     * Maximum number of records to extract from NASA TAP service (None = full extraction).
      */
     limit?: (number | null);
+    /**
+     * If True, runs extraction and transformation without persisting to database.
+     */
     dry_run?: boolean;
+    /**
+     * Whether to save the execution metrics and summary in the database.
+     */
     persist_run?: boolean;
+    /**
+     * Database load strategy: upsert, insert, or reload.
+     */
     load_mode?: LoadMode;
+};
+
+export type ETLLastRunResponse = {
+    status?: string;
+    report?: (ETLRunItem | null);
+};
+
+export type ETLReport = {
+    extracted?: number;
+    transformed?: number;
+    load_result?: LoadResult;
+    started_at?: (string | null);
+    finished_at?: (string | null);
+    success?: boolean;
+    errors?: Array<(string)>;
+    duration_seconds?: number;
+    extract_time?: number;
+    transform_time?: number;
+    load_time?: number;
+};
+
+export type ETLRunItem = {
+    id: string;
+    started_at: string;
+    finished_at?: (string | null);
+    extracted?: number;
+    transformed?: number;
+    load_result?: {
+        [key: string]: unknown;
+    };
+    extract_time?: number;
+    transform_time?: number;
+    load_time?: number;
+    total_time?: number;
+    success?: boolean;
+    errors?: string;
+};
+
+export type ETLRunResponse = {
+    status?: string;
+    report: ETLReport;
+};
+
+export type ETLRunsResponse = {
+    status?: string;
+    count: number;
+    runs: Array<ETLRunItem>;
 };
 
 export type ExoplanetField = 'planet_name' | 'host_star' | 'discovery_year' | 'discovery_method' | 'planet_radius' | 'planet_mass' | 'planet_density' | 'equilibrium_temperature' | 'incident_flux' | 'orbital_period' | 'semi_major_axis' | 'orbital_eccentricity' | 'stellar_effective_temperature' | 'stellar_radius' | 'stellar_mass' | 'stellar_luminosity' | 'stellar_age' | 'distance_from_earth' | 'system_planet_count' | 'system_star_count' | 'planet_class' | 'planet_class_confidence' | 'composition' | 'composition_confidence' | 'habitability_score' | 'habitability_confidence' | 'photo_url';
@@ -63,11 +119,29 @@ export type ExoplanetFilters = {
     discovery_year?: (number | null);
     min_discovery_year?: (number | null);
     max_discovery_year?: (number | null);
+    /**
+     * Minimum orbital period in days.
+     */
     min_orbital_period?: (number | null);
+    /**
+     * Maximum orbital period in days.
+     */
     max_orbital_period?: (number | null);
+    /**
+     * Minimum planet radius in Earth radii (R⊕).
+     */
     min_planet_radius?: (number | null);
+    /**
+     * Maximum planet radius in Earth radii (R⊕).
+     */
     max_planet_radius?: (number | null);
+    /**
+     * Minimum planet mass in Earth masses (M⊕).
+     */
     min_planet_mass?: (number | null);
+    /**
+     * Maximum planet mass in Earth masses (M⊕).
+     */
     max_planet_mass?: (number | null);
     planet_class?: (PlanetClass | null);
     min_planet_class_confidence?: (number | null);
@@ -75,18 +149,39 @@ export type ExoplanetFilters = {
     composition?: (PlanetComposition | null);
     min_composition_confidence?: (number | null);
     max_composition_confidence?: (number | null);
+    /**
+     * Minimum habitability score (0-100 scale).
+     */
     min_habitability_score?: (number | null);
+    /**
+     * Maximum habitability score (0-100 scale).
+     */
     max_habitability_score?: (number | null);
     min_habitability_confidence?: (number | null);
     max_habitability_confidence?: (number | null);
+    /**
+     * Minimum distance from Earth in parsecs (pc).
+     */
     min_distance_from_earth?: (number | null);
+    /**
+     * Maximum distance from Earth in parsecs (pc).
+     */
     max_distance_from_earth?: (number | null);
+    /**
+     * Minimum planetary equilibrium temperature in Kelvin (K).
+     */
     min_equilibrium_temperature?: (number | null);
+    /**
+     * Maximum planetary equilibrium temperature in Kelvin (K).
+     */
     max_equilibrium_temperature?: (number | null);
     system_planet_count?: (number | null);
     min_system_planet_count?: (number | null);
     min_orbital_eccentricity?: (number | null);
     max_orbital_eccentricity?: (number | null);
+    /**
+     * Filter planets having verified NASA imagery.
+     */
     has_nasa_photo?: (boolean | null);
     sort_by?: (ExoplanetSortField | null);
     order?: SortOrder;
@@ -177,6 +272,13 @@ export type HTTPValidationError = {
 
 export type LoadMode = 'upsert' | 'insert' | 'reload';
 
+export type LoadResult = {
+    attempted?: number;
+    inserted?: number;
+    updated?: number;
+    skipped?: number;
+};
+
 export type Message = {
     message: string;
 };
@@ -204,7 +306,22 @@ export type PrivateUserCreate = {
     is_verified?: boolean;
 };
 
+export type SchedulerStatus = {
+    running: boolean;
+    interval_seconds?: (number | null);
+    next_run?: (string | null);
+    next_run_time?: (string | null);
+};
+
+export type SchedulerStatusResponse = {
+    status?: string;
+    scheduler: SchedulerStatus;
+};
+
 export type SchedulerUpdate = {
+    /**
+     * Execution interval in seconds for the background ETL job (minimum 60s).
+     */
     interval_seconds: number;
 };
 
@@ -274,16 +391,16 @@ export type EtlRunExoplanetEtlData = {
     requestBody: ETLConfig;
 };
 
-export type EtlRunExoplanetEtlResponse = (unknown);
+export type EtlRunExoplanetEtlResponse = (ETLRunResponse);
 
-export type EtlReadLastEtlRunResponse = (unknown);
+export type EtlReadLastEtlRunResponse = (ETLLastRunResponse);
 
 export type EtlReadEtlRunsData = {
     limit?: number;
     skip?: number;
 };
 
-export type EtlReadEtlRunsResponse = (unknown);
+export type EtlReadEtlRunsResponse = (ETLRunsResponse);
 
 export type ExoplanetsReadExoplanetsData = {
     composition?: (PlanetComposition | null);
@@ -329,6 +446,9 @@ export type ExoplanetsReadExoplanetsFieldsData = {
     composition?: (PlanetComposition | null);
     discoveryMethod?: (string | null);
     discoveryYear?: (number | null);
+    /**
+     * List of fields to project in response items.
+     */
     fields: Array<ExoplanetField>;
     hasNasaPhoto?: (boolean | null);
     hostStar?: (string | null);
@@ -367,7 +487,13 @@ export type ExoplanetsReadExoplanetsFieldsData = {
 export type ExoplanetsReadExoplanetsFieldsResponse = (ExoplanetsQueryResponse);
 
 export type ExoplanetsGetExoplanetStatsData = {
+    /**
+     * Minimum habitability confidence threshold (0.0-1.0 scale).
+     */
     habitabilityConfidenceThreshold?: number;
+    /**
+     * Minimum habitability score threshold (0-100 scale).
+     */
     habitabilityScoreThreshold?: number;
 };
 
@@ -381,10 +507,19 @@ export type ExoplanetsReadExoplanetByIdResponse = (ExoplanetPublic);
 
 export type ExportsExportExoplanetsEndpointData = {
     composition?: (PlanetComposition | null);
+    /**
+     * Whether to compress the exported file into a ZIP archive.
+     */
     compress?: boolean;
     discoveryMethod?: (string | null);
     discoveryYear?: (number | null);
+    /**
+     * List of fields to include in export (omit to export all fields).
+     */
     fields?: (Array<(string)> | null);
+    /**
+     * Base name for the generated download file.
+     */
     filename?: string;
     format?: ExportFormat;
     hasNasaPhoto?: (boolean | null);
@@ -453,17 +588,17 @@ export type PrivateCreateUserData = {
 
 export type PrivateCreateUserResponse = (UserPublic);
 
-export type SchedulerReadSchedulerStatusResponse = (unknown);
+export type SchedulerReadSchedulerStatusResponse = (SchedulerStatusResponse);
 
 export type SchedulerUpdateSchedulerData = {
     requestBody: SchedulerUpdate;
 };
 
-export type SchedulerUpdateSchedulerResponse = (unknown);
+export type SchedulerUpdateSchedulerResponse = (SchedulerStatusResponse);
 
-export type SchedulerStartSchedulerRouteResponse = (unknown);
+export type SchedulerStartSchedulerRouteResponse = (SchedulerStatusResponse);
 
-export type SchedulerStopSchedulerRouteResponse = (unknown);
+export type SchedulerStopSchedulerRouteResponse = (SchedulerStatusResponse);
 
 export type UsersReadUsersData = {
     limit?: number;
@@ -509,9 +644,12 @@ export type UsersDeleteUserData = {
     userId: string;
 };
 
-export type UsersDeleteUserResponse = (unknown);
+export type UsersDeleteUserResponse = (Message);
 
 export type UtilsTestEmailData = {
+    /**
+     * Recipient email address for the test message.
+     */
     emailTo: string;
 };
 

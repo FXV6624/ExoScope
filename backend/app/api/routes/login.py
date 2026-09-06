@@ -21,10 +21,17 @@ from app.utils import (
 router = APIRouter(tags=["login"])
 
 
-@router.post("/login/access-token")
+@router.post(
+    "/login/access-token",
+    response_model=Token,
+    summary="OAuth2 login for access token",
+)
 def login_access_token(
     session: SessionDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ) -> Token:
+    """
+    Authenticate user via OAuth2 password credentials and return an access token.
+    """
     user = user_service.authenticate_user(
         session=session, email=form_data.username, password=form_data.password
     )
@@ -44,13 +51,27 @@ def login_access_token(
     )
 
 
-@router.post("/login/test-token", response_model=UserPublic)
+@router.post(
+    "/login/test-token",
+    response_model=UserPublic,
+    summary="Test access token",
+)
 def test_token(current_user: CurrentUser) -> Any:
+    """
+    Verify validity of the current access token and return user profile.
+    """
     return current_user
 
 
-@router.post("/password-recovery/{email}", response_model=Message)
+@router.post(
+    "/password-recovery/{email}",
+    response_model=Message,
+    summary="Recover password",
+)
 def recover_password(email: str, session: SessionDep) -> Message:
+    """
+    Send a password recovery email if the email is registered in the system.
+    """
     user = user_service.get_user(session, email)
 
     if user:
@@ -69,8 +90,15 @@ def recover_password(email: str, session: SessionDep) -> Message:
     return Message(message="If that email is registered, we sent a recovery link")
 
 
-@router.post("/reset-password/", response_model=Message)
+@router.post(
+    "/reset-password/",
+    response_model=Message,
+    summary="Reset password",
+)
 def reset_password(session: SessionDep, body: NewPassword) -> Message:
+    """
+    Reset user password using a verified recovery token.
+    """
     email = verify_password_reset_token(body.token)
 
     if not email:
@@ -91,12 +119,16 @@ def reset_password(session: SessionDep, body: NewPassword) -> Message:
 @router.post(
     "/password-recovery-html-content/{email}",
     response_class=HTMLResponse,
+    summary="Preview password recovery email",
 )
 def recover_password_html(
     email: str,
     session: SessionDep,
     current_user: CurrentUser,  # noqa: ARG001
 ) -> Any:
+    """
+    Generate and preview the HTML content of the password recovery email (admin debug).
+    """
     user = user_service.get_user(session, email)
 
     if not user:

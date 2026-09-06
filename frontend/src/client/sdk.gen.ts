@@ -22,11 +22,11 @@ export class DefaultService {
 
 export class EtlService {
     /**
-     * Run Exoplanet Etl
-     * Run ETL process for exoplanets (superuser only)
+     * Trigger ETL pipeline
+     * Trigger the exoplanet ETL ingestion pipeline with customizable limits and loading modes (admin only).
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns unknown Successful Response
+     * @returns ETLRunResponse Successful Response
      * @throws ApiError
      */
     public static runExoplanetEtl(data: EtlRunExoplanetEtlData): CancelablePromise<EtlRunExoplanetEtlResponse> {
@@ -42,9 +42,9 @@ export class EtlService {
     }
     
     /**
-     * Read Last Etl Run
-     * Get the last ETL run report (superuser only)
-     * @returns unknown Successful Response
+     * Get last ETL run report
+     * Retrieve the execution metrics and report of the most recent ETL pipeline run (admin only).
+     * @returns ETLLastRunResponse Successful Response
      * @throws ApiError
      */
     public static readLastEtlRun(): CancelablePromise<EtlReadLastEtlRunResponse> {
@@ -55,12 +55,12 @@ export class EtlService {
     }
     
     /**
-     * Read Etl Runs
-     * Get all ETL run reports (superuser only)
+     * List ETL pipeline runs
+     * Retrieve paginated historical execution records of past ETL pipeline runs (admin only).
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
-     * @returns unknown Successful Response
+     * @returns ETLRunsResponse Successful Response
      * @throws ApiError
      */
     public static readEtlRuns(data: EtlReadEtlRunsData = {}): CancelablePromise<EtlReadEtlRunsResponse> {
@@ -80,8 +80,8 @@ export class EtlService {
 
 export class ExoplanetsService {
     /**
-     * Read Exoplanets
-     * Retrieve a standard list of exoplanets with full models.
+     * List exoplanets
+     * Retrieve a paginated and filterable list of exoplanets with full physical and astrophysical properties.
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
@@ -169,11 +169,10 @@ export class ExoplanetsService {
     }
     
     /**
-     * Read Exoplanets Fields
-     * Retrieve exoplanets selecting only the requested fields.
-     * Useful for lightweight clients and large datasets.
+     * List exoplanets with selected fields
+     * Retrieve exoplanets projecting only specified fields to minimize bandwidth and payload size.
      * @param data The data for the request.
-     * @param data.fields
+     * @param data.fields List of fields to project in response items.
      * @param data.skip
      * @param data.limit
      * @param data.sortBy
@@ -261,11 +260,11 @@ export class ExoplanetsService {
     }
     
     /**
-     * Get Exoplanet Stats
-     * Retrieve statistics about the exoplanets dataset.
+     * Get exoplanet statistics
+     * Retrieve aggregated analytics and summary distributions for the exoplanets catalogue.
      * @param data The data for the request.
-     * @param data.habitabilityScoreThreshold
-     * @param data.habitabilityConfidenceThreshold
+     * @param data.habitabilityScoreThreshold Minimum habitability score threshold (0-100 scale).
+     * @param data.habitabilityConfidenceThreshold Minimum habitability confidence threshold (0.0-1.0 scale).
      * @returns ExoplanetStats Successful Response
      * @throws ApiError
      */
@@ -284,8 +283,8 @@ export class ExoplanetsService {
     }
     
     /**
-     * Read Exoplanet By Id
-     * Get a specific exoplanet by ID.
+     * Get exoplanet by ID
+     * Retrieve complete astrophysical record and verified imagery for a single exoplanet by UUID.
      * @param data The data for the request.
      * @param data.exoplanetId
      * @returns ExoplanetPublic Successful Response
@@ -307,13 +306,13 @@ export class ExoplanetsService {
 
 export class ExportsService {
     /**
-     * Export Exoplanets Endpoint
-     * Export exoplanets using the selected format.
+     * Export exoplanets dataset
+     * Export filtered exoplanet data to a downloadable file stream in CSV, JSON, or Parquet format.
      * @param data The data for the request.
      * @param data.format
-     * @param data.filename
-     * @param data.fields
-     * @param data.compress
+     * @param data.filename Base name for the generated download file.
+     * @param data.fields List of fields to include in export (omit to export all fields).
+     * @param data.compress Whether to compress the exported file into a ZIP archive.
      * @param data.planetName
      * @param data.hostStar
      * @param data.discoveryMethod
@@ -347,7 +346,7 @@ export class ExportsService {
      * @param data.hasNasaPhoto
      * @param data.sortBy
      * @param data.order
-     * @returns unknown Successful Response
+     * @returns unknown Exported data file as attachment stream.
      * @throws ApiError
      */
     public static exportExoplanetsEndpoint(data: ExportsExportExoplanetsEndpointData = {}): CancelablePromise<ExportsExportExoplanetsEndpointResponse> {
@@ -402,7 +401,8 @@ export class ExportsService {
 
 export class LoginService {
     /**
-     * Login Access Token
+     * OAuth2 login for access token
+     * Authenticate user via OAuth2 password credentials and return an access token.
      * @param data The data for the request.
      * @param data.formData
      * @returns Token Successful Response
@@ -421,7 +421,8 @@ export class LoginService {
     }
     
     /**
-     * Test Token
+     * Test access token
+     * Verify validity of the current access token and return user profile.
      * @returns UserPublic Successful Response
      * @throws ApiError
      */
@@ -433,7 +434,8 @@ export class LoginService {
     }
     
     /**
-     * Recover Password
+     * Recover password
+     * Send a password recovery email if the email is registered in the system.
      * @param data The data for the request.
      * @param data.email
      * @returns Message Successful Response
@@ -453,7 +455,8 @@ export class LoginService {
     }
     
     /**
-     * Reset Password
+     * Reset password
+     * Reset user password using a verified recovery token.
      * @param data The data for the request.
      * @param data.requestBody
      * @returns Message Successful Response
@@ -472,7 +475,8 @@ export class LoginService {
     }
     
     /**
-     * Recover Password Html
+     * Preview password recovery email
+     * Generate and preview the HTML content of the password recovery email (admin debug).
      * @param data The data for the request.
      * @param data.email
      * @returns string Successful Response
@@ -494,8 +498,8 @@ export class LoginService {
 
 export class PrivateService {
     /**
-     * Create User
-     * Create a new user.
+     * Create user (local dev)
+     * Create a user directly in the database without requiring authentication (local development only).
      * @param data The data for the request.
      * @param data.requestBody
      * @returns UserPublic Successful Response
@@ -516,9 +520,9 @@ export class PrivateService {
 
 export class SchedulerService {
     /**
-     * Read Scheduler Status
-     * Get the scheduler status (admin only).
-     * @returns unknown Successful Response
+     * Get scheduler status
+     * Retrieve the current status of the background ETL scheduler (admin only).
+     * @returns SchedulerStatusResponse Successful Response
      * @throws ApiError
      */
     public static readSchedulerStatus(): CancelablePromise<SchedulerReadSchedulerStatusResponse> {
@@ -529,10 +533,11 @@ export class SchedulerService {
     }
     
     /**
-     * Update Scheduler
+     * Update scheduler interval
+     * Update the execution frequency of the background ETL scheduler (admin only).
      * @param data The data for the request.
      * @param data.requestBody
-     * @returns unknown Successful Response
+     * @returns SchedulerStatusResponse Successful Response
      * @throws ApiError
      */
     public static updateScheduler(data: SchedulerUpdateSchedulerData): CancelablePromise<SchedulerUpdateSchedulerResponse> {
@@ -548,9 +553,9 @@ export class SchedulerService {
     }
     
     /**
-     * Start Scheduler Route
-     * Start the scheduler (admin only).
-     * @returns unknown Successful Response
+     * Start scheduler
+     * Start the background ETL scheduler (admin only).
+     * @returns SchedulerStatusResponse Successful Response
      * @throws ApiError
      */
     public static startSchedulerRoute(): CancelablePromise<SchedulerStartSchedulerRouteResponse> {
@@ -561,9 +566,9 @@ export class SchedulerService {
     }
     
     /**
-     * Stop Scheduler Route
-     * Stop the scheduler (admin only).
-     * @returns unknown Successful Response
+     * Stop scheduler
+     * Stop the background ETL scheduler (admin only).
+     * @returns SchedulerStatusResponse Successful Response
      * @throws ApiError
      */
     public static stopSchedulerRoute(): CancelablePromise<SchedulerStopSchedulerRouteResponse> {
@@ -576,7 +581,8 @@ export class SchedulerService {
 
 export class UsersService {
     /**
-     * Read Users
+     * List users
+     * Retrieve a paginated list of registered users (admin only).
      * @param data The data for the request.
      * @param data.skip
      * @param data.limit
@@ -598,7 +604,8 @@ export class UsersService {
     }
     
     /**
-     * Create User
+     * Create user
+     * Create a new administrator user (admin only).
      * @param data The data for the request.
      * @param data.requestBody
      * @returns UserPublic Successful Response
@@ -617,7 +624,8 @@ export class UsersService {
     }
     
     /**
-     * Read User Me
+     * Get current user
+     * Retrieve profile information for the authenticated user.
      * @returns UserPublic Successful Response
      * @throws ApiError
      */
@@ -629,7 +637,8 @@ export class UsersService {
     }
     
     /**
-     * Update User Me
+     * Update current user
+     * Update profile details for the authenticated user.
      * @param data The data for the request.
      * @param data.requestBody
      * @returns UserPublic Successful Response
@@ -648,7 +657,8 @@ export class UsersService {
     }
     
     /**
-     * Update Password Me
+     * Update current user password
+     * Change password for the authenticated user.
      * @param data The data for the request.
      * @param data.requestBody
      * @returns Message Successful Response
@@ -667,7 +677,8 @@ export class UsersService {
     }
     
     /**
-     * Read User
+     * Get user by ID
+     * Retrieve user details by unique identifier (admin only).
      * @param data The data for the request.
      * @param data.userId
      * @returns UserPublic Successful Response
@@ -687,7 +698,8 @@ export class UsersService {
     }
     
     /**
-     * Update User
+     * Update user by ID
+     * Update user information by unique identifier (admin only).
      * @param data The data for the request.
      * @param data.userId
      * @param data.requestBody
@@ -710,10 +722,11 @@ export class UsersService {
     }
     
     /**
-     * Delete User
+     * Delete user by ID
+     * Delete a user account by unique identifier (admin only).
      * @param data The data for the request.
      * @param data.userId
-     * @returns unknown Successful Response
+     * @returns Message Successful Response
      * @throws ApiError
      */
     public static deleteUser(data: UsersDeleteUserData): CancelablePromise<UsersDeleteUserResponse> {
@@ -732,10 +745,10 @@ export class UsersService {
 
 export class UtilsService {
     /**
-     * Test Email
-     * Test emails.
+     * Send test email
+     * Send a test email to verify SMTP delivery and template rendering (admin only).
      * @param data The data for the request.
-     * @param data.emailTo
+     * @param data.emailTo Recipient email address for the test message.
      * @returns Message Successful Response
      * @throws ApiError
      */
@@ -753,8 +766,8 @@ export class UtilsService {
     }
     
     /**
-     * Purge Cache
-     * Purge Redis and in-memory cache (admin only).
+     * Purge application cache
+     * Invalidate and clear both Redis and local in-memory caches (admin only).
      * @returns Message Successful Response
      * @throws ApiError
      */
@@ -766,7 +779,8 @@ export class UtilsService {
     }
     
     /**
-     * Health Check
+     * System health check
+     * Service liveness probe confirming the API application is healthy and responsive.
      * @returns boolean Successful Response
      * @throws ApiError
      */

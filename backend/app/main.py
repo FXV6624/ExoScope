@@ -42,10 +42,55 @@ async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
         await close_cache()
 
 
+tags_metadata = [
+    {
+        "name": "login",
+        "description": "Authentication and password recovery operations.",
+    },
+    {
+        "name": "users",
+        "description": "User management, profiles, and administration.",
+    },
+    {
+        "name": "exoplanets",
+        "description": "Exoplanet catalogue queries, multidimensional filtering, and analytical statistics.",
+    },
+    {
+        "name": "etl",
+        "description": "Data ingestion pipeline execution and execution run history.",
+    },
+    {
+        "name": "exports",
+        "description": "Data export services in multiple formats (CSV, JSON, Parquet).",
+    },
+    {
+        "name": "scheduler",
+        "description": "Background task scheduling and automated ETL pipeline control.",
+    },
+    {
+        "name": "utils",
+        "description": "System utilities, cache management, and health checks.",
+    },
+]
+
+if settings.ENVIRONMENT == "local":
+    tags_metadata.append(
+        {
+            "name": "private",
+            "description": "Local development and testing endpoints.",
+        }
+    )
+
 app = FastAPI(
     lifespan=lifespan,
     title=settings.PROJECT_NAME,
+    description=(
+        "RESTful API for the Data Engineering Platform, providing automated NASA exoplanet "
+        "data ingestion, physical property enrichment, multi-criteria exploration, and dataset exports."
+    ),
+    version="1.0.0",
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    openapi_tags=tags_metadata,
     generate_unique_id_function=custom_generate_unique_id,
 )
 
