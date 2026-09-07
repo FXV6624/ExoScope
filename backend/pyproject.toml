@@ -25,7 +25,7 @@ dependencies = [
     "slowapi>=0.1.10",
     "prometheus-client>=0.25.0",
     "prometheus-fastapi-instrumentator>=8.0.2",
-    "pyarrow>=25.0.0",
+    "pyarrow>=25.0.1",
 ]
 
 [dependency-groups]
